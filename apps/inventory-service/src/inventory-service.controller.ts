@@ -1,10 +1,11 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { InventoryServiceService } from './inventory-service.service';
 import type { CreateStockDto } from './dtos/create-stock.dto';
 import type { CreateWarehouseDto } from './dtos/create-warehouse.dto';
 import type { CreateSupplierDto } from './dtos/create-supplier.dto';
 import type { CreateProductDto } from './dtos/create-product.dto';
 import type { GetProductDto } from './dtos/get-product.dto';
+import type { GetStockDto } from './dtos/get-stock.dto';
 
 @Controller()
 export class InventoryServiceController {
@@ -36,8 +37,8 @@ export class InventoryServiceController {
   }
 
   @Post('get-product')
-  getProduct(@Body() body: GetProductDto) {
-    return this.inventoryServiceService.getProduct(body.id);
+  getProduct(@Body() getProductDto: GetProductDto) {
+    return this.inventoryServiceService.getProduct(getProductDto.id);
   }
 
   @Post('create-stock')
@@ -45,9 +46,9 @@ export class InventoryServiceController {
     return this.inventoryServiceService.stockIn(createStockDto);
   }
 
-  @Get('check-stock/:id')
-  getStock(@Param('id') id: number): string {
-    const result = this.inventoryServiceService.checkStock(id);
-    return JSON.stringify(result);
+  @Post('get-stock')
+  getStock(@Body() getStockDto: GetStockDto) {
+    const result = this.inventoryServiceService.getStock(getStockDto.productId);
+    return result;
   }
 }

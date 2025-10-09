@@ -64,7 +64,7 @@ export class InventoryServiceService {
     return this.databaseService.receiveIntoInventory(inventory);
   }
 
-  checkStock(productId: number): Promise<InventoryDto | null> {
+  getStock(productId: number): Promise<InventoryDto | null> {
     return this.databaseService.checkStockIn(productId);
   }
 }
