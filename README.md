@@ -1,3 +1,5 @@
+# 🏗️ TỔNG QUAN PROJECT: E-Commerce Microservices System
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 </p>
@@ -21,78 +23,142 @@
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-## Description
+## 🎯 Mục tiêu
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Xây dựng hệ thống thương mại điện tử gồm nhiều service giao tiếp với nhau qua API Gateway và Message Queue, có khả năng:
 
-## Project setup
+1. Đặt hàng (Order Service)
+
+2. Thanh toán (Payment Service)
+
+3. Quản lý tồn kho (Inventory Service)
+
+4. Gửi thông báo (Notification Service)
+
+5. Giao tiếp với bên ngoài (via Facade / Adapter)
+
+6. Xử lý lỗi, retry, rollback logic (Saga, Circuit Breaker)
+
+## 🧩 1. KIẾN TRÚC TỔNG QUAN
+
+                 +-------------------+
+                 |   API Gateway     | ← Facade Pattern
+                 +--------+----------+
+                          |
+             +---------+--------+--------+---------+
+             |         |        |        |         |
+       +-----------+ +-----------+ +-----------+ +-----------+
+       | Order Svc | | Payment Svc| | Inventory | | Notify Svc|
+       +-----+-----+ +-----+-----+ +-----+-----+ +-----+-----+
+             |             |             |             |
+             |      Message Queue (Pub/Sub)    | ← Observer/Event Driven
+             +---------------------------------+
+
+## ⚙️ 2. CÁC DESIGN PATTERN ÁP DỤNG
+
+| Loại Pattern  | Pattern                           | Ứng dụng trong Project                                                         |
+| ------------- | --------------------------------- | ------------------------------------------------------------------------------ |
+| Creational    | Factory Method / Abstract Factory | Khởi tạo các service client khác nhau cho từng môi trường (dev, staging, prod) |
+| Creational    | Builder                           | Xây dựng cấu hình order phức tạp (nhiều item, coupon, shipping option)         |
+| Structural    | Facade                            | API Gateway gom nhiều microservice thành 1 entry point                         |
+| Structural    | Adapter                           | Kết nối đến cổng thanh toán bên ngoài (Stripe, PayPal, MoMo)                   |
+| Structural    | Decorator                         | Logging & retry cho các service call                                           |
+| Structural    | Proxy                             | Bảo vệ microservice qua caching layer                                          |
+| Behavioral    | Observer (Pub/Sub)                | Khi order thành công → gửi event đến Inventory & Notification                  |
+| Behavioral    | Chain of Responsibility           | Pipeline xử lý order: Validate → Check stock → Charge payment → Confirm        |
+| Behavioral    | Strategy                          | Các phương thức thanh toán khác nhau (credit card, PayPal, MoMo)               |
+| Behavioral    | Command                           | Thực hiện/rollback transaction trong Saga                                      |
+| Architectural | Saga Pattern                      | Quản lý giao dịch phân tán giữa Order, Payment, Inventory                      |
+| Architectural | Circuit Breaker / Retry           | Ngăn lỗi lan truyền khi Payment Service gặp sự cố                              |
+
+## 🧱 3. CẤU TRÚC DỰ ÁN (Monorepo ví dụ với NestJS)
 
 ```bash
-$ npm install
+ecommerce/
+│
+├── apps/
+│ ├── api-gateway/
+│ │ ├── src/
+│ │ └── main.ts
+│ ├── order-service/
+│ ├── payment-service/
+│ ├── inventory-service/
+│ └── notification-service/
+│
+├── libs/
+│ ├── common/ # Shared DTO, interfaces
+│ ├── factories/ # AbstractFactory, Builder
+│ ├── patterns/ # Strategy, Decorator, Proxy, etc.
+│ ├── saga/ # Saga orchestrator
+│ └── messaging/ # Observer (Pub/Sub)
+│
+└── docker-compose.yml
 ```
 
-## Compile and run the project
+## 💡 4. MỘT SỐ MODULE TIÊU BIỂU
 
-```bash
-# development
-$ npm run start
+### 🔹 OrderService — Chain of Responsibility + Saga + Observer
 
-# watch mode
-$ npm run start:dev
+OrderHandler → ValidationHandler → InventoryCheckHandler → PaymentHandler
 
-# production mode
-$ npm run start:prod
+Mỗi handler là một bước nghiệp vụ.
+
+Nếu lỗi → Saga rollback (gửi event ngược lại để hoàn tiền / phục hồi stock).
+
+### 🔹 PaymentService — Strategy + Adapter + Factory
+
+PaymentFactory sinh ra PaymentProcessor theo môi trường hoặc loại thanh toán.
+
+Adapter giúp tích hợp Stripe, PayPal, MoMo.
+
+Decorator thêm retry và logging.
+
+### 🔹 API Gateway — Facade + Proxy + Decorator
+
+Gom các service lại dưới 1 endpoint.
+
+Caching tạm thời dữ liệu (Proxy).
+
+Decorator thêm thống kê và tracing request.
+
+### 🔹 InventoryService — Observer
+
+Nghe event “OrderCreated”, “OrderCancelled”.
+
+Cập nhật tồn kho tương ứng.
+
+### 🔹 NotificationService — Observer + Strategy
+
+Lắng nghe event → gửi mail, SMS, hoặc push notification theo chiến lược.
+
+## 🧠 5. MỤC TIÊU THỰC HÀNH
+
+Mức độ Mục tiêu
+
+```
+🧩 Level 1 Cài đặt cơ bản các service và kết nối qua message queue
+🧩 Level 2 Áp dụng 3–5 pattern (Factory, Strategy, Facade, Observer, Chain)
+🧩 Level 3 Mở rộng thành Saga pattern với rollback logic
+🧩 Level 4 Thêm Decorator/Proxy để quản lý lỗi, log, retry
+🧩 Level 5 Benchmark, tối ưu dependency, và áp dụng CI/CD
 ```
 
-## Run tests
+### 🚀 GỢI Ý LỘ TRÌNH TRIỂN KHAI
 
-```bash
-# unit tests
-$ npm run test
+Bước 1: Tạo base project NestJS + Monorepo structure
 
-# e2e tests
-$ npm run test:e2e
+Bước 2: Implement OrderService với Chain of Responsibility
 
-# test coverage
-$ npm run test:cov
-```
+Bước 3: Thêm PaymentService dùng Strategy + Factory
 
-## Deployment
+Bước 4: Tạo API Gateway dùng Facade
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+Bước 5: Thêm Messaging (Pub/Sub) để kết nối các service
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+Bước 6: Cài Saga Orchestrator điều phối toàn bộ giao dịch
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
+Bước 7: Dùng Decorator + Proxy để thêm logging, retry, caching
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+Bước 8: Test toàn bộ luồng: Đặt hàng → Thanh toán → Cập nhật tồn → Thông báo
 
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+Bước 9: Viết unit test cho từng pattern
