@@ -3,7 +3,7 @@
 ### ----- STAGE 1: BUILD -----
 FROM node:20-alpine AS builder
 
-WORKDIR /app
+WORKDIR /builder
 
 # Thiết lập biến môi trường mặc định
 ARG APP_NAME
@@ -38,7 +38,7 @@ COPY apps/${APP_NAME}/package*.json ./apps/${APP_NAME}/
 RUN npm install --only=production --omit=dev
 
 # Copy build output từ builder
-COPY --from=builder /app/dist/apps/${APP_NAME} ./dist
+COPY --from=builder /builder/dist/apps/${APP_NAME} ./dist
 
 # Chạy app
 EXPOSE 3000
