@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './entities/product.entity';
-import { Repository } from 'typeorm';
+import { DeepPartial, Repository } from 'typeorm';
 import { Warehouse } from './entities/warehouse.entity';
 import { Supplier } from './entities/supplier.entity';
 import { Inventory } from './entities/inventory.entity';
@@ -28,7 +28,7 @@ export class DatabaseService {
     private orderItemsRepository: Repository<OrderItem>,
   ) {}
 
-  async createWarehouse(warehouse: Partial<Warehouse>): Promise<Warehouse> {
+  async createWarehouse(warehouse: DeepPartial<Warehouse>): Promise<Warehouse> {
     const result = this.warehousesRepository.create(warehouse);
     await this.warehousesRepository.save(result);
     return result;
@@ -42,7 +42,7 @@ export class DatabaseService {
     return this.warehousesRepository.findOne({ where: { id: warehouseId } });
   }
 
-  async createSupplier(supplier: Partial<Supplier>): Promise<Supplier> {
+  async createSupplier(supplier: DeepPartial<Supplier>): Promise<Supplier> {
     const result = this.suppliersRepository.create(supplier);
     await this.suppliersRepository.save(supplier);
     return result;
@@ -52,7 +52,7 @@ export class DatabaseService {
     return this.suppliersRepository.findOne({ where: { id: supplierId } });
   }
 
-  async createProduct(product: Partial<Product>): Promise<Product> {
+  async createProduct(product: DeepPartial<Product>): Promise<Product> {
     const result = this.productsRepository.create(product);
     await this.productsRepository.save(product);
     return result;
@@ -66,7 +66,7 @@ export class DatabaseService {
     return this.productsRepository.findOne({ where: { id: productId } });
   }
 
-  async receiveIntoInventory(inventory: Partial<Inventory>): Promise<Inventory> {
+  async receiveIntoInventory(inventory: DeepPartial<Inventory>): Promise<Inventory> {
     const result = this.inventorysRepository.create(inventory);
     await this.inventorysRepository.save(result);
     return result;
@@ -80,5 +80,19 @@ export class DatabaseService {
         },
       },
     });
+  }
+
+  async createOrder(order: DeepPartial<Order>): Promise<Order> {
+    const result = this.ordersRepository.create(order);
+    await this.ordersRepository.save(order);
+    return result;
+  }
+
+  getOrders(): Promise<Order[] | null> {
+    return this.ordersRepository.find();
+  }
+
+  getOrder(orderId: number): Promise<Order | null> {
+    return this.ordersRepository.findOne({ where: { id: orderId } });
   }
 }
