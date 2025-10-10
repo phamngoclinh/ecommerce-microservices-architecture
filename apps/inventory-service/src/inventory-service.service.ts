@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
+import type { ProductDto } from '@libs/common/dtos/product.dto';
 import { DatabaseService } from '@libs/database';
 import type { CreateStockDto } from './dtos/create-stock.dto';
 import type { InventoryDto } from './dtos/inventory.dto';
 import type { CreateWarehouseDto } from './dtos/create-warehouse.dto';
 import type { CreateSupplierDto } from './dtos/create-supplier.dto';
 import type { CreateProductDto } from './dtos/create-product.dto';
-import type { ProductDto } from './dtos/product.dto';
 import type { SupplierDto } from './dtos/supplier.dto';
 import type { WarehouseDto } from './dtos/warehouse.dto';
 
