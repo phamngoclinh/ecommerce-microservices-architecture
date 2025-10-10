@@ -8,6 +8,7 @@ import { InventoryEntity } from './entities/inventory.entity';
 import { SupplierEntity } from './entities/supplier.entity';
 import { WarehouseEntity } from './entities/warehouse.entity';
 import { PaymentEntity } from './entities/payment.entity';
+import { CartEntity } from './entities/cart.entity';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { PaymentEntity } from './entities/payment.entity';
       password: 'postgres',
       database: 'monorepo_db',
       entities: [
+        CartEntity,
         ProductEntity,
         OrderEntity,
         OrderItemEntity,
