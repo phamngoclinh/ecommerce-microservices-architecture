@@ -1,9 +1,9 @@
+import { DatabaseModule } from '@libs/database';
+import { CartEntity } from '@libs/database/entities/cart.entity';
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { CartServiceController } from './cart-service.controller';
 import { CartServiceService } from './cart-service.service';
-import { DatabaseModule } from '@libs/database';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { CartEntity } from '@libs/database/entities/cart.entity';
 import { CartRepository } from './repositories/cart.repository';
 
 @Module({

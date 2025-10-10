@@ -1,16 +1,16 @@
+import { ProductRepository } from '@libs/common/repositories/product.repository';
 import { Injectable } from '@nestjs/common';
-import type { ProductDto } from './dtos/product.dto';
-import type { CreateStockDto } from './dtos/create-stock.dto';
-import type { InventoryDto } from './dtos/inventory.dto';
-import type { CreateWarehouseDto } from './dtos/create-warehouse.dto';
-import type { CreateSupplierDto } from './dtos/create-supplier.dto';
 import type { CreateProductDto } from './dtos/create-product.dto';
+import type { CreateStockDto } from './dtos/create-stock.dto';
+import type { CreateSupplierDto } from './dtos/create-supplier.dto';
+import type { CreateWarehouseDto } from './dtos/create-warehouse.dto';
+import type { InventoryDto } from './dtos/inventory.dto';
+import type { ProductDto } from './dtos/product.dto';
 import type { SupplierDto } from './dtos/supplier.dto';
 import type { WarehouseDto } from './dtos/warehouse.dto';
 import { InventoryRepository } from './repositories/inventory.repository';
-import { WarehouseRepository } from './repositories/warehouse.repository';
 import { SupplierRepository } from './repositories/supplier.repository';
-import { ProductRepository } from 'apps/inventory-service/src/repositories/product.repository';
+import { WarehouseRepository } from './repositories/warehouse.repository';
 
 @Injectable()
 export class InventoryServiceService {

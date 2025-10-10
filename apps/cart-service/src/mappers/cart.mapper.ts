@@ -8,7 +8,7 @@ export class CartMapper {
     const snapshot = cart.snapshot();
     const cartEntity = new CartEntity();
     if (snapshot.id) cartEntity.id = snapshot.id;
-    cartEntity.product = { id: snapshot.productId } as ProductEntity;
+    cartEntity.product = { id: snapshot.product.id, name: snapshot.product.name } as ProductEntity;
     cartEntity.quantity = snapshot.quantity;
     cartEntity.unitPrice = snapshot.unitPrice;
     cartEntity.lineAmount = snapshot.lineAmount;
@@ -16,10 +16,13 @@ export class CartMapper {
   }
 
   static toDomain(cart: CartEntity): Cart {
-    return new Cart(cart.id, cart.product.id, cart.unitPrice, cart.quantity);
+    return new Cart(cart.id, cart.product.id, cart.unitPrice, cart.quantity, cart.product);
   }
 
   static fromAddCartItemDto(dto: AddCartItemDto): Cart {
-    return new Cart(null, dto.productId, dto.unitPrice, dto.quantity);
+    return new Cart(null, dto.productId, dto.unitPrice, dto.quantity, {
+      id: dto.productId,
+      name: dto.productName,
+    });
   }
 }

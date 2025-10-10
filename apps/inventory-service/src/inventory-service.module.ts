@@ -1,16 +1,16 @@
-import { Module } from '@nestjs/common';
-import { InventoryServiceController } from './inventory-service.controller';
-import { InventoryServiceService } from './inventory-service.service';
+import { ProductRepository } from '@libs/common/repositories/product.repository';
 import { DatabaseModule } from '@libs/database';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { ProductEntity } from '@libs/database/entities/product.entity';
 import { InventoryEntity } from '@libs/database/entities/inventory.entity';
+import { ProductEntity } from '@libs/database/entities/product.entity';
 import { SupplierEntity } from '@libs/database/entities/supplier.entity';
 import { WarehouseEntity } from '@libs/database/entities/warehouse.entity';
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { InventoryServiceController } from './inventory-service.controller';
+import { InventoryServiceService } from './inventory-service.service';
 import { InventoryRepository } from './repositories/inventory.repository';
-import { WarehouseRepository } from './repositories/warehouse.repository';
 import { SupplierRepository } from './repositories/supplier.repository';
-import { ProductRepository } from './repositories/product.repository';
+import { WarehouseRepository } from './repositories/warehouse.repository';
 
 @Module({
   imports: [
