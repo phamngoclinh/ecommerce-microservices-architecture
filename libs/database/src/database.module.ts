@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { DatabaseService } from './database.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Product } from './entities/product.entity';
-import { Order } from './entities/order.entity';
-import { OrderItem } from './entities/order-item.entity';
-import { Inventory } from './entities/inventory.entity';
-import { Supplier } from './entities/supplier.entity';
-import { Warehouse } from './entities/warehouse.entity';
-import { Payment } from './entities/payment.entity';
+import { ProductEntity } from './entities/product.entity';
+import { OrderEntity } from './entities/order.entity';
+import { OrderItemEntity } from './entities/order-item.entity';
+import { InventoryEntity } from './entities/inventory.entity';
+import { SupplierEntity } from './entities/supplier.entity';
+import { WarehouseEntity } from './entities/warehouse.entity';
+import { PaymentEntity } from './entities/payment.entity';
 
 @Module({
   imports: [
@@ -18,11 +18,18 @@ import { Payment } from './entities/payment.entity';
       username: 'postgres',
       password: 'postgres',
       database: 'monorepo_db',
-      entities: [Product, Order, OrderItem, Inventory, Supplier, Warehouse, Payment],
+      entities: [
+        ProductEntity,
+        OrderEntity,
+        OrderItemEntity,
+        InventoryEntity,
+        SupplierEntity,
+        WarehouseEntity,
+        PaymentEntity,
+      ],
       synchronize: true,
       autoLoadEntities: true,
     }),
-    TypeOrmModule.forFeature([Product, Order, OrderItem, Inventory, Supplier, Warehouse, Payment]),
   ],
   providers: [DatabaseService],
   exports: [DatabaseService],

@@ -1,4 +1,4 @@
-interface CreateOrderItemDto {
+export interface CreateOrderItemDto {
   orderId?: number;
   productId: number;
   quantity: number;
@@ -9,4 +9,5 @@ export interface CreateOrderDto {
   orderItems: CreateOrderItemDto[];
   discount?: number;
   vat?: number;
+  paymentMethod: string;
 }

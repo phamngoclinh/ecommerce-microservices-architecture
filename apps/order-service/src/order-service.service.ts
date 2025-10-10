@@ -1,21 +1,34 @@
 import { Injectable } from '@nestjs/common';
-import type { CreateOrderDto } from './dtos/create-order.dto';
-import { DatabaseService } from '@libs/database';
-import type { OrderDto } from './dtos/order.dto';
+import { OrderContext, OrderHandler } from './handlers/order.handler';
+import { OrderRepository } from './repositories/order.repository';
+import { ValidationHandler } from './handlers/validation.handler';
+import { SaveOrderHandler } from './handlers/save-order.handler';
+import { ConfirmationHandler } from './handlers/confirmation.handler';
+import { Order } from './models/order.model';
 
 @Injectable()
 export class OrderServiceService {
-  constructor(private readonly databaseService: DatabaseService) {}
+  private chain: OrderHandler;
 
-  createOrder(data: CreateOrderDto): Promise<OrderDto> {
-    return this.databaseService.createOrder(data);
+  constructor(private readonly orderRepository: OrderRepository) {
+    const validation = new ValidationHandler();
+    const saveOrder = new SaveOrderHandler(this.orderRepository);
+    const confirmation = new ConfirmationHandler(this.orderRepository);
+    validation.setNext(saveOrder).setNext(confirmation);
+    this.chain = validation;
   }
 
-  getOrders(): Promise<OrderDto[] | null> {
-    return this.databaseService.getOrders();
+  async createOrder(data: Order, paymentMethod: string): Promise<Order> {
+    const context: OrderContext = { order: data, paymentMethod };
+    await this.chain.handle(context);
+    return context.order;
   }
 
-  getOrder(id: number): Promise<OrderDto | null> {
-    return this.databaseService.getOrder(id);
+  getOrders(): Promise<Order[] | null> {
+    return this.orderRepository.getOrders();
+  }
+
+  getOrder(id: number): Promise<Order | null> {
+    return this.orderRepository.getOrder(id);
   }
 }

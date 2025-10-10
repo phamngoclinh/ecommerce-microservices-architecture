@@ -1,15 +1,15 @@
 import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
-import { Order } from './order.entity';
+import { OrderEntity } from './order.entity';
 import { Base } from './base.entity';
 
-export enum PaymentMethod {
+enum PaymentMethod {
   PAYPAL = 'PAYPAL',
   MOMO = 'MOMO',
   COD = 'COD',
   BANK_TRANSFER = 'BANK_TRANSFER',
 }
 
-export enum PaymentStatus {
+enum PaymentStatus {
   PENDING = 'PENDING',
   SUCCESS = 'SUCCESS',
   FAILED = 'FAILED',
@@ -17,11 +17,11 @@ export enum PaymentStatus {
 }
 
 @Entity({ name: 'payments' })
-export class Payment extends Base {
+export class PaymentEntity extends Base {
   // Đơn hàng liên quan
-  @ManyToOne(() => Order, { eager: true })
+  @ManyToOne(() => OrderEntity, { eager: true })
   @JoinColumn({ name: 'order_id' })
-  order: Order;
+  order: OrderEntity;
 
   // Số tiền thanh toán
   @Column({ type: 'decimal', precision: 15, scale: 2 })

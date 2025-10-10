@@ -1,17 +1,17 @@
-import { Entity, Column, ManyToOne, JoinColumn, BeforeInsert, BeforeUpdate } from 'typeorm';
-import { Product } from './product.entity';
-import { Order } from './order.entity';
+import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { ProductEntity } from './product.entity';
+import { OrderEntity } from './order.entity';
 import { Base } from './base.entity';
 
 @Entity({ name: 'order_items' })
-export class OrderItem extends Base {
-  @ManyToOne(() => Order, order => order.orderItems, { onDelete: 'CASCADE' })
+export class OrderItemEntity extends Base {
+  @ManyToOne(() => OrderEntity, order => order.orderItems, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'order_id' })
-  order: Order;
+  order: OrderEntity;
 
-  @ManyToOne(() => Product, { eager: true })
+  @ManyToOne(() => ProductEntity, { eager: true })
   @JoinColumn({ name: 'product_id' })
-  product: Product;
+  product: ProductEntity;
 
   @Column({ type: 'int', default: 1 })
   quantity: number;
@@ -23,10 +23,10 @@ export class OrderItem extends Base {
   @Column({ type: 'decimal', precision: 15, scale: 2, default: 0 })
   lineAmount: number;
 
-  // Hook để tính thành tiền mỗi item
-  @BeforeInsert()
-  @BeforeUpdate()
-  calculateLineAmount() {
-    this.lineAmount = this.unitPrice * this.quantity;
-  }
+  // // Hook để tính thành tiền mỗi item
+  // @BeforeInsert()
+  // @BeforeUpdate()
+  // calculateLineAmount() {
+  //   this.lineAmount = this.unitPrice * this.quantity;
+  // }
 }
