@@ -1,5 +1,5 @@
 import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
-import { OrderEntity } from './order.entity';
+import { OrderEntity } from '../../../../apps/order-service/src/orders/entities/order.entity';
 import { Base } from './base.entity';
 
 enum PaymentMethod {
