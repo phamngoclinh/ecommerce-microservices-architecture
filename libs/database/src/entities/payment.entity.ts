@@ -1,5 +1,4 @@
-import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
-import { OrderEntity } from '../../../../apps/order-service/src/orders/entities/order.entity';
+import { Entity, Column } from 'typeorm';
 import { Base } from './base.entity';
 
 enum PaymentMethod {
@@ -19,9 +18,8 @@ enum PaymentStatus {
 @Entity({ name: 'payments' })
 export class PaymentEntity extends Base {
   // Đơn hàng liên quan
-  @ManyToOne(() => OrderEntity, { eager: true })
-  @JoinColumn({ name: 'order_id' })
-  order: OrderEntity;
+  @Column({ type: 'int', nullable: false })
+  orderId: number;
 
   // Số tiền thanh toán
   @Column({ type: 'decimal', precision: 15, scale: 2 })

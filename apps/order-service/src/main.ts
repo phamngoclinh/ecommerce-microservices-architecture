@@ -1,8 +1,8 @@
 import { NestFactory } from '@nestjs/core';
-import { OrderServiceModule } from './orders/order-service.module';
+import { RootModule } from './infrastructure/modules/root.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(OrderServiceModule, { cors: true });
+  const app = await NestFactory.create(RootModule, { cors: true });
   await app.listen(process.env.port ?? 3002);
 }
 bootstrap();

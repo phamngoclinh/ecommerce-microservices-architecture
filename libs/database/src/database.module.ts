@@ -1,8 +1,5 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CartEntity } from 'apps/order-service/src/carts/entities/cart.entity';
-import { OrderItemEntity } from 'apps/order-service/src/orders/entities/order-item.entity';
-import { OrderEntity } from 'apps/order-service/src/orders/entities/order.entity';
 import { DatabaseService } from './database.service';
 import { InventoryEntity } from './entities/inventory.entity';
 import { PaymentEntity } from './entities/payment.entity';
@@ -19,16 +16,7 @@ import { WarehouseEntity } from './entities/warehouse.entity';
       username: 'postgres',
       password: 'postgres',
       database: 'monorepo_db',
-      entities: [
-        CartEntity,
-        ProductEntity,
-        OrderEntity,
-        OrderItemEntity,
-        InventoryEntity,
-        SupplierEntity,
-        WarehouseEntity,
-        PaymentEntity,
-      ],
+      entities: [ProductEntity, InventoryEntity, SupplierEntity, WarehouseEntity, PaymentEntity],
       synchronize: true,
       autoLoadEntities: true,
     }),

@@ -33,6 +33,12 @@
       ],
       "@libs/database/*": [
         "libs/database/src/*"
+      ],
+      "@order/": [
+        "apps/order-service/src/"
+      ],
+      "@order/*": [
+        "apps/order-service/src/*"
       ]
     }
   }
