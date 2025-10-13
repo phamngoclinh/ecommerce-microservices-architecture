@@ -10,6 +10,7 @@ export class CompleteHandler extends OrderCreationHandler {
   async handle(context: OrderCreationContext): Promise<void> {
     if (!context.order.id) throw Error('order is missing id property');
     await this.orderRepository.updateStatus(context.order.id, OrderStatus.COMPLETED);
+    context.order.status = OrderStatus.COMPLETED;
     await super.handle(context);
   }
 }

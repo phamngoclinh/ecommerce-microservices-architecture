@@ -8,10 +8,13 @@ export class PaymentHandler extends OrderCreationHandler {
   }
 
   async handle(context: OrderCreationContext): Promise<void> {
+    if (!context.order.id) throw Error('order is missing id property');
+
     // payment client
 
-    const id = context.order.id as number;
-    await this.orderRepository.updateStatus(id, OrderStatus.PAID);
+    await this.orderRepository.updateStatus(context.order.id, OrderStatus.PAID);
+
+    context.order.status = OrderStatus.PAID;
 
     await super.handle(context);
   }

@@ -4,26 +4,35 @@ import { CartQuantityValidator } from '@order/application/validators/cart-quanti
 import { Cart } from '@order/domain/models/cart.model';
 import { ICartRepository } from '@order/domain/repositories/cart.repository';
 import { IUsecase } from '../base.usecase';
+import { IValidator } from '@libs/common/validators/validator';
 
 @Injectable()
 export class AddCartItemUseCase extends IUsecase<Cart, Cart> {
+  private validator: IValidator<Cart>;
+
   constructor(
     private readonly cartsRepository: ICartRepository,
     private readonly snapshotProductFactory: SnapshotProductFactory,
   ) {
     super();
-    const cartQuantity = new CartQuantityValidator(this.cartsRepository);
-    this.validator = cartQuantity;
+
+    this.validator = new CartQuantityValidator(this.cartsRepository);
   }
 
   async execute(input: Cart): Promise<Cart> {
-    await this.validator.validate(input);
+    await this.validator.handle(input);
 
     const cart = await this.cartsRepository.getCartItem(input.productId);
 
     if (cart !== null) {
       return await this.cartsRepository.updateCartItem(
-        new Cart(cart.id, input.productId, input.unitPrice, cart.quantity + input.quantity),
+        new Cart(
+          cart.id,
+          input.productId,
+          input.unitPrice,
+          cart.quantity + input.quantity,
+          input.productName,
+        ),
       );
     }
 

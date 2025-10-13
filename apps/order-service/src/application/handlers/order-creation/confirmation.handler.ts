@@ -13,6 +13,8 @@ export class ConfirmationHandler extends OrderCreationHandler {
     await this.orderRepository.updateStatus(context.order.id, OrderStatus.CONFIRMED);
     console.log('✅ Confirming order is done !!!');
 
+    context.order.status = OrderStatus.CONFIRMED;
+
     // TODO: Reduce quantity in inventory
 
     await super.handle(context);

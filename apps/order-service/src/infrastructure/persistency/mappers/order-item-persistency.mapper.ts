@@ -1,9 +1,8 @@
 import { OrderItem } from '@order/domain/models/order-item.model';
-import { CreateOrderItemDto } from '@order/presentation/dtos/create-order.dto';
 import { OrderItemEntity } from '../entities/order-item.entity';
 import { OrderEntity } from '../entities/order.entity';
 
-export class OrderItemMapper {
+export class OrderItemPersistencyMapper {
   static toEntity(orderItem: OrderItem): OrderItemEntity {
     const snapshot = orderItem.snapshot();
     const orderItemEntity = new OrderItemEntity();
@@ -13,6 +12,7 @@ export class OrderItemMapper {
     orderItemEntity.quantity = snapshot.quantity;
     orderItemEntity.unitPrice = snapshot.unitPrice;
     orderItemEntity.lineAmount = snapshot.lineAmount;
+    orderItemEntity.productName = snapshot.productName;
     return orderItemEntity;
   }
 
@@ -23,11 +23,7 @@ export class OrderItemMapper {
       orderItem.productId,
       orderItem.unitPrice,
       orderItem.quantity,
+      orderItem.productName,
     );
-  }
-
-  static fromCreateOrderItemDto(dto: CreateOrderItemDto): OrderItem {
-    const orderItem = new OrderItem(null, dto.orderId, dto.productId, dto.unitPrice, dto.quantity);
-    return orderItem;
   }
 }

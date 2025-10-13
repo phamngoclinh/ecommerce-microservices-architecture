@@ -11,8 +11,8 @@ export class OrderItemEntity extends Base {
   @Column({ type: 'int', nullable: false })
   productId: number;
 
-  @Column({ type: 'varchar', nullable: true })
-  productName?: number;
+  @Column({ type: 'varchar', nullable: false })
+  productName: string;
 
   @Column({ type: 'int', default: 1 })
   quantity: number;

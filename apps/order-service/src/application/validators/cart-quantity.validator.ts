@@ -2,7 +2,7 @@ import { IValidator } from '@libs/common/validators/validator';
 import { Cart } from '@order/domain/models/cart.model';
 import { ICartRepository } from '@order/domain/repositories/cart.repository';
 
-export class CartQuantityValidator extends IValidator {
+export class CartQuantityValidator extends IValidator<Cart> {
   constructor(private readonly cartsRepository: ICartRepository) {
     super();
   }

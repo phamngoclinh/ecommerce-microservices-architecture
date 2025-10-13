@@ -1,4 +1,4 @@
-export enum OrderStatusDto {
+enum OrderStatus {
   PENDING = 'PENDING',
   CONFIRMED = 'CONFIRMED',
   PAID = 'PAID',
@@ -6,23 +6,23 @@ export enum OrderStatusDto {
   COMPLETED = 'COMPLETED',
 }
 
-export interface OrderItemDto {
+export interface OrderItemResponse {
   id: number;
   productId: number;
-  productName?: string;
+  productName: string;
   quantity: number;
   unitPrice: number;
   lineAmount: number;
 }
 
-export interface OrderDto {
+export interface OrderResponse {
   id: number;
-  orderItems: OrderItemDto[];
-  status: OrderStatusDto;
+  orderItems: OrderItemResponse[];
+  status: OrderStatus;
   subAmount: number;
   discount?: number;
   amount: number;
   vat?: number;
   totalAmount: number;
-  createdAt: Date;
+  createdDate: Date;
 }

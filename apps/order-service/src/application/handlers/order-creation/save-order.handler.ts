@@ -9,8 +9,9 @@ export class SaveOrderHandler extends OrderCreationHandler {
   async handle(context: OrderCreationContext): Promise<void> {
     console.log('Creating order');
     context.order.calculateTotals();
-    await this.orderRepository.createOrder(context.order);
+    const order = await this.orderRepository.createOrder(context.order);
     console.log('✅ Creating order is done !!!');
+    context.order = order;
 
     await super.handle(context);
   }

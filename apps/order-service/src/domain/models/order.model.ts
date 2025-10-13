@@ -21,6 +21,7 @@ export class Order {
   constructor(
     public readonly id: number | null, // optional technical id
     orderItems: OrderItem[],
+    createdDate: Date,
     status: OrderStatus = OrderStatus.PENDING,
     discount: number = 0,
     vat: number = 0,
@@ -29,6 +30,9 @@ export class Order {
     this.status = status;
     this.discount = discount;
     this.vat = vat;
+    this.createdDate = createdDate;
+
+    this.calculateTotals();
   }
 
   addItem(orderItem: OrderItem) {

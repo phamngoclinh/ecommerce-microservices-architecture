@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Cart, CartRead } from '@order/domain/models/cart.model';
+import { Cart } from '@order/domain/models/cart.model';
 import { ICartRepository } from '@order/domain/repositories/cart.repository';
 import { Repository } from 'typeorm';
 import { CartEntity } from '../entities/cart.entity';
-import { CartMapper } from '../mappers/cart.mapper';
+import { CartPersistencyMapper } from '../mappers/cart-persistency.mapper';
 
 @Injectable()
 export class CartRepository implements ICartRepository {
@@ -15,32 +15,31 @@ export class CartRepository implements ICartRepository {
 
   async getItem(productId: number): Promise<CartEntity | null> {
     const cart = await this.cartRepository.findOneBy({ productId });
-    // if (cart === null) throw Error('Cart item is not found');
     return cart;
   }
 
-  async getCartItem(productId: number): Promise<CartRead | null> {
+  async getCartItem(productId: number): Promise<Cart | null> {
     const cart = await this.getItem(productId);
     if (cart === null) return null;
-    return CartMapper.toCartRead(cart);
+    return CartPersistencyMapper.toDomain(cart);
   }
 
   async getCartItemForUpdate(productId: number): Promise<Cart | null> {
     const cart = await this.getItem(productId);
     if (cart === null) return null;
-    return CartMapper.toDomain(cart);
+    return CartPersistencyMapper.toDomain(cart);
   }
 
-  async getCartItems(): Promise<CartRead[]> {
+  async getCartItems(): Promise<Cart[]> {
     const carts = await this.cartRepository.find();
-    return carts.map(cart => CartMapper.toCartRead(cart));
+    return carts.map(cart => CartPersistencyMapper.toDomain(cart));
   }
 
   async updateCartItem(cart: Cart): Promise<Cart> {
-    const cartEntity = CartMapper.toEntity(cart);
+    const cartEntity = CartPersistencyMapper.toEntity(cart);
     if (!cartEntity.id) throw Error('Cart is missing id property for updating');
     await this.cartRepository.save(cartEntity);
-    return CartMapper.toDomain(cartEntity);
+    return CartPersistencyMapper.toDomain(cartEntity);
   }
 
   async addQuantity(cart: Cart): Promise<Cart> {
@@ -49,10 +48,10 @@ export class CartRepository implements ICartRepository {
   }
 
   async addCartItem(cart: Cart): Promise<Cart> {
-    const cartEntity = CartMapper.toEntity(cart);
+    const cartEntity = CartPersistencyMapper.toEntity(cart);
     if (cartEntity.id) throw Error('Cart must be empty id property for adding');
     await this.cartRepository.save(cartEntity);
-    return CartMapper.toDomain(cartEntity);
+    return CartPersistencyMapper.toDomain(cartEntity);
   }
 
   async removeCartItem(productId: number): Promise<void> {

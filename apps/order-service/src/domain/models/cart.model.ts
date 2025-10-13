@@ -11,7 +11,7 @@ export class Cart {
     public quantity: number,
 
     // for snapshot datas from other system
-    public productName?: string,
+    public productName: string,
   ) {
     this.lineAmount = this.quantity * this.unitPrice;
   }
@@ -47,14 +47,4 @@ export class Cart {
       productName: this.productName,
     };
   }
-}
-
-export class CartRead {
-  constructor(
-    public readonly id: number,
-    public readonly productId: number,
-    public readonly unitPrice: number,
-    public readonly quantity: number,
-    public readonly productName: string,
-  ) {}
 }

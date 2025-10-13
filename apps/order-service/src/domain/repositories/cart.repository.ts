@@ -1,11 +1,11 @@
-import { Cart, CartRead } from '../models/cart.model';
+import { Cart } from '../models/cart.model';
 
 export abstract class ICartRepository {
-  abstract getCartItem(productId: number): Promise<CartRead | null>;
+  abstract getCartItem(productId: number): Promise<Cart | null>;
 
   abstract getCartItemForUpdate(productId: number): Promise<Cart | null>;
 
-  abstract getCartItems(): Promise<CartRead[]>;
+  abstract getCartItems(): Promise<Cart[]>;
 
   abstract updateCartItem(cart: Cart): Promise<Cart>;
 
