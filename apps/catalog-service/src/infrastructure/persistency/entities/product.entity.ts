@@ -1,9 +1,9 @@
 import { ProductStatus } from '@catalog/domain/entities/product.entity';
-import { Base } from '@libs/database/entities/base.entity';
+import { BaseEntity } from '@libs/common/domain/entities/base.entity';
 import { Column, Entity } from 'typeorm';
 
 @Entity({ name: 'products' })
-export class ProductEntity extends Base {
+export class ProductEntity extends BaseEntity {
   @Column({ type: 'varchar', length: 255 })
   name: string;
 

@@ -1,4 +1,4 @@
-import { Base } from '@libs/database/entities/base.entity';
+import { BaseEntity } from '@libs/common/domain/entities/base.entity';
 import { Column, Entity, OneToMany } from 'typeorm';
 import { OrderItemEntity } from './order-item.entity';
 
@@ -11,7 +11,7 @@ enum OrderStatus {
 }
 
 @Entity({ name: 'orders' })
-export class OrderEntity extends Base {
+export class OrderEntity extends BaseEntity {
   // Trạng thái
   @Column({
     type: 'enum',

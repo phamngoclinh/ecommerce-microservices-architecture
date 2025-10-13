@@ -1,9 +1,9 @@
-import { Base } from '@libs/database/entities/base.entity';
+import { BaseEntity } from '@libs/common/domain/entities/base.entity';
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { OrderEntity } from './order.entity';
 
 @Entity({ name: 'order_items' })
-export class OrderItemEntity extends Base {
+export class OrderItemEntity extends BaseEntity {
   @ManyToOne(() => OrderEntity, order => order.orderItems, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'order_id' })
   order: OrderEntity;

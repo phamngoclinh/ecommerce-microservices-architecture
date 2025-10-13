@@ -1,8 +1,8 @@
-import { Base } from '@libs/database/entities/base.entity';
+import { BaseEntity } from '@libs/common/domain/entities/base.entity';
 import { Column, Entity } from 'typeorm';
 
 @Entity({ name: 'carts' })
-export class CartEntity extends Base {
+export class CartEntity extends BaseEntity {
   @Column({ name: 'product_id', type: 'int', nullable: false })
   productId: number;
 

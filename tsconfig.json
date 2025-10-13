@@ -28,11 +28,11 @@
       "@libs/common/*": [
         "libs/common/src/*"
       ],
-      "@libs/database": [
-        "libs/database/src"
+      "@api-gateway/": [
+        "apps/api-gateway/src/"
       ],
-      "@libs/database/*": [
-        "libs/database/src/*"
+      "@api-gateway/*": [
+        "apps/api-gateway/src/*"
       ],
       "@catalog/": [
         "apps/catalog-service/src/"
@@ -45,6 +45,24 @@
       ],
       "@order/*": [
         "apps/order-service/src/*"
+      ],
+      "@inventory/": [
+        "apps/inventory-service/src/"
+      ],
+      "@inventory/*": [
+        "apps/inventory-service/src/*"
+      ],
+      "@payment/": [
+        "apps/payment-service/src/"
+      ],
+      "@payment/*": [
+        "apps/payment-service/src/*"
+      ],
+      "@notification/": [
+        "apps/notification-service/src/"
+      ],
+      "@notification/*": [
+        "apps/notification-service/src/*"
       ],
     }
   }
