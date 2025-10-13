@@ -1,7 +1,7 @@
+import { IUsecase } from '@libs/common/application/use-cases/base.usecase';
 import { Injectable } from '@nestjs/common';
 import { Cart } from '@order/domain/models/cart.model';
 import { ICartRepository } from '@order/domain/repositories/cart.repository';
-import { IUsecase } from '../base.usecase';
 
 @Injectable()
 export class GetCartItemsUseCase extends IUsecase<undefined, Cart[]> {

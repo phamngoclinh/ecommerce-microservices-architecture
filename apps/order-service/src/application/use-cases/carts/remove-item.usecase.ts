@@ -1,6 +1,6 @@
+import { IUsecase } from '@libs/common/application/use-cases/base.usecase';
 import { Injectable } from '@nestjs/common';
 import { ICartRepository } from '@order/domain/repositories/cart.repository';
-import { IUsecase } from '../base.usecase';
 
 @Injectable()
 export class RemoveCartItemUseCase extends IUsecase<number, boolean> {

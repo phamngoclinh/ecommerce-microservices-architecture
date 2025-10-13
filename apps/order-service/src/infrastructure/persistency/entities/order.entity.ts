@@ -21,7 +21,7 @@ export class OrderEntity extends Base {
   status: OrderStatus;
 
   // Tổng giá trị gốc của các sản phẩm
-  @Column({ type: 'decimal', precision: 15, scale: 2, default: 0 })
+  @Column({ name: 'sub_amount', type: 'decimal', precision: 15, scale: 2, default: 0 })
   subAmount: number;
 
   // Discount có thể là phần trăm hoặc số tiền (ví dụ: 10% hoặc 50000)
@@ -37,7 +37,7 @@ export class OrderEntity extends Base {
   amount: number;
 
   // Tổng tiền cuối cùng (sau VAT)
-  @Column({ type: 'decimal', precision: 15, scale: 2, default: 0 })
+  @Column({ name: 'total_amount', type: 'decimal', precision: 15, scale: 2, default: 0 })
   totalAmount: number;
 
   // Quan hệ 1-nhiều với các OrderItem

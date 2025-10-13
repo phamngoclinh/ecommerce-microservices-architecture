@@ -34,12 +34,18 @@
       "@libs/database/*": [
         "libs/database/src/*"
       ],
+      "@catalog/": [
+        "apps/catalog-service/src/"
+      ],
+      "@catalog/*": [
+        "apps/catalog-service/src/*"
+      ],
       "@order/": [
         "apps/order-service/src/"
       ],
       "@order/*": [
         "apps/order-service/src/*"
-      ]
+      ],
     }
   }
 }

@@ -1,109 +1,109 @@
 version: '3.8'
 
 services:
-  api-gateway:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        APP_NAME: api-gateway
-    volumes:
-      - ./:/app
-      - /app/node_modules
-    ports:
-      - '3000:3000'
-    environment:
-      - NODE_ENV=development
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-    depends_on:
-      - redis
-      - order-service
-      - inventory-service
-      - payment-service
-      - notification-service
-    networks:
-      - backend
+  # api-gateway:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #     args:
+  #       APP_NAME: api-gateway
+  #   volumes:
+  #     - ./:/app
+  #     - /app/node_modules
+  #   ports:
+  #     - '3000:3000'
+  #   environment:
+  #     - NODE_ENV=development
+  #     - REDIS_HOST=redis
+  #     - REDIS_PORT=6379
+  #   depends_on:
+  #     - redis
+  #     - order-service
+  #     - inventory-service
+  #     - payment-service
+  #     - notification-service
+  #   networks:
+  #     - backend
 
-  order-service:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        APP_NAME: order-service
-    volumes:
-      - ./:/app
-      - /app/node_modules
-    ports:
-      - '3001:3000'
-    environment:
-      - NODE_ENV=development
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-    depends_on:
-      - redis
-    networks:
-      - backend
+  # order-service:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #     args:
+  #       APP_NAME: order-service
+  #   volumes:
+  #     - ./:/app
+  #     - /app/node_modules
+  #   ports:
+  #     - '3001:3000'
+  #   environment:
+  #     - NODE_ENV=development
+  #     - REDIS_HOST=redis
+  #     - REDIS_PORT=6379
+  #   depends_on:
+  #     - redis
+  #   networks:
+  #     - backend
 
-  inventory-service:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        APP_NAME: inventory-service
-    volumes:
-      - ./:/app
-      - /app/node_modules
-    ports:
-      - '3002:3000'
-    environment:
-      - NODE_ENV=development
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-    depends_on:
-      - redis
-    networks:
-      - backend
+  # inventory-service:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #     args:
+  #       APP_NAME: inventory-service
+  #   volumes:
+  #     - ./:/app
+  #     - /app/node_modules
+  #   ports:
+  #     - '3002:3000'
+  #   environment:
+  #     - NODE_ENV=development
+  #     - REDIS_HOST=redis
+  #     - REDIS_PORT=6379
+  #   depends_on:
+  #     - redis
+  #   networks:
+  #     - backend
 
-  payment-service:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        APP_NAME: payment-service
-    volumes:
-      - ./:/app
-      - /app/node_modules
-    ports:
-      - '3003:3000'
-    environment:
-      - NODE_ENV=development
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-    depends_on:
-      - redis
-    networks:
-      - backend
+  # payment-service:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #     args:
+  #       APP_NAME: payment-service
+  #   volumes:
+  #     - ./:/app
+  #     - /app/node_modules
+  #   ports:
+  #     - '3003:3000'
+  #   environment:
+  #     - NODE_ENV=development
+  #     - REDIS_HOST=redis
+  #     - REDIS_PORT=6379
+  #   depends_on:
+  #     - redis
+  #   networks:
+  #     - backend
 
-  notification-service:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        APP_NAME: notification-service
-    volumes:
-      - ./:/app
-      - /app/node_modules
-    ports:
-      - '3004:3000'
-    environment:
-      - NODE_ENV=development
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-    depends_on:
-      - redis
-    networks:
-      - backend
+  # notification-service:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #     args:
+  #       APP_NAME: notification-service
+  #   volumes:
+  #     - ./:/app
+  #     - /app/node_modules
+  #   ports:
+  #     - '3004:3000'
+  #   environment:
+  #     - NODE_ENV=development
+  #     - REDIS_HOST=redis
+  #     - REDIS_PORT=6379
+  #   depends_on:
+  #     - redis
+  #   networks:
+  #     - backend
 
   redis:
     image: redis:7-alpine
@@ -113,22 +113,82 @@ services:
     networks:
       - backend
 
-  postgres:
+  catalog_db:
     image: postgres:15
-    container_name: postgres
+    container_name: catalog_db
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: monorepo_db
+      POSTGRES_USER: catalog_user
+      POSTGRES_PASSWORD: catalog_password
+      POSTGRES_DB: catalog_db
     ports:
       - '5432:5432'
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - catalog_data:/var/lib/postgresql/data
+    networks:
+      - backend
+  
+  order_db:
+    image: postgres:15
+    container_name: order_db
+    environment:
+      POSTGRES_USER: order_user
+      POSTGRES_PASSWORD: order_password
+      POSTGRES_DB: order_db
+    ports:
+      - '5433:5432'
+    volumes:
+      - order_data:/var/lib/postgresql/data
+    networks:
+      - backend
+  
+  inventory_db:
+    image: postgres:15
+    container_name: inventory_db
+    environment:
+      POSTGRES_USER: inventory_user
+      POSTGRES_PASSWORD: inventory_password
+      POSTGRES_DB: inventory_db
+    ports:
+      - '5434:5432'
+    volumes:
+      - inventory_data:/var/lib/postgresql/data
+    networks:
+      - backend
+  
+  payment_db:
+    image: postgres:15
+    container_name: payment_db
+    environment:
+      POSTGRES_USER: payment_user
+      POSTGRES_PASSWORD: payment_password
+      POSTGRES_DB: payment_db
+    ports:
+      - '5435:5432'
+    volumes:
+      - payment_data:/var/lib/postgresql/data
+    networks:
+      - backend
+  
+  notification_db:
+    image: postgres:15
+    container_name: notification_db
+    environment:
+      POSTGRES_USER: notification_user
+      POSTGRES_PASSWORD: notification_password
+      POSTGRES_DB: notification_db
+    ports:
+      - '5436:5432'
+    volumes:
+      - notification_data:/var/lib/postgresql/data
     networks:
       - backend
 
 volumes:
-  pgdata:
+  catalog_data:
+  order_data:
+  inventory_data:
+  payment_data:
+  notification_data:
 
 networks:
   backend:

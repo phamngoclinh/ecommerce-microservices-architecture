@@ -1,3 +1,4 @@
+import { IUsecase } from '@libs/common/application/use-cases/base.usecase';
 import { Injectable } from '@nestjs/common';
 import { Order } from '@order/domain/models/order.model';
 import { IOrderRepository } from '@order/domain/repositories/order.repository';
@@ -11,7 +12,6 @@ import {
 import { PaymentHandler } from '../../handlers/order-creation/payment.handler';
 import { SaveOrderHandler } from '../../handlers/order-creation/save-order.handler';
 import { ValidationHandler } from '../../handlers/order-creation/validation.handler';
-import { IUsecase } from '../base.usecase';
 
 interface CreateOrderInput {
   order: Order;

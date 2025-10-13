@@ -1,10 +1,10 @@
+import { IUsecase } from '@libs/common/application/use-cases/base.usecase';
+import { IValidator } from '@libs/common/validators/validator';
 import { Injectable } from '@nestjs/common';
 import { SnapshotProductFactory } from '@order/application/services/snapshot/snapshot-product.factory';
 import { CartQuantityValidator } from '@order/application/validators/cart-quantity.validator';
 import { Cart } from '@order/domain/models/cart.model';
 import { ICartRepository } from '@order/domain/repositories/cart.repository';
-import { IUsecase } from '../base.usecase';
-import { IValidator } from '@libs/common/validators/validator';
 
 @Injectable()
 export class AddCartItemUseCase extends IUsecase<Cart, Cart> {
