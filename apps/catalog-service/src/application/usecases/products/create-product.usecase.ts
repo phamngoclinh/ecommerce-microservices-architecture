@@ -22,7 +22,7 @@ export class CreateProductUseCase extends IUsecase<Product | Product[], Product 
       new SendCreatedProductEventCommand(this.inventoryGateway, input),
     ]);
 
-    await manager.run();
+    await manager.execute();
 
     return createProductCommand.getResult();
   }
