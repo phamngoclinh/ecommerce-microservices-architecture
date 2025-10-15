@@ -1,7 +1,7 @@
 import { Product } from '@catalog/domain/entities/product.entity';
 import { IProductRepository } from '@catalog/domain/repositories/product.repository';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { ProductEntity } from '../entities/product.entity';
 import { ProductPersistencyMapper } from '../mappers/product-persistency.mapper';
 
@@ -33,5 +33,13 @@ export class ProductRepository extends IProductRepository {
     const entity = await this.productRepository.findOneBy({ id });
     if (entity === null) return null;
     return ProductPersistencyMapper.toDomain(entity);
+  }
+
+  async deleteProduct(id: number): Promise<void> {
+    await this.productRepository.delete(id);
+  }
+
+  async deleteProducts(ids: number[]): Promise<void> {
+    await this.productRepository.delete({ id: In(ids) });
   }
 }

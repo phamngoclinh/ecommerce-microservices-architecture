@@ -1,6 +1,6 @@
-import { CreateProductUseCase } from '@catalog/application/use-cases/products/create-product.usecase';
-import { GetProductUseCase } from '@catalog/application/use-cases/products/get-product.usecase';
-import { GetProductsUseCase } from '@catalog/application/use-cases/products/get-products.usecase';
+import { CreateProductUseCase } from '@catalog/application/usecases/products/create-product.usecase';
+import { GetProductUseCase } from '@catalog/application/usecases/products/get-product.usecase';
+import { GetProductsUseCase } from '@catalog/application/usecases/products/get-products.usecase';
 import { Product } from '@catalog/domain/entities/product.entity';
 import { Body, Controller, Post } from '@nestjs/common';
 

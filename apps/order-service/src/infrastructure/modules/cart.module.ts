@@ -5,7 +5,7 @@ import { ClearCartUseCase } from '@order/application/use-cases/carts/clear-cart.
 import { GetCartItemsUseCase } from '@order/application/use-cases/carts/get-items.usecase';
 import { RemoveCartItemUseCase } from '@order/application/use-cases/carts/remove-item.usecase';
 import { UpdateCartItemUseCase } from '@order/application/use-cases/carts/update-item.usecase';
-import { CartController } from '../../presentation/controlers/cart.controller';
+import { CartController } from '../../presentation/controllers/cart.controller';
 import { PersistencyModule } from '../persistency/persistency.module';
 import { ICartRepository } from '@order/domain/repositories/cart.repository';
 

@@ -23,7 +23,7 @@ export class InventoryHttpGateway implements IInventoryGateway {
       });
       return response.data as TOutput;
     } catch (error: any) {
-      console.log(error);
+      console.error(error);
       throw Error('Failed to calling inventory service!');
     }
   }

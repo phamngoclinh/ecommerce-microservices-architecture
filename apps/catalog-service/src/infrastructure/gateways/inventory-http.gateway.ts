@@ -10,11 +10,17 @@ export class InventoryHttpGateway implements IInventoryGateway {
   private host: string = 'http://localhost:3003/inventory';
 
   async post<TInput, TOutput>(endpoint: string, data: TInput): Promise<TOutput> {
-    return this.http.axiosRef.post(`${this.host}${endpoint}`, data, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    try {
+      const response = await this.http.axiosRef.post(`${this.host}${endpoint}`, data, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      return response.data as TOutput;
+    } catch (error: any) {
+      console.error(error);
+      throw Error('Failed to calling inventory service!');
+    }
   }
 
   async productCreated(data: Product[]): Promise<{ success: boolean }> {
