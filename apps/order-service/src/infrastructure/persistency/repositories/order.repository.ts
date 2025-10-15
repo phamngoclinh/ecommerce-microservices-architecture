@@ -1,4 +1,3 @@
-import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Order, OrderStatus } from '@order/domain/models/order.model';
 import { Repository } from 'typeorm';
@@ -6,7 +5,6 @@ import { OrderItemEntity } from '../entities/order-item.entity';
 import { OrderEntity } from '../entities/order.entity';
 import { OrderPersistencyMapper } from '../mappers/order-persistency.mapper';
 
-@Injectable()
 export class OrderRepository {
   constructor(
     @InjectRepository(OrderEntity)

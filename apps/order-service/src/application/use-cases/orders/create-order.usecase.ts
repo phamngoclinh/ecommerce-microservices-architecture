@@ -1,5 +1,6 @@
 import { IUsecase } from '@libs/common/application/use-cases/base.usecase';
-import { Injectable } from '@nestjs/common';
+import { MapInventoryItemHandler } from '@order/application/handlers/order-creation/map-inventory-item.handler';
+import type { IInventoryGateway } from '@order/application/ports/inventory.gateway';
 import { Order } from '@order/domain/models/order.model';
 import { IOrderRepository } from '@order/domain/repositories/order.repository';
 import { CheckStockHandler } from '../../handlers/order-creation/check-stock.handler';
@@ -18,26 +19,33 @@ interface CreateOrderInput {
   paymentMethod: string;
 }
 
-@Injectable()
 export class CreateOrderUseCase extends IUsecase<CreateOrderInput, Order> {
   private orderCreationChain: OrderCreationHandler;
 
-  constructor(private readonly ordersRepository: IOrderRepository) {
+  constructor(
+    private readonly ordersRepository: IOrderRepository,
+    private readonly inventoryGateway: IInventoryGateway,
+  ) {
     super();
 
-    const validation = new ValidationHandler();
-    const checkStock = new CheckStockHandler(this.ordersRepository);
-    const saveOrder = new SaveOrderHandler(this.ordersRepository);
-    const payment = new PaymentHandler(this.ordersRepository);
-    const confirmation = new ConfirmationHandler(this.ordersRepository);
-    const complete = new CompleteHandler(this.ordersRepository);
-    validation
-      .setNext(checkStock)
-      .setNext(saveOrder)
-      .setNext(payment)
-      .setNext(confirmation)
-      .setNext(complete);
-    this.orderCreationChain = validation;
+    const validationHandler = new ValidationHandler();
+    const mapInventoryItemHandler = new MapInventoryItemHandler(this.inventoryGateway);
+    const checkStockHandler = new CheckStockHandler(this.inventoryGateway);
+    const saveOrderHandler = new SaveOrderHandler(this.ordersRepository, this.inventoryGateway);
+    const paymentHandler = new PaymentHandler(this.ordersRepository);
+    const confirmationHandler = new ConfirmationHandler(
+      this.ordersRepository,
+      this.inventoryGateway,
+    );
+    const completeHandler = new CompleteHandler(this.ordersRepository, this.inventoryGateway);
+    validationHandler
+      .setNext(mapInventoryItemHandler)
+      .setNext(checkStockHandler)
+      .setNext(saveOrderHandler)
+      .setNext(paymentHandler)
+      .setNext(confirmationHandler)
+      .setNext(completeHandler);
+    this.orderCreationChain = validationHandler;
   }
 
   async execute(input: CreateOrderInput): Promise<Order> {

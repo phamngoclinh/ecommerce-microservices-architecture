@@ -8,5 +8,6 @@ export class InventoryItem {
     public isActive: boolean,
     public stocks: Stock[],
     public reservations: StockReservation[],
+    public createdAt?: Date,
   ) {}
 }

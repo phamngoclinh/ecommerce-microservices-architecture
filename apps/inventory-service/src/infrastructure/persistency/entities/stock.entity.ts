@@ -1,6 +1,7 @@
 import { BaseEntity } from '@libs/common/domain/entities/base.entity';
 import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 import { InventoryItemEntity } from './inventory-item.entity';
+import { DecimalTransformer } from '@libs/common/adapters/decimal.adapter';
 
 @Entity('stock')
 @Index(['inventoryItem'], { unique: true })
@@ -12,11 +13,25 @@ export class StockEntity extends BaseEntity {
   inventoryItem: InventoryItemEntity;
 
   // So luong hang thuc te
-  @Column({ name: 'on_hand_qty', type: 'decimal', precision: 18, scale: 4, default: 0 })
+  @Column({
+    name: 'on_hand_qty',
+    type: 'decimal',
+    precision: 18,
+    scale: 4,
+    default: 0,
+    transformer: DecimalTransformer,
+  })
   onHandQty: number;
 
   // So luong hang dang duoc dat
-  @Column({ name: 'reserved_qty', type: 'decimal', precision: 18, scale: 4, default: 0 })
+  @Column({
+    name: 'reserved_qty',
+    type: 'decimal',
+    precision: 18,
+    scale: 4,
+    default: 0,
+    transformer: DecimalTransformer,
+  })
   reservedQty: number;
 
   // So luong hang dang kha thi
@@ -26,6 +41,7 @@ export class StockEntity extends BaseEntity {
     precision: 18,
     scale: 4,
     default: 0,
+    transformer: DecimalTransformer,
   })
   availableQty: number;
 }

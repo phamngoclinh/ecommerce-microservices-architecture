@@ -1,6 +1,5 @@
 import { IValidator } from '@libs/common/validators/validator';
 import { OrderExistedValidator } from './order-existed.validator';
-import { Injectable } from '@nestjs/common';
 import { IOrderRepository } from '@order/domain/repositories/order.repository';
 import { Order } from '@order/domain/models/order.model';
 
@@ -9,8 +8,7 @@ export interface GetOrderContext {
   order?: Order;
 }
 
-@Injectable()
-export class GetOrderValidatorChain extends IValidator<GetOrderContext> {
+export class GetOrderValidator extends IValidator<GetOrderContext> {
   private chain: IValidator<GetOrderContext>;
 
   constructor(private readonly ordersRepository: IOrderRepository) {

@@ -1,11 +1,9 @@
-import { Injectable } from '@nestjs/common';
 import { Cart } from '@order/domain/models/cart.model';
 import { ICartRepository } from '@order/domain/repositories/cart.repository';
 import { ProductNameSnapshotStrategy } from './product-name-snapshot';
 import { ProductServiceSnapshotStrategy } from './product-service-snapshot';
 import { SelfProductNameSnapshotStrategy } from './self-product-name-snapshot';
 
-@Injectable()
 export class SnapshotProductFactory {
   constructor(private readonly cartsRepository: ICartRepository) {}
 

@@ -1,10 +1,8 @@
 import { IUsecase } from '@libs/common/application/use-cases/base.usecase';
 import { IValidator } from '@libs/common/validators/validator';
-import { Injectable } from '@nestjs/common';
 import { GetOrderContext } from '@order/application/validators/get-order.validator';
 import { Order } from '@order/domain/models/order.model';
 
-@Injectable()
 export class GetOrderUseCase extends IUsecase<number, Order> {
   constructor(private readonly getOrderValidator: IValidator<GetOrderContext>) {
     super();

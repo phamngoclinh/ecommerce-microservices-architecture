@@ -6,9 +6,10 @@ export class OrderItemUseCaseMapper {
     const orderItem = new OrderItem(
       null,
       dto.orderId,
-      dto.productId,
+      0,
       dto.unitPrice,
       dto.quantity,
+      dto.productId,
       dto.productName,
     );
     return orderItem;

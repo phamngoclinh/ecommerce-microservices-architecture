@@ -8,10 +8,11 @@ export class OrderItemPersistencyMapper {
     const orderItemEntity = new OrderItemEntity();
     if (snapshot.id) orderItemEntity.id = snapshot.id;
     orderItemEntity.order = { id: snapshot.orderId } as OrderEntity;
-    orderItemEntity.productId = snapshot.productId;
+    orderItemEntity.inventoryItemId = snapshot.inventoryItemId;
     orderItemEntity.quantity = snapshot.quantity;
     orderItemEntity.unitPrice = snapshot.unitPrice;
     orderItemEntity.lineAmount = snapshot.lineAmount;
+    orderItemEntity.productId = snapshot.productId;
     orderItemEntity.productName = snapshot.productName;
     return orderItemEntity;
   }
@@ -20,9 +21,10 @@ export class OrderItemPersistencyMapper {
     return new OrderItem(
       orderItem.id,
       orderItem.order.id,
-      orderItem.productId,
+      orderItem.inventoryItemId,
       orderItem.unitPrice,
       orderItem.quantity,
+      orderItem.productId,
       orderItem.productName,
     );
   }

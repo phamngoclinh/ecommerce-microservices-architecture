@@ -17,10 +17,11 @@ export class OrderPersistencyMapper {
     orderEntity.createdAt = snapshot.createdDate;
     orderEntity.orderItems = snapshot.orderItems.map(i => {
       const e = new OrderItemEntity();
-      e.productId = i.productId;
-      e.quantity = i.quantity;
+      e.inventoryItemId = i.inventoryItemId;
       e.unitPrice = i.unitPrice;
+      e.quantity = i.quantity;
       e.lineAmount = i.lineAmount;
+      e.productId = i.productId;
       e.productName = i.productName;
       return e;
     });
@@ -35,9 +36,10 @@ export class OrderPersistencyMapper {
           new OrderItem(
             item.id,
             order.id,
-            item.productId,
+            item.inventoryItemId,
             item.unitPrice,
             item.quantity,
+            item.productId,
             item.productName,
           ),
       ),

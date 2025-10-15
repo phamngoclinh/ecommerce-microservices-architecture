@@ -12,9 +12,11 @@ export class InventoryItemEntity extends BaseEntity {
   isActive: boolean;
 
   // Relations
-  @OneToMany(() => StockEntity, stock => stock.inventoryItem)
+  @OneToMany(() => StockEntity, stock => stock.inventoryItem, { eager: true })
   stocks: StockEntity[];
 
-  @OneToMany(() => StockReservationEntity, reservation => reservation.inventoryItem)
+  @OneToMany(() => StockReservationEntity, reservation => reservation.inventoryItem, {
+    eager: true,
+  })
   reservations: StockReservationEntity[];
 }

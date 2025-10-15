@@ -7,16 +7,14 @@ export class OrderItem {
 
     // main biz
     public readonly orderId: number,
-    public readonly productId: number,
+    public inventoryItemId: number,
     public readonly unitPrice: number,
     public readonly quantity: number,
 
     // snapshot data
+    public readonly productId: number,
     public readonly productName: string,
   ) {
-    this.unitPrice = unitPrice;
-    this.quantity = quantity;
-    this.productName = productName;
     this.calculateTotals();
   }
 
@@ -28,6 +26,7 @@ export class OrderItem {
     return {
       id: this.id,
       orderId: this.orderId,
+      inventoryItemId: this.inventoryItemId,
       productId: this.productId,
       productName: this.productName,
       unitPrice: this.unitPrice,

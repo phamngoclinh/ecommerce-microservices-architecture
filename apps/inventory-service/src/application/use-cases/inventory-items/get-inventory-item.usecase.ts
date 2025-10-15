@@ -3,7 +3,7 @@ import { IInventoryItemRepository } from '@inventory/domain/repositories/invento
 import { IUsecase } from '@libs/common/application/use-cases/base.usecase';
 
 interface GetInventoryItemInput {
-  productId: number;
+  inventoryItemId: number;
 }
 
 export class GetInventoryItemUseCase extends IUsecase<GetInventoryItemInput, InventoryItem> {
@@ -11,11 +11,9 @@ export class GetInventoryItemUseCase extends IUsecase<GetInventoryItemInput, Inv
     super();
   }
 
-  async execute(input: GetInventoryItemInput): Promise<InventoryItem> {
-    const inventoryItem = await this.inventoryItemsRepository.getInventoryItemByProductId(
-      input.productId,
-    );
-    if (inventoryItem === null) throw Error(`Inventory item ${input.productId} is not existed`);
+  async execute({ inventoryItemId }: GetInventoryItemInput): Promise<InventoryItem> {
+    const inventoryItem = await this.inventoryItemsRepository.getInventoryItem(inventoryItemId);
+    if (inventoryItem === null) throw Error(`Inventory item ${inventoryItemId} is not existed`);
     return inventoryItem;
   }
 }

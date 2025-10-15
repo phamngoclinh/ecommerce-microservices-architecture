@@ -1,12 +1,10 @@
 import { StockReservation } from '@inventory/domain/entities/stock-reservation.entity';
 import { IStockReservationRepository } from '@inventory/domain/repositories/stock-reservation.repository';
-import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { StockReservationEntity } from '../entities/stock-reservation.entity';
 import { StockReservationPersistencyMapper } from '../mappers/stock-reservation-persistency.mapper';
 
-@Injectable()
 export class StockReservationRepository extends IStockReservationRepository {
   constructor(
     @InjectRepository(StockReservationEntity)
@@ -22,19 +20,28 @@ export class StockReservationRepository extends IStockReservationRepository {
   }
 
   async getStockReservation(id: number): Promise<StockReservation | null> {
-    const entity = await this.stockReservationsRepository.findOneBy({ id });
+    const entity = await this.stockReservationsRepository.findOne({
+      where: { id },
+      relations: { inventoryItem: true },
+    });
     if (entity === null) return null;
     return StockReservationPersistencyMapper.toDomain(entity);
   }
 
   async getStockReservationByOrderId(orderId: number): Promise<StockReservation | null> {
-    const entity = await this.stockReservationsRepository.findOneBy({ orderId });
+    const entity = await this.stockReservationsRepository.findOne({
+      where: { orderId },
+      relations: { inventoryItem: true },
+    });
     if (entity === null) return null;
     return StockReservationPersistencyMapper.toDomain(entity);
   }
 
   async getStockReservationsByOrderId(orderId: number): Promise<StockReservation[]> {
-    const entities = await this.stockReservationsRepository.findBy({ orderId });
+    const entities = await this.stockReservationsRepository.find({
+      where: { orderId },
+      relations: { inventoryItem: true },
+    });
     return entities.map(entity => StockReservationPersistencyMapper.toDomain(entity));
   }
 }

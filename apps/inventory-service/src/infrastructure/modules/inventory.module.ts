@@ -1,21 +1,94 @@
-import { Module } from '@nestjs/common';
-import { InventoryController } from '../../presentation/controllers/inventory.controller';
-import { PersistencyModule } from '../persistency/persistency.module';
+import { AllocateInventoryItemUseCase } from '@inventory/application/use-cases/inventory-items/allocate-inventory.usecase';
+import { CancelReservationUseCase } from '@inventory/application/use-cases/stocks/cancel-reservation.usecase';
 import { CheckStockUseCase } from '@inventory/application/use-cases/stocks/check-stock.usecase';
-import { ReserveStockUseCase } from '@inventory/application/use-cases/stocks/reserve-stock.usercase';
 import { ConfirmReservationUseCase } from '@inventory/application/use-cases/stocks/confirm-reservation.usecase';
 import { ReleaseReservationUseCase } from '@inventory/application/use-cases/stocks/release-reservation.usecase';
-import { CancelReservationUseCase } from '@inventory/application/use-cases/stocks/cancel-reservation.usecase';
+import { ReserveStockUseCase } from '@inventory/application/use-cases/stocks/reserve-stock.usercase';
+import { StockInUseCase } from '@inventory/application/use-cases/stocks/stock-in.usecase';
+import { InventoryController } from '@inventory/presentation/controllers/inventory.controller';
+import { Module } from '@nestjs/common';
+import { PersistencyModule } from '../persistency/persistency.module';
+import { IInventoryItemRepository } from '@inventory/domain/repositories/inventory-item.repository';
+import { IStockRepository } from '@inventory/domain/repositories/stock.repository';
+import { IStockReservationRepository } from '@inventory/domain/repositories/stock-reservation.repository';
+import { CreateInventoryItemUseCase } from '@inventory/application/use-cases/inventory-items/create-inventory-item.usecase';
 
 @Module({
   imports: [PersistencyModule],
   controllers: [InventoryController],
   providers: [
-    CheckStockUseCase,
-    ReserveStockUseCase,
-    ConfirmReservationUseCase,
-    ReleaseReservationUseCase,
-    CancelReservationUseCase,
+    {
+      provide: CheckStockUseCase,
+      useFactory: (stocksRepository: IStockRepository) => {
+        return new CheckStockUseCase(stocksRepository);
+      },
+      inject: [IStockRepository],
+    },
+    {
+      provide: ReserveStockUseCase,
+      useFactory: (
+        stocksRepository: IStockRepository,
+        stockReservationsRepository: IStockReservationRepository,
+      ) => {
+        return new ReserveStockUseCase(stocksRepository, stockReservationsRepository);
+      },
+      inject: [IStockRepository, IStockReservationRepository],
+    },
+    {
+      provide: ConfirmReservationUseCase,
+      useFactory: (
+        stocksRepository: IStockRepository,
+        stockReservationsRepository: IStockReservationRepository,
+      ) => {
+        return new ConfirmReservationUseCase(stocksRepository, stockReservationsRepository);
+      },
+      inject: [IStockRepository, IStockReservationRepository],
+    },
+    {
+      provide: ReleaseReservationUseCase,
+      useFactory: (
+        stocksRepository: IStockRepository,
+        stockReservationsRepository: IStockReservationRepository,
+      ) => {
+        return new ReleaseReservationUseCase(stocksRepository, stockReservationsRepository);
+      },
+      inject: [IStockRepository, IStockReservationRepository],
+    },
+    {
+      provide: CancelReservationUseCase,
+      useFactory: (
+        stocksRepository: IStockRepository,
+        stockReservationsRepository: IStockReservationRepository,
+      ) => {
+        return new CancelReservationUseCase(stocksRepository, stockReservationsRepository);
+      },
+      inject: [IStockRepository, IStockReservationRepository],
+    },
+    {
+      provide: StockInUseCase,
+      useFactory: (stocksRepository: IStockRepository) => {
+        return new StockInUseCase(stocksRepository);
+      },
+      inject: [IStockRepository],
+    },
+    {
+      provide: CreateInventoryItemUseCase,
+      useFactory: (
+        inventoryItemRepository: IInventoryItemRepository,
+        stocksRepository: IStockRepository,
+      ) => {
+        return new CreateInventoryItemUseCase(inventoryItemRepository, stocksRepository);
+      },
+      inject: [IInventoryItemRepository, IStockRepository],
+    },
+    {
+      provide: AllocateInventoryItemUseCase,
+      useFactory: (inventoryItemRepository: IInventoryItemRepository) => {
+        return new AllocateInventoryItemUseCase(inventoryItemRepository);
+      },
+      inject: [IInventoryItemRepository],
+    },
   ],
+  exports: [AllocateInventoryItemUseCase],
 })
 export class InventoryModule {}

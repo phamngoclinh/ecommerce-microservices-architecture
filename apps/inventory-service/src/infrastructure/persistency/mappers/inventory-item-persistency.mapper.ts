@@ -1,7 +1,7 @@
 import { InventoryItem } from '@inventory/domain/entities/inventory-item.entity';
+import { StockReservation } from '@inventory/domain/entities/stock-reservation.entity';
+import { Stock } from '@inventory/domain/entities/stock.entity';
 import { InventoryItemEntity } from '../entities/inventory-item.entity';
-import { StockPersistencyMapper } from './stock-persistency.mapper';
-import { StockReservationPersistencyMapper } from './stock-reservation-persistency.mapper';
 
 export class InventoryItemPersistencyMapper {
   static toEntity(inventoryItem: InventoryItem): InventoryItemEntity {
@@ -17,9 +17,36 @@ export class InventoryItemPersistencyMapper {
       inventoryItem.id,
       inventoryItem.productId,
       inventoryItem.isActive,
-      inventoryItem.stocks.map(stock => StockPersistencyMapper.toDomain(stock)),
-      inventoryItem.reservations.map(reservation =>
-        StockReservationPersistencyMapper.toDomain(reservation),
+      inventoryItem.stocks.map(
+        stock =>
+          new Stock(
+            stock.id,
+            {
+              id: inventoryItem.id,
+              productId: inventoryItem.productId,
+              isActive: inventoryItem.isActive,
+            } as InventoryItem,
+            stock.onHandQty,
+            stock.reservedQty,
+            stock.availableQty,
+          ),
+      ),
+      inventoryItem.reservations.map(
+        reservation =>
+          new StockReservation(
+            reservation.id,
+            {
+              id: inventoryItem.id,
+              productId: inventoryItem.productId,
+              isActive: inventoryItem.isActive,
+            } as InventoryItem,
+            reservation.orderId,
+            reservation.reservedQty,
+            reservation.status,
+            reservation.reservedAt,
+            reservation.expiredAt,
+            reservation.releasedAt,
+          ),
       ),
     );
   }

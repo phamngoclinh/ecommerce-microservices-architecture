@@ -7,19 +7,60 @@ import { RemoveCartItemUseCase } from '@order/application/use-cases/carts/remove
 import { UpdateCartItemUseCase } from '@order/application/use-cases/carts/update-item.usecase';
 import { CartController } from '../../presentation/controlers/cart.controller';
 import { PersistencyModule } from '../persistency/persistency.module';
+import { ICartRepository } from '@order/domain/repositories/cart.repository';
 
 @Module({
   imports: [PersistencyModule],
   controllers: [CartController],
   providers: [
-    GetCartItemsUseCase,
-    AddCartItemUseCase,
-    UpdateCartItemUseCase,
-    RemoveCartItemUseCase,
-    ClearCartUseCase,
+    // usecases
+    {
+      provide: GetCartItemsUseCase,
+      useFactory: (cartsRepository: ICartRepository) => {
+        return new GetCartItemsUseCase(cartsRepository);
+      },
+      inject: [ICartRepository],
+    },
+    {
+      provide: AddCartItemUseCase,
+      useFactory: (
+        cartsRepository: ICartRepository,
+        snapshotProductFactory: SnapshotProductFactory,
+      ) => {
+        return new AddCartItemUseCase(cartsRepository, snapshotProductFactory);
+      },
+      inject: [ICartRepository, SnapshotProductFactory],
+    },
+    {
+      provide: UpdateCartItemUseCase,
+      useFactory: (cartsRepository: ICartRepository) => {
+        return new UpdateCartItemUseCase(cartsRepository);
+      },
+      inject: [ICartRepository],
+    },
+    {
+      provide: RemoveCartItemUseCase,
+      useFactory: (cartsRepository: ICartRepository) => {
+        return new RemoveCartItemUseCase(cartsRepository);
+      },
+      inject: [ICartRepository],
+    },
+    {
+      provide: ClearCartUseCase,
+      useFactory: (cartsRepository: ICartRepository) => {
+        return new ClearCartUseCase(cartsRepository);
+      },
+      inject: [ICartRepository],
+    },
 
     // providers
-    SnapshotProductFactory,
+    {
+      provide: SnapshotProductFactory,
+      useFactory: (cartsRepository: ICartRepository) => {
+        return new SnapshotProductFactory(cartsRepository);
+      },
+      inject: [ICartRepository],
+    },
   ],
 })
 export class CartModule {}

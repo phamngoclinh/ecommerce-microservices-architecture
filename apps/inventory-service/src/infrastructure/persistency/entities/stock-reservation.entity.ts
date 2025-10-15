@@ -1,6 +1,7 @@
 import { BaseEntity } from '@libs/common/domain/entities/base.entity';
 import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 import { InventoryItemEntity } from './inventory-item.entity';
+import { DecimalTransformer } from '@libs/common/adapters/decimal.adapter';
 
 export enum StockReservationStatus {
   PENDING = 'PENDING',
@@ -21,7 +22,13 @@ export class StockReservationEntity extends BaseEntity {
   @Column({ name: 'order_id', type: 'int', nullable: true })
   orderId: number;
 
-  @Column({ name: 'reserved_qty', type: 'decimal', precision: 18, scale: 4 })
+  @Column({
+    name: 'reserved_qty',
+    type: 'decimal',
+    precision: 18,
+    scale: 4,
+    transformer: DecimalTransformer,
+  })
   reservedQty: number;
 
   @Column({

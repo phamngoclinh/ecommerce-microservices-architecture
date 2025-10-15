@@ -12,6 +12,13 @@ export class Stock {
     public availableQty: number,
   ) {}
 
+  stockIn(qty: number) {
+    // Nhập hàng
+    if (qty <= 0) throw new Error('Stock-in quantity must be positive');
+    this.onHandQty += qty;
+    this.availableQty += qty;
+  }
+
   cancelReservation(reservedQty: number) {
     // Giải phóng hàng
     this.reservedQty -= reservedQty;

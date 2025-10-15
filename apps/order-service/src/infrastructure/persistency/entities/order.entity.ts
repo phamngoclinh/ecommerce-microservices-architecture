@@ -1,3 +1,4 @@
+import { DecimalTransformer } from '@libs/common/adapters/decimal.adapter';
 import { BaseEntity } from '@libs/common/domain/entities/base.entity';
 import { Column, Entity, OneToMany } from 'typeorm';
 import { OrderItemEntity } from './order-item.entity';
@@ -21,23 +22,37 @@ export class OrderEntity extends BaseEntity {
   status: OrderStatus;
 
   // Tổng giá trị gốc của các sản phẩm
-  @Column({ name: 'sub_amount', type: 'decimal', precision: 15, scale: 2, default: 0 })
+  @Column({
+    name: 'sub_amount',
+    type: 'decimal',
+    precision: 15,
+    scale: 2,
+    default: 0,
+    transformer: DecimalTransformer,
+  })
   subAmount: number;
 
   // Discount có thể là phần trăm hoặc số tiền (ví dụ: 10% hoặc 50000)
-  @Column({ type: 'decimal', precision: 5, scale: 2, default: 0 })
+  @Column({ type: 'decimal', precision: 5, scale: 2, default: 0, transformer: DecimalTransformer })
   discount: number;
 
   // Thuế VAT (%)
-  @Column({ type: 'decimal', precision: 5, scale: 2, default: 0 })
+  @Column({ type: 'decimal', precision: 5, scale: 2, default: 0, transformer: DecimalTransformer })
   vat: number;
 
   // Thành tiền sau khi discount (chưa có VAT)
-  @Column({ type: 'decimal', precision: 15, scale: 2, default: 0 })
+  @Column({ type: 'decimal', precision: 15, scale: 2, default: 0, transformer: DecimalTransformer })
   amount: number;
 
   // Tổng tiền cuối cùng (sau VAT)
-  @Column({ name: 'total_amount', type: 'decimal', precision: 15, scale: 2, default: 0 })
+  @Column({
+    name: 'total_amount',
+    type: 'decimal',
+    precision: 15,
+    scale: 2,
+    default: 0,
+    transformer: DecimalTransformer,
+  })
   totalAmount: number;
 
   // Quan hệ 1-nhiều với các OrderItem

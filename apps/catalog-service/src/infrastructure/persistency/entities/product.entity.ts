@@ -1,4 +1,5 @@
 import { ProductStatus } from '@catalog/domain/entities/product.entity';
+import { DecimalTransformer } from '@libs/common/adapters/decimal.adapter';
 import { BaseEntity } from '@libs/common/domain/entities/base.entity';
 import { Column, Entity } from 'typeorm';
 
@@ -7,7 +8,13 @@ export class ProductEntity extends BaseEntity {
   @Column({ type: 'varchar', length: 255 })
   name: string;
 
-  @Column({ type: 'decimal', precision: 15, scale: 2, nullable: false })
+  @Column({
+    type: 'decimal',
+    precision: 15,
+    scale: 2,
+    nullable: false,
+    transformer: DecimalTransformer,
+  })
   price: number;
 
   // Trạng thái

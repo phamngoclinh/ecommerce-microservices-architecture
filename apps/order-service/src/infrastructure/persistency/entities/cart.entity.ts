@@ -1,3 +1,4 @@
+import { DecimalTransformer } from '@libs/common/adapters/decimal.adapter';
 import { BaseEntity } from '@libs/common/domain/entities/base.entity';
 import { Column, Entity } from 'typeorm';
 
@@ -12,10 +13,24 @@ export class CartEntity extends BaseEntity {
   @Column({ type: 'int', default: 1 })
   quantity: number;
 
-  @Column({ name: 'unit_price', type: 'decimal', precision: 15, scale: 2, nullable: false })
+  @Column({
+    name: 'unit_price',
+    type: 'decimal',
+    precision: 15,
+    scale: 2,
+    nullable: false,
+    transformer: DecimalTransformer,
+  })
   unitPrice: number;
 
   // Thành tiền cho dòng này
-  @Column({ name: 'line_amount', type: 'decimal', precision: 15, scale: 2, default: 0 })
+  @Column({
+    name: 'line_amount',
+    type: 'decimal',
+    precision: 15,
+    scale: 2,
+    default: 0,
+    transformer: DecimalTransformer,
+  })
   lineAmount: number;
 }

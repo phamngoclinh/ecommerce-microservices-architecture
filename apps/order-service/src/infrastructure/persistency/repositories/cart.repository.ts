@@ -1,4 +1,3 @@
-import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cart } from '@order/domain/models/cart.model';
 import { ICartRepository } from '@order/domain/repositories/cart.repository';
@@ -6,7 +5,6 @@ import { Repository } from 'typeorm';
 import { CartEntity } from '../entities/cart.entity';
 import { CartPersistencyMapper } from '../mappers/cart-persistency.mapper';
 
-@Injectable()
 export class CartRepository implements ICartRepository {
   constructor(
     @InjectRepository(CartEntity)
