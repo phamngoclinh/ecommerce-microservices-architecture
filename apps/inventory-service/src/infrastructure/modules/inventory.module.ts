@@ -1,21 +1,22 @@
 import { AllocateInventoryItemUseCase } from '@inventory/application/use-cases/inventory-items/allocate-inventory.usecase';
+import { CreateInventoryItemUseCase } from '@inventory/application/use-cases/inventory-items/create-inventory-item.usecase';
 import { CancelReservationUseCase } from '@inventory/application/use-cases/stocks/cancel-reservation.usecase';
 import { CheckStockUseCase } from '@inventory/application/use-cases/stocks/check-stock.usecase';
 import { ConfirmReservationUseCase } from '@inventory/application/use-cases/stocks/confirm-reservation.usecase';
 import { ReleaseReservationUseCase } from '@inventory/application/use-cases/stocks/release-reservation.usecase';
 import { ReserveStockUseCase } from '@inventory/application/use-cases/stocks/reserve-stock.usercase';
 import { StockInUseCase } from '@inventory/application/use-cases/stocks/stock-in.usecase';
+import { IInventoryItemRepository } from '@inventory/domain/repositories/inventory-item.repository';
+import { IStockReservationRepository } from '@inventory/domain/repositories/stock-reservation.repository';
+import { IStockRepository } from '@inventory/domain/repositories/stock.repository';
+import { InventorySubscriberController } from '@inventory/presentation/controllers/inventory-subscriber.controller';
 import { InventoryController } from '@inventory/presentation/controllers/inventory.controller';
 import { Module } from '@nestjs/common';
 import { PersistencyModule } from '../persistency/persistency.module';
-import { IInventoryItemRepository } from '@inventory/domain/repositories/inventory-item.repository';
-import { IStockRepository } from '@inventory/domain/repositories/stock.repository';
-import { IStockReservationRepository } from '@inventory/domain/repositories/stock-reservation.repository';
-import { CreateInventoryItemUseCase } from '@inventory/application/use-cases/inventory-items/create-inventory-item.usecase';
 
 @Module({
   imports: [PersistencyModule],
-  controllers: [InventoryController],
+  controllers: [InventoryController, InventorySubscriberController],
   providers: [
     {
       provide: CheckStockUseCase,
