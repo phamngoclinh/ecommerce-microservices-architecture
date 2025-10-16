@@ -7,11 +7,11 @@ import { ReleaseReservationUseCase } from '@inventory/application/use-cases/stoc
 import { ReserveStockUseCase } from '@inventory/application/use-cases/stocks/reserve-stock.usercase';
 import { StockInUseCase } from '@inventory/application/use-cases/stocks/stock-in.usecase';
 import { Body, Controller, Param, Post } from '@nestjs/common';
-import type { AllocateItemDto } from '../dtos/allocate-item.dto';
-import type { CheckStockDto } from '../dtos/check-stock.dto';
-import type { CreateItemDto } from '../dtos/create-item.dto';
-import type { ReserveStockDto } from '../dtos/reserve-stock.dto';
-import type { StockInDto } from '../dtos/stock-in.dto';
+import type { AllocateItemDto } from './dtos/allocate-item.dto';
+import type { CheckStockDto } from './dtos/check-stock.dto';
+import type { CreateItemDto } from './dtos/create-item.dto';
+import type { ReserveStockDto } from './dtos/reserve-stock.dto';
+import type { StockInDto } from './dtos/stock-in.dto';
 
 @Controller('inventory')
 export class InventoryController {

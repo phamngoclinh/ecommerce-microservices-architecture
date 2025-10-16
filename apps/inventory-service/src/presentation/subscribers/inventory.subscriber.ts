@@ -1,10 +1,10 @@
 import { CreateInventoryItemUseCase } from '@inventory/application/use-cases/inventory-items/create-inventory-item.usecase';
 import { Controller } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
-import type { CreatedProductEvent } from '../events/created-product.event';
+import type { CreatedProductEvent } from './events/created-product.event';
 
 @Controller()
-export class InventorySubscriberController {
+export class InventorySubscriber {
   constructor(private readonly createInventoryItemUseCase: CreateInventoryItemUseCase) {}
 
   @EventPattern('product.created')

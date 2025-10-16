@@ -10,7 +10,7 @@ import {
 } from '@order/application/validators/get-order.validator';
 import { IOrderRepository } from '@order/domain/repositories/order.repository';
 import { OrderController } from '@order/presentation/controllers/order.controller';
-import { InventoryHttpModule } from '../gateways/inventory-http.module';
+import { InventoryHttpModule } from '../adatpers/inventory-http.module';
 import { PersistencyModule } from '../persistency/persistency.module';
 
 @Module({

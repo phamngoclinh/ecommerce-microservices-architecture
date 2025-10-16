@@ -9,14 +9,14 @@ import { StockInUseCase } from '@inventory/application/use-cases/stocks/stock-in
 import { IInventoryItemRepository } from '@inventory/domain/repositories/inventory-item.repository';
 import { IStockReservationRepository } from '@inventory/domain/repositories/stock-reservation.repository';
 import { IStockRepository } from '@inventory/domain/repositories/stock.repository';
-import { InventorySubscriberController } from '@inventory/presentation/controllers/inventory-subscriber.controller';
-import { InventoryController } from '@inventory/presentation/controllers/inventory.controller';
+import { InventorySubscriber } from '@inventory/presentation/subscribers/inventory.subscriber';
+import { InventoryController } from '@inventory/presentation/http-controllers/inventory.controller';
 import { Module } from '@nestjs/common';
 import { PersistencyModule } from '../persistency/persistency.module';
 
 @Module({
   imports: [PersistencyModule],
-  controllers: [InventoryController, InventorySubscriberController],
+  controllers: [InventoryController, InventorySubscriber],
   providers: [
     {
       provide: CheckStockUseCase,
