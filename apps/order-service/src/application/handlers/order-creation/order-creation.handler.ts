@@ -1,4 +1,4 @@
-import { BaseHandler } from '@libs/common/handlers/base.handler';
+import { CoRHandler } from '@libs/common/patterns/cor.pattern';
 import { Order } from '@order/domain/models/order.model';
 
 export interface OrderCreationContext {
@@ -10,4 +10,4 @@ export interface OrderCreationContext {
   metadata?: unknown; // intermediate value
 }
 
-export class OrderCreationHandler extends BaseHandler<OrderCreationContext> {}
+export class OrderCreationHandler extends CoRHandler<OrderCreationContext> {}

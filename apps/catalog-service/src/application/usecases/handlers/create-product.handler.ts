@@ -1,8 +1,8 @@
 import { IProductRepository } from '@catalog/domain/repositories/product.repository';
-import { BaseHandler } from '@libs/common/handlers/base.handler';
+import { CoRHandler } from '@libs/common/patterns/cor.pattern';
 import { CreateProductContext } from './create-product.context';
 
-export class CreateProductHandler extends BaseHandler<CreateProductContext> {
+export class CreateProductHandler extends CoRHandler<CreateProductContext> {
   constructor(private readonly productsRepository: IProductRepository) {
     super();
   }

@@ -1,4 +1,4 @@
-import { DecimalTransformer } from '@libs/common/adapters/decimal.adapter';
+import { DecimalTransformer } from '@libs/common/infrastructure/adapters/orm/decimal-transformer.adapter';
 import { BaseEntity } from '@libs/common/domain/entities/base.entity';
 import { Column, Entity, OneToMany } from 'typeorm';
 import { OrderItemEntity } from './order-item.entity';

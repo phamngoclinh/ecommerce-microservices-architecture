@@ -1,8 +1,8 @@
 import { IEventPublisher } from '@libs/common/application/ports/event-publisher';
-import { BaseHandler } from '@libs/common/handlers/base.handler';
+import { CoRHandler } from '@libs/common/patterns/cor.pattern';
 import { CreateProductContext } from './create-product.context';
 
-export class SendCreatedProductEventHandler extends BaseHandler<CreateProductContext> {
+export class SendCreatedProductEventHandler extends CoRHandler<CreateProductContext> {
   constructor(private readonly eventPublisher: IEventPublisher) {
     super();
   }

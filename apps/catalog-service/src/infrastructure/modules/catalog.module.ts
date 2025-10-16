@@ -6,8 +6,8 @@ import { GetProductsUseCase } from '@catalog/application/usecases/products/get-p
 import { IProductRepository } from '@catalog/domain/repositories/product.repository';
 import { CatalogController } from '@catalog/presentation/controllers/catalog.controller';
 import { EventPublisherService } from '@libs/common/application/ports/event-publisher';
-import { RedisClientModule } from '@libs/common/infrastructure/event-bus/redis/redis-client.module';
-import { RedisClientService } from '@libs/common/infrastructure/event-bus/redis/redis-client.service';
+import { RedisClientModule } from '@libs/common/infrastructure/adapters/redis/redis-client.module';
+import { RedisClientService } from '@libs/common/infrastructure/adapters/redis/redis-client.service';
 import { Module } from '@nestjs/common';
 import { PersistencyModule } from '../persistency/persistency.module';
 

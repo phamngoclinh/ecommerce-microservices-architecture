@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ClientProxy, ClientProxyFactory, Transport } from '@nestjs/microservices';
-import { IEventBusClient } from '../event-bus-client.interface';
+import { IEventBusClient } from '../../event-bus/event-bus-client.interface';
 
 @Injectable()
 export class RedisClientService implements IEventBusClient {
