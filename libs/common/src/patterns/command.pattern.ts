@@ -45,6 +45,20 @@ export abstract class UndoableCommandManager extends CommandManager {
     }
   }
 
+  async executeCommand(command: IUndoableCommand): Promise<void> {
+    try {
+      await super.executeCommand(command);
+    } catch (err: any) {
+      try {
+        await command.undo();
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (rollbackErr) {
+        /* catch error */
+      }
+      throw err;
+    }
+  }
+
   async execute() {
     try {
       await super.execute();

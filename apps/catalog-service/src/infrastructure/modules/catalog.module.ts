@@ -1,23 +1,30 @@
+import { CreateProductHandler } from '@catalog/application/usecases/handlers/create-product.handler';
+import { SendCreatedProductEventHandler } from '@catalog/application/usecases/handlers/send-created-product-event.handler';
 import { CreateProductUseCase } from '@catalog/application/usecases/products/create-product.usecase';
 import { GetProductUseCase } from '@catalog/application/usecases/products/get-product.usecase';
 import { GetProductsUseCase } from '@catalog/application/usecases/products/get-products.usecase';
+import { IProductRepository } from '@catalog/domain/repositories/product.repository';
 import { CatalogController } from '@catalog/presentation/controllers/catalog.controller';
+import { EventPublisherService } from '@libs/common/application/ports/event-publisher';
+import { RedisClientModule } from '@libs/common/infrastructure/event-bus/redis/redis-client.module';
+import { RedisClientService } from '@libs/common/infrastructure/event-bus/redis/redis-client.service';
 import { Module } from '@nestjs/common';
 import { PersistencyModule } from '../persistency/persistency.module';
-import { IProductRepository } from '@catalog/domain/repositories/product.repository';
-import { IInventoryGateway } from '@catalog/application/ports/inventory.gateway';
-import { InventoryHttpModule } from '../gateways/inventory-http.module';
 
 @Module({
-  imports: [PersistencyModule, InventoryHttpModule],
+  imports: [PersistencyModule, RedisClientModule],
   controllers: [CatalogController],
   providers: [
+    //#region usecases
     {
       provide: CreateProductUseCase,
-      useFactory: (productsRepository: IProductRepository, inventoryGateway: IInventoryGateway) => {
+      useFactory: (
+        productsRepository: CreateProductHandler,
+        inventoryGateway: SendCreatedProductEventHandler,
+      ) => {
         return new CreateProductUseCase(productsRepository, inventoryGateway);
       },
-      inject: [IProductRepository, 'IInventoryGateway'],
+      inject: [CreateProductHandler, SendCreatedProductEventHandler],
     },
     {
       provide: GetProductsUseCase,
@@ -33,6 +40,24 @@ import { InventoryHttpModule } from '../gateways/inventory-http.module';
       },
       inject: [IProductRepository],
     },
+    //#endregion
+
+    //#region handlers
+    {
+      provide: CreateProductHandler,
+      useFactory: (productsRepository: IProductRepository) => {
+        return new CreateProductHandler(productsRepository);
+      },
+      inject: [IProductRepository],
+    },
+    {
+      provide: SendCreatedProductEventHandler,
+      useFactory: (redisClient: RedisClientService) => {
+        return new SendCreatedProductEventHandler(new EventPublisherService(redisClient));
+      },
+      inject: [RedisClientService],
+    },
+    //#endregion
   ],
 })
 export class CatalogModule {}
