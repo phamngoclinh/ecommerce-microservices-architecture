@@ -1,12 +1,12 @@
 import type { IInventoryGateway } from '@order/application/ports/inventory.gateway';
-import { OrderCreationContext, OrderCreationHandler } from './order-creation.handler';
+import { CreateOrderContext, CreateOrderHandler } from './create-order.handler';
 
-export class CheckStockHandler extends OrderCreationHandler {
+export class CheckStockHandler extends CreateOrderHandler {
   constructor(private readonly inventoryGateway: IInventoryGateway) {
     super();
   }
 
-  async handle(context: OrderCreationContext): Promise<void> {
+  async handle(context: CreateOrderContext): Promise<void> {
     console.log('Checking stock');
     const stocks = await this.inventoryGateway.checkStock({
       items: context.order.orderItems.map(orderItem => ({
@@ -14,6 +14,8 @@ export class CheckStockHandler extends OrderCreationHandler {
         quantity: orderItem.quantity,
       })),
     });
+
+    console.log('stocs', stocks);
 
     if (!stocks.isEnough) throw Error('Order items was exceed the stock quantity');
     console.log('✅ Checking stock is done !!!');

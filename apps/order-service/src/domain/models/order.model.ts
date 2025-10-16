@@ -2,8 +2,8 @@ import { OrderItem } from './order-item.model';
 
 export enum OrderStatus {
   PENDING = 'PENDING',
-  CONFIRMED = 'CONFIRMED',
   PAID = 'PAID',
+  CONFIRMED = 'CONFIRMED',
   SHIPPED = 'SHIPPED',
   COMPLETED = 'COMPLETED',
 }
@@ -36,25 +36,11 @@ export class Order {
   }
 
   addItem(orderItem: OrderItem) {
-    if (
-      [
-        OrderStatus.CONFIRMED,
-        OrderStatus.PAID,
-        OrderStatus.SHIPPED,
-        OrderStatus.COMPLETED,
-      ].includes(this.status)
-    ) {
+    if ([OrderStatus.CONFIRMED, OrderStatus.PAID, OrderStatus.COMPLETED].includes(this.status)) {
       throw new Error('Cannot add items after order is processed');
     }
     this.orderItems.push(orderItem);
     this.calculateTotals();
-  }
-
-  confirm() {
-    if (this.status !== OrderStatus.PENDING && this.status !== OrderStatus.PAID) {
-      throw new Error('Only pending orders can be confirmed');
-    }
-    this.status = OrderStatus.CONFIRMED;
   }
 
   paid() {
@@ -62,6 +48,20 @@ export class Order {
       throw new Error('Only pending orders can be paid');
     }
     this.status = OrderStatus.PAID;
+  }
+
+  confirm() {
+    if (this.status !== OrderStatus.PENDING && this.status !== OrderStatus.PAID) {
+      throw new Error('Only pending/paid orders can be confirmed');
+    }
+    this.status = OrderStatus.CONFIRMED;
+  }
+
+  ship() {
+    if (this.status !== OrderStatus.CONFIRMED) {
+      throw new Error('Only confirmed orders can be shipped');
+    }
+    this.status = OrderStatus.SHIPPED;
   }
 
   complete() {

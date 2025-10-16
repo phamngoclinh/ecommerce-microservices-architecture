@@ -1,7 +1,7 @@
-import { OrderCreationContext, OrderCreationHandler } from './order-creation.handler';
+import { CreateOrderContext, CreateOrderHandler } from './create-order.handler';
 
-export class ValidationHandler extends OrderCreationHandler {
-  async handle(context: OrderCreationContext): Promise<void> {
+export class ValidationHandler extends CreateOrderHandler {
+  async handle(context: CreateOrderContext): Promise<void> {
     console.log('Validating order');
     if (context.order.orderItems.length === 0)
       throw new Error('Order must contain at least one item');

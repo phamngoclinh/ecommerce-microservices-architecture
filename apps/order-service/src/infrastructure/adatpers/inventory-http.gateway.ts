@@ -4,8 +4,6 @@ import { CheckStockDto } from '@order/application/ports/check-stock.dto';
 import { CheckStockResponseDto } from '@order/application/ports/check-stock.response';
 import { InventoryItemResponseDto } from '@order/application/ports/inventory-item.response';
 import { IInventoryGateway } from '@order/application/ports/inventory.gateway';
-import { ReserveStockDto } from '@order/application/ports/reserve-stock.dto';
-import { ReserveStockResponseDto } from '@order/application/ports/reserve-stock.response';
 
 @Injectable()
 export class InventoryHttpGateway implements IInventoryGateway {
@@ -26,18 +24,6 @@ export class InventoryHttpGateway implements IInventoryGateway {
       console.error(error);
       throw Error('Failed to calling inventory service!');
     }
-  }
-
-  async reserve(data: ReserveStockDto): Promise<ReserveStockResponseDto> {
-    return this.post<ReserveStockDto, ReserveStockResponseDto>('/reserve', data);
-  }
-
-  async confirm(orderId: number): Promise<{ success: boolean }> {
-    return this.post<unknown, { success: boolean }>(`/${orderId}/confirm`, {});
-  }
-
-  async release(orderId: number): Promise<{ success: boolean }> {
-    return this.post<unknown, { success: boolean }>(`/${orderId}/release`, {});
   }
 
   async checkStock(data: CheckStockDto): Promise<CheckStockResponseDto> {
