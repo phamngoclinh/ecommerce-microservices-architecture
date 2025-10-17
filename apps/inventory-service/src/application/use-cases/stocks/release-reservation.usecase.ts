@@ -23,6 +23,15 @@ export class ReleaseReservationUseCase extends IUsecase<
       await this.stockReservationsRepository.getStockReservationsByOrderId(orderId);
 
     for (const res of reservations) {
+      const stock = await this.stocksRepository.getStockByInventoryItemId(
+        res.inventoryItem.id as number,
+      );
+      if (!stock) continue;
+
+      stock.onHandQty -= res.reservedQty;
+      stock.reservedQty -= res.reservedQty;
+      await this.stocksRepository.saveStock(stock);
+
       res.status = StockReservationStatus.RELEASED;
       await this.stockReservationsRepository.saveStockReservation(res);
     }

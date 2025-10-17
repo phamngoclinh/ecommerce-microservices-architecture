@@ -29,9 +29,8 @@ export class ConfirmReservationUseCase extends IUsecase<
       );
       if (!stock) continue;
 
-      // confirm stock: giảm onHandQty, giữ reservedQty
+      // confirm stock: giảm availableQty
       stock.availableQty -= res.reservedQty;
-      stock.reservedQty -= res.reservedQty;
       await this.stocksRepository.saveStock(stock);
 
       res.status = StockReservationStatus.CONFIRMED;

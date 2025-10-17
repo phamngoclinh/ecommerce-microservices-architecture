@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { StockEntity } from '../entities/stock.entity';
-import { StockReservationEntity } from '../entities/stock-reservation.entity';
 import { InventoryItemEntity } from '../entities/inventory-item.entity';
+import { StockReservationEntity } from '../entities/stock-reservation.entity';
+import { StockEntity } from '../entities/stock.entity';
 
 @Module({
   imports: [

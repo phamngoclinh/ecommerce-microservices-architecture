@@ -7,7 +7,9 @@ export class SendCompletedOrderEventHandler extends CompleteOrderHandler {
   }
 
   async handle(context: CompleteOrderContext): Promise<void> {
-    await this.eventPublisher.publish<CompleteOrderContext['id']>('order.completed', context.id);
+    await this.eventPublisher.publish<{ id: number }>('order.completed', {
+      id: context.id,
+    });
     await super.handle(context);
   }
 }

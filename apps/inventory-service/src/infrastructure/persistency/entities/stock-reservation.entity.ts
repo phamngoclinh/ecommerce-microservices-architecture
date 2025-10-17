@@ -1,4 +1,3 @@
-import { DecimalTransformer } from '@libs/common/infrastructure/adapters/orm/decimal-transformer.adapter';
 import { BaseEntity } from '@libs/common/infrastructure/persistency/entities/base.entity';
 import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 import { InventoryItemEntity } from './inventory-item.entity';
@@ -24,10 +23,7 @@ export class StockReservationEntity extends BaseEntity {
 
   @Column({
     name: 'reserved_qty',
-    type: 'decimal',
-    precision: 18,
-    scale: 4,
-    transformer: DecimalTransformer,
+    type: 'float',
   })
   reservedQty: number;
 

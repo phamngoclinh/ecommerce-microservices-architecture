@@ -8,7 +8,7 @@ export class SendConfirmedOrderEventHandler extends CoRHandler<ConfirmOrderConte
   }
 
   async handle(context: ConfirmOrderContext): Promise<void> {
-    await this.eventPublisher.publish<ConfirmOrderContext['id']>('order.confirmed', context.id);
+    await this.eventPublisher.publish<{ id: number }>('order.confirmed', { id: context.id });
     await super.handle(context);
   }
 }
