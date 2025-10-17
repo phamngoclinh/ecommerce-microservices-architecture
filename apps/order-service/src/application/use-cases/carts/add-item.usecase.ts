@@ -18,8 +18,6 @@ export class AddCartItemUseCase extends IUsecase<Cart, Cart> {
 
     const cart = await this.cartsRepository.getCartItem(input.productId);
 
-    console.log('Existing cart item:', input, cart);
-
     if (cart !== null) {
       return await this.cartsRepository.updateCartItem(
         new Cart(

@@ -10,10 +10,10 @@
 POST http://localhost:3004/payments/create-method HTTP/1.1
 content-type: application/json
 
-# {
-#     "displayName": "VNPAY",
-#     "provider": "VNPAY"
-# }
+{
+    "displayName": "VNPAY",
+    "provider": "VNPAY"
+}
 
 # {
 #     "displayName": "MOMO",
@@ -36,7 +36,7 @@ content-type: application/json
 #     "provider": "STRIPE"
 # }
 
-{
-    "displayName": "COD",
-    "provider": "COD"
-}
+# {
+#     "displayName": "COD",
+#     "provider": "COD"
+# }

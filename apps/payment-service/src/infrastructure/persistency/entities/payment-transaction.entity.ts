@@ -1,11 +1,12 @@
 import { BaseEntity } from '@libs/common/infrastructure/persistency/entities/base.entity';
 import { TransactionType } from '@payment/domain/entities/payment-transaction.entity';
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { PaymentEntity } from './payment.entity';
 
 @Entity('payment_transactions')
 export class PaymentTransactionEntity extends BaseEntity {
   @ManyToOne(() => PaymentEntity, payment => payment.transactions)
+  @JoinColumn({ name: 'payment_id' })
   payment: PaymentEntity;
 
   @Column({ type: 'enum', enum: TransactionType })

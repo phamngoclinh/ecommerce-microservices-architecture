@@ -1,6 +1,6 @@
 import { DecimalTransformer } from '@libs/common/infrastructure/adapters/orm/decimal-transformer.adapter';
 import { BaseEntity } from '@libs/common/infrastructure/persistency/entities/base.entity';
-import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { PaymentMethodEntity } from './payment-method.entity';
 import { PaymentTransactionEntity } from './payment-transaction.entity';
 
@@ -18,6 +18,7 @@ export class PaymentEntity extends BaseEntity {
   orderId: number; // ID của đơn hàng tương ứng (lấy từ Order service)
 
   @ManyToOne(() => PaymentMethodEntity, method => method.payments)
+  @JoinColumn({ name: 'method_id' })
   method: PaymentMethodEntity;
 
   @Column({

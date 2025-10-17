@@ -43,6 +43,8 @@ export class HandleVendorCallbackUseCase {
     const result = await this.paymentsRepository.updateStatus(dto.paymentId, normalizedStatus);
 
     if (normalizedStatus === PaymentStatus.SUCCESS) {
+      await this.paymentsRepository.updateTransactionId(dto.paymentId, dto.externalId);
+
       await this.eventPublisher.publish<{
         orderId: number;
         paymentId: number;
