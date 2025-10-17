@@ -1,9 +1,14 @@
-import { OrderStatus } from '@order/domain/models/order.model';
-import { IOrderRepository } from '@order/domain/repositories/order.repository';
+import { IEventPublisher } from '@libs/common/application/ports/event-publisher';
 import { CreateOrderContext, CreateOrderHandler } from './create-order.handler';
 
+type PaymentHandlerPayload = {
+  orderId: number;
+  amount: number;
+  paymentMethod: string;
+};
+
 export class PaymentHandler extends CreateOrderHandler {
-  constructor(private readonly orderRepository: IOrderRepository) {
+  constructor(private readonly eventPublisher: IEventPublisher) {
     super();
   }
 
@@ -11,11 +16,11 @@ export class PaymentHandler extends CreateOrderHandler {
     if (!context.order.id) throw Error('order is missing id property');
 
     if (context.paymentMethod !== 'cod') {
-      // payment client
-
-      await this.orderRepository.updateStatus(context.order.id, OrderStatus.PAID);
-
-      context.order.status = OrderStatus.PAID;
+      await this.eventPublisher.publish<PaymentHandlerPayload>('payment.requested', {
+        orderId: context.order.id,
+        amount: context.order.totalAmount,
+        paymentMethod: context.paymentMethod,
+      });
     }
 
     await super.handle(context);

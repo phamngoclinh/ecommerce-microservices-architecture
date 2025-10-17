@@ -1,0 +1,3 @@
+
+GET http://localhost:3004/payment-gateway-simulator/pay?orderId=33&amount=21010000&method=VNPAY HTTP/1.1
+content-type: application/json

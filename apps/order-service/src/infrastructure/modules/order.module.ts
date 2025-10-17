@@ -16,12 +16,13 @@ import {
 } from '@order/application/validators/get-order.validator';
 import { IOrderRepository } from '@order/domain/repositories/order.repository';
 import { OrderController } from '@order/presentation/controllers/order.controller';
+import { OrderSubcriber } from '@order/presentation/subcribers/order.subcriber';
 import { InventoryHttpModule } from '../adatpers/inventory-http.module';
 import { PersistencyModule } from '../persistency/persistency.module';
 
 @Module({
   imports: [PersistencyModule, InventoryHttpModule, RedisClientModule],
-  controllers: [OrderController],
+  controllers: [OrderController, OrderSubcriber],
   providers: [
     {
       provide: CreateOrderUseCase,

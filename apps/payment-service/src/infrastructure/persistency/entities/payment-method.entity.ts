@@ -1,15 +1,7 @@
 import { BaseEntity } from '@libs/common/infrastructure/persistency/entities/base.entity';
+import { PaymentProvider } from '@payment/domain/entities/payment-method.entity';
 import { Column, Entity, OneToMany } from 'typeorm';
 import { PaymentEntity } from './payment.entity';
-
-export enum PaymentProvider {
-  VNPAY = 'VNPAY',
-  MOMO = 'MOMO',
-  ZALOPAY = 'ZALOPAY',
-  PAYPAL = 'PAYPAL',
-  STRIPE = 'STRIPE',
-  COD = 'COD',
-}
 
 @Entity('payment_methods')
 export class PaymentMethodEntity extends BaseEntity {

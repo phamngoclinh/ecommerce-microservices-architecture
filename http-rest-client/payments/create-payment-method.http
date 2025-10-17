@@ -1,0 +1,42 @@
+# export enum PaymentProvider {
+#   VNPAY = 'VNPAY',
+#   MOMO = 'MOMO',
+#   ZALOPAY = 'ZALOPAY',
+#   PAYPAL = 'PAYPAL',
+#   STRIPE = 'STRIPE',
+#   COD = 'COD',
+# }
+
+POST http://localhost:3004/payments/create-method HTTP/1.1
+content-type: application/json
+
+# {
+#     "displayName": "VNPAY",
+#     "provider": "VNPAY"
+# }
+
+# {
+#     "displayName": "MOMO",
+#     "provider": "MOMO"
+# }
+
+
+# {
+#     "displayName": "ZALOPAY",
+#     "provider": "ZALOPAY"
+# }
+
+# {
+#     "displayName": "PAYPAL",
+#     "provider": "PAYPAL"
+# }
+
+# {
+#     "displayName": "STRIPE",
+#     "provider": "STRIPE"
+# }
+
+{
+    "displayName": "COD",
+    "provider": "COD"
+}

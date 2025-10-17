@@ -33,7 +33,7 @@ export class CreateOrderUseCase extends IUsecase<CreateOrderInput, Order> {
     const mapInventoryItemHandler = new MapInventoryItemHandler(this.inventoryGateway);
     const checkStockHandler = new CheckStockHandler(this.inventoryGateway);
     const saveOrderHandler = new SaveOrderHandler(this.ordersRepository);
-    const paymentHandler = new PaymentHandler(this.ordersRepository);
+    const paymentHandler = new PaymentHandler(this.eventPublister);
     const sendCreatedOrderEventHandler = new SendCreatedOrderEventHandler(this.eventPublister);
     validationHandler
       .setNext(mapInventoryItemHandler)

@@ -1,0 +1,29 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Order Service",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "start:dev", "order-service"],
+      "port": 9229,
+      "console": "integratedTerminal",
+      "restart": true,
+      "autoAttachChildProcesses": true,
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Payment Service",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "start:dev", "payment-service"],
+      "port": 3004,
+      "console": "integratedTerminal",
+      "restart": true,
+      "autoAttachChildProcesses": true,
+      "skipFiles": ["<node_internals>/**"]
+    }
+  ]
+}

@@ -10,6 +10,7 @@ export class CartPersistencyMapper {
     cartEntity.quantity = snapshot.quantity;
     cartEntity.unitPrice = snapshot.unitPrice;
     cartEntity.lineAmount = snapshot.lineAmount;
+    cartEntity.productName = snapshot.productName;
     return cartEntity;
   }
 

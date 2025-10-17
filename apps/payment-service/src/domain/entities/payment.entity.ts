@@ -22,7 +22,7 @@ export class Payment {
 
   currency: string;
 
-  transactionId?: string; // Mã giao dịch từ cổng thanh toán
+  transactionId?: string;
 
   transactions: PaymentTransaction[];
 

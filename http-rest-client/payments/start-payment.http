@@ -1,0 +1,9 @@
+
+POST http://localhost:3004/payments/start HTTP/1.1
+content-type: application/json
+
+{
+    "orderId": 33,
+    "amount": 21010000,
+    "method": "VNPAY"
+}

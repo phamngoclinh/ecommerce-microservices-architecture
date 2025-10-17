@@ -12,16 +12,18 @@ export class PaymentPersistencyMapper {
     paymentEntity.amount = snapshot.amount;
     paymentEntity.method = { id: snapshot.method.id } as PaymentMethodEntity;
     paymentEntity.currency = snapshot.currency || 'USD';
-    paymentEntity.transactionId = snapshot.transactionId;
+    if (snapshot.transactionId) paymentEntity.transactionId = snapshot.transactionId;
     paymentEntity.status = snapshot.status;
-    paymentEntity.transactions = snapshot.transactions.map(tx => {
-      const txEntity = new PaymentTransactionEntity();
-      if (tx.id) txEntity.id = tx.id;
-      txEntity.type = tx.type;
-      txEntity.payload = tx.payload;
-      txEntity.externalTxnId = tx.externalTxnId;
-      return txEntity;
-    });
+    paymentEntity.transactions = snapshot.transactions
+      ? snapshot.transactions.map(tx => {
+          const txEntity = new PaymentTransactionEntity();
+          if (tx.id) txEntity.id = tx.id;
+          txEntity.type = tx.type;
+          txEntity.payload = tx.payload;
+          txEntity.externalTxnId = tx.externalTxnId;
+          return txEntity;
+        })
+      : [];
     return paymentEntity;
   }
 
