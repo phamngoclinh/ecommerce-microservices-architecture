@@ -1,7 +1,7 @@
-import { BaseEntity } from '@libs/common/domain/entities/base.entity';
+import { DecimalTransformer } from '@libs/common/infrastructure/adapters/orm/decimal-transformer.adapter';
+import { BaseEntity } from '@libs/common/infrastructure/persistency/entities/base.entity';
 import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 import { InventoryItemEntity } from './inventory-item.entity';
-import { DecimalTransformer } from '@libs/common/infrastructure/adapters/orm/decimal-transformer.adapter';
 
 export enum StockReservationStatus {
   PENDING = 'PENDING',

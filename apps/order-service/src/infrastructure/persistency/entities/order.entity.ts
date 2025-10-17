@@ -1,5 +1,5 @@
 import { DecimalTransformer } from '@libs/common/infrastructure/adapters/orm/decimal-transformer.adapter';
-import { BaseEntity } from '@libs/common/domain/entities/base.entity';
+import { BaseEntity } from '@libs/common/infrastructure/persistency/entities/base.entity';
 import { Column, Entity, OneToMany } from 'typeorm';
 import { OrderItemEntity } from './order-item.entity';
 
@@ -61,29 +61,4 @@ export class OrderEntity extends BaseEntity {
     eager: true,
   })
   orderItems: OrderItemEntity[];
-
-  // // --- Hooks để tự tính toán ---
-  // @BeforeInsert()
-  // @BeforeUpdate()
-  // calculateTotals() {
-  //   if (this.orderItems && this.orderItems.length > 0) {
-  //     // Tổng giá gốc
-  //     this.subAmount = this.orderItems.reduce(
-  //       (sum, item) => sum + item.unitPrice * item.quantity,
-  //       0,
-  //     );
-  //   } else {
-  //     this.subAmount = 0;
-  //   }
-
-  //   // Giảm giá có thể là phần trăm (nếu nhỏ hơn 1) hoặc giá trị tuyệt đối
-  //   let discountValue = this.discount;
-  //   if (this.discount < 1) {
-  //     discountValue = this.subAmount * this.discount; // ví dụ discount = 0.1 → 10%
-  //   }
-
-  //   this.amount = this.subAmount - discountValue;
-  //   const vatValue = (this.amount * this.vat) / 100;
-  //   this.totalAmount = this.amount + vatValue;
-  // }
 }

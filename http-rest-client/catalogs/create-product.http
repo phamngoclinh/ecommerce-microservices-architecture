@@ -1,0 +1,41 @@
+POST http://localhost:3001/product/create-product HTTP/1.1
+content-type: application/json
+
+[
+    {
+        "name": "Mi heo 1 nắng",
+        "price": 10000
+    },
+    {
+        "name": "Tủ lạnh Toshiba 200L",
+        "price": 13000000
+    },
+    {
+        "name": "Máy rửa chén Sunhouse",
+        "price": 8000000
+    },
+    {
+        "name": "Bàn ủi hơi nước Wowy",
+        "price": 500000
+    },
+    {
+        "name": "Tủ lạnh Toshiba 200L",
+        "price": 13000000
+    },
+    {
+        "name": "Máy rửa chén Sunhouse",
+        "price": 8000000
+    },
+    {
+        "name": "Bàn ủi hơi nước Wowy",
+        "price": 500000
+    },
+    {
+        "name": "Tủ lạnh Toshiba 200L",
+        "price": 13000000
+    },
+    {
+        "name": "Máy rửa chén Sunhouse",
+        "price": 8000000
+    }
+]

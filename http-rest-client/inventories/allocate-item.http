@@ -1,0 +1,18 @@
+// Allocate inventory items based on productId
+
+POST http://localhost:3002/inventory/allocate-item HTTP/1.1
+content-type: application/json
+
+{
+    "items": [
+        {
+            "productId": 1,
+        },
+        {
+            "productId": 2,
+        },
+        {
+            "productId": 3,
+        }
+    ]
+}

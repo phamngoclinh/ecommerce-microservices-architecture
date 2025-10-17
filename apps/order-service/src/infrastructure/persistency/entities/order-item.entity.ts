@@ -1,5 +1,5 @@
 import { DecimalTransformer } from '@libs/common/infrastructure/adapters/orm/decimal-transformer.adapter';
-import { BaseEntity } from '@libs/common/domain/entities/base.entity';
+import { BaseEntity } from '@libs/common/infrastructure/persistency/entities/base.entity';
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { OrderEntity } from './order.entity';
 
@@ -41,11 +41,4 @@ export class OrderItemEntity extends BaseEntity {
     transformer: DecimalTransformer,
   })
   lineAmount: number;
-
-  // // Hook để tính thành tiền mỗi item
-  // @BeforeInsert()
-  // @BeforeUpdate()
-  // calculateLineAmount() {
-  //   this.lineAmount = this.unitPrice * this.quantity;
-  // }
 }

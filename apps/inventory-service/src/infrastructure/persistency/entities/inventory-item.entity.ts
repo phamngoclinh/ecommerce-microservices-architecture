@@ -1,4 +1,4 @@
-import { BaseEntity } from '@libs/common/domain/entities/base.entity';
+import { BaseEntity } from '@libs/common/infrastructure/persistency/entities/base.entity';
 import { Column, Entity, OneToMany } from 'typeorm';
 import { StockReservationEntity } from './stock-reservation.entity';
 import { StockEntity } from './stock.entity';
