@@ -1,6 +1,6 @@
+import { NatsBootstrapService } from '@libs/common/infrastructure/event-bus/nats/nats-bootstrap.service';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
-import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { AppModule } from './infrastructure/modules/app.module';
 
 async function bootstrap() {
@@ -8,18 +8,9 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
 
-  const redisHost = configService.get<string>('REDIS_HOST') || 'localhost';
-  const redisPort = configService.get<number>('REDIS_PORT') || 6379;
-
-  app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.REDIS,
-    options: {
-      host: redisHost,
-      port: redisPort,
-    },
-  });
-
   const appPort = configService.get<number>('PAYMENT_APP_PORT') || 4005;
+
+  NatsBootstrapService.bootstrap(app);
 
   await app.startAllMicroservices();
   await app.listen(appPort);

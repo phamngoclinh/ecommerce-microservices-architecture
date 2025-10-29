@@ -4,20 +4,18 @@ import { ClientProxyFactory, Transport } from '@nestjs/microservices';
 import { IEventBusClient } from '../event-bus-client.interface';
 
 @Injectable()
-export class RedisClientService extends IEventBusClient {
+export class NatsClientService extends IEventBusClient {
   constructor(private readonly configService: ConfigService) {
     super();
 
-    const redisHost = this.configService.get<string>('REDIS_HOST');
-    const redisPort = this.configService.get<number>('REDIS_PORT');
+    const natsHost = this.configService.get<string>('NATS_HOST');
 
-    if (!redisHost || !redisPort) throw Error('Missing configuration for redis');
+    if (!natsHost) throw Error('Missing configuration for NATS_HOST');
 
     this.client = ClientProxyFactory.create({
-      transport: Transport.REDIS,
+      transport: Transport.NATS,
       options: {
-        host: redisHost,
-        port: redisPort,
+        servers: [natsHost],
       },
     });
   }

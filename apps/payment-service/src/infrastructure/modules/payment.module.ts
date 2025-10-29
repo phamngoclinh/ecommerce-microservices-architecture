@@ -1,6 +1,6 @@
 import { EventPublisherService } from '@libs/common/application/ports/event-publisher';
-import { RedisClientModule } from '@libs/common/infrastructure/event-bus/redis/redis-client.module';
-import { RedisClientService } from '@libs/common/infrastructure/event-bus/redis/redis-client.service';
+import { NatsClientModule } from '@libs/common/infrastructure/event-bus/nats/nats-client.module';
+import { NatsClientService } from '@libs/common/infrastructure/event-bus/nats/nats-client.service';
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { IPaymentGateway } from '@payment/application/ports/payment-gateway.interface';
@@ -23,7 +23,7 @@ import { PaymentGatewayAdapter } from '../adapters/payment-gateway.adapter';
 import { PersistencyModule } from '../persistency/persistency.module';
 
 @Module({
-  imports: [PersistencyModule, RedisClientModule, HttpModule],
+  imports: [PersistencyModule, NatsClientModule, HttpModule],
   controllers: [
     PaymentGatewaySimulatorController,
     PaymentController,
@@ -44,7 +44,7 @@ import { PersistencyModule } from '../persistency/persistency.module';
         paymentsRepository: IPaymentRepository,
         paymentMethodsRepository: IPaymentMethodRepository,
         paymentGateway: IPaymentGateway,
-        eventPublisherClient: RedisClientService,
+        publisherClient: NatsClientService,
       ) =>
         new PaymentService(
           createUseCase,
@@ -57,7 +57,7 @@ import { PersistencyModule } from '../persistency/persistency.module';
           paymentsRepository,
           paymentMethodsRepository,
           paymentGateway,
-          new EventPublisherService(eventPublisherClient),
+          new EventPublisherService(publisherClient),
         ),
       inject: [
         CreatePaymentUseCase,
@@ -70,7 +70,7 @@ import { PersistencyModule } from '../persistency/persistency.module';
         IPaymentRepository,
         IPaymentMethodRepository,
         'IPaymentGateway',
-        RedisClientService,
+        NatsClientService,
       ],
     },
     {
@@ -120,15 +120,15 @@ import { PersistencyModule } from '../persistency/persistency.module';
       useFactory: (
         paymentsRepository: IPaymentRepository,
         paymentTransactionsRepository: IPaymentTransactionRepository,
-        eventPublisherClient: RedisClientService,
+        publisherClient: NatsClientService,
       ) => {
         return new HandleVendorCallbackUseCase(
           paymentsRepository,
           paymentTransactionsRepository,
-          new EventPublisherService(eventPublisherClient),
+          new EventPublisherService(publisherClient),
         );
       },
-      inject: [IPaymentRepository, IPaymentTransactionRepository, RedisClientService],
+      inject: [IPaymentRepository, IPaymentTransactionRepository, NatsClientService],
     },
 
     // adapters

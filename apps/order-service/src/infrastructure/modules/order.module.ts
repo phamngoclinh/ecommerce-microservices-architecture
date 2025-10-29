@@ -1,6 +1,6 @@
 import { EventPublisherService } from '@libs/common/application/ports/event-publisher';
-import { RedisClientModule } from '@libs/common/infrastructure/event-bus/redis/redis-client.module';
-import { RedisClientService } from '@libs/common/infrastructure/event-bus/redis/redis-client.service';
+import { NatsClientModule } from '@libs/common/infrastructure/event-bus/nats/nats-client.module';
+import { NatsClientService } from '@libs/common/infrastructure/event-bus/nats/nats-client.service';
 import { IValidator } from '@libs/common/validators/validator';
 import { Module } from '@nestjs/common';
 import { IInventoryGateway } from '@order/application/ports/inventory.gateway';
@@ -21,7 +21,7 @@ import { InventoryHttpModule } from '../adatpers/inventory-http.module';
 import { PersistencyModule } from '../persistency/persistency.module';
 
 @Module({
-  imports: [PersistencyModule, InventoryHttpModule, RedisClientModule],
+  imports: [PersistencyModule, InventoryHttpModule, NatsClientModule],
   controllers: [OrderController, OrderSubcriber],
   providers: [
     {
@@ -29,15 +29,15 @@ import { PersistencyModule } from '../persistency/persistency.module';
       useFactory: (
         ordersRepository: IOrderRepository,
         inventoryGateway: IInventoryGateway,
-        redisClient: RedisClientService,
+        publisherClient: NatsClientService,
       ) => {
         return new CreateOrderUseCase(
           ordersRepository,
           inventoryGateway,
-          new EventPublisherService(redisClient),
+          new EventPublisherService(publisherClient),
         );
       },
-      inject: [IOrderRepository, IInventoryGateway, RedisClientService],
+      inject: [IOrderRepository, IInventoryGateway, NatsClientService],
     },
     {
       provide: GetOrdersUseCase,
@@ -55,10 +55,13 @@ import { PersistencyModule } from '../persistency/persistency.module';
     },
     {
       provide: ConfirmOrderUseCase,
-      useFactory: (ordersRepository: IOrderRepository, redisClient: RedisClientService) => {
-        return new ConfirmOrderUseCase(ordersRepository, new EventPublisherService(redisClient));
+      useFactory: (ordersRepository: IOrderRepository, publisherClient: NatsClientService) => {
+        return new ConfirmOrderUseCase(
+          ordersRepository,
+          new EventPublisherService(publisherClient),
+        );
       },
-      inject: [IOrderRepository, RedisClientService],
+      inject: [IOrderRepository, NatsClientService],
     },
     {
       provide: ShipOrderUseCase,
@@ -69,10 +72,13 @@ import { PersistencyModule } from '../persistency/persistency.module';
     },
     {
       provide: CompleteOrderUseCase,
-      useFactory: (ordersRepository: IOrderRepository, redisClient: RedisClientService) => {
-        return new CompleteOrderUseCase(ordersRepository, new EventPublisherService(redisClient));
+      useFactory: (ordersRepository: IOrderRepository, publisherClient: NatsClientService) => {
+        return new CompleteOrderUseCase(
+          ordersRepository,
+          new EventPublisherService(publisherClient),
+        );
       },
-      inject: [IOrderRepository, RedisClientService],
+      inject: [IOrderRepository, NatsClientService],
     },
 
     // validators

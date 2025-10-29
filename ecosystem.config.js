@@ -22,7 +22,8 @@ module.exports = {
         CATALOG_DB_DATABASE: '/var/www/ecommerce/ecommerce-microservices-architecture/data/catalog_db.sqlite',
         CATALOG_APP_PORT: 4002,
         REDIS_HOST: 'localhost',
-        REDIS_PORT: 6379
+        REDIS_PORT: 6379,
+        NATS_HOST: 'nats://localhost:4222'
 			},
 		},
 		{
@@ -36,7 +37,8 @@ module.exports = {
         INVENTORY_DB_DATABASE: '/var/www/ecommerce/ecommerce-microservices-architecture/data/inventory_db.sqlite',
         INVENTORY_APP_PORT: 4003,
         REDIS_HOST: 'localhost',
-        REDIS_PORT: 6379
+        REDIS_PORT: 6379,
+        NATS_HOST: 'nats://localhost:4222'
 			},
 		},
 		{
@@ -51,7 +53,8 @@ module.exports = {
         ORDER_APP_PORT: 4004,
         ORDER_PAYMENT_SERVICE_URL: 'http://localhost:4003',
         REDIS_HOST: 'localhost',
-        REDIS_PORT: 6379
+        REDIS_PORT: 6379,
+        NATS_HOST: 'nats://localhost:4222'
 			},
 		},
 		{
@@ -66,7 +69,8 @@ module.exports = {
         PAYMENT_APP_PORT: 4005,
         PAYMENT_PROVIDER_URL: 'http://localhost:4005',
         REDIS_HOST: 'localhost',
-        REDIS_PORT: 6379
+        REDIS_PORT: 6379,
+        NATS_HOST: 'nats://localhost:4222'
 			},
     },
     {
@@ -80,7 +84,8 @@ module.exports = {
         NOTIFICATION_DB_DATABASE: '/var/www/ecommerce/ecommerce-microservices-architecture/data/notification_db.sqlite',
         NOTIFICATION_APP_PORT: 4006,
         REDIS_HOST: 'localhost',
-        REDIS_PORT: 6379
+        REDIS_PORT: 6379,
+        NATS_HOST: 'nats://localhost:4222'
 			},
 		},
 	],

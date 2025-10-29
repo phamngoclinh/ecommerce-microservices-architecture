@@ -6,13 +6,13 @@ import { GetProductsUseCase } from '@catalog/application/usecases/products/get-p
 import { IProductRepository } from '@catalog/domain/repositories/product.repository';
 import { CatalogController } from '@catalog/presentation/controllers/catalog.controller';
 import { EventPublisherService } from '@libs/common/application/ports/event-publisher';
-import { RedisClientModule } from '@libs/common/infrastructure/event-bus/redis/redis-client.module';
-import { RedisClientService } from '@libs/common/infrastructure/event-bus/redis/redis-client.service';
+import { NatsClientModule } from '@libs/common/infrastructure/event-bus/nats/nats-client.module';
+import { NatsClientService } from '@libs/common/infrastructure/event-bus/nats/nats-client.service';
 import { Module } from '@nestjs/common';
 import { PersistencyModule } from '../persistency/persistency.module';
 
 @Module({
-  imports: [PersistencyModule, RedisClientModule],
+  imports: [PersistencyModule, NatsClientModule],
   controllers: [CatalogController],
   providers: [
     //#region usecases
@@ -52,10 +52,10 @@ import { PersistencyModule } from '../persistency/persistency.module';
     },
     {
       provide: SendCreatedProductEventHandler,
-      useFactory: (redisClient: RedisClientService) => {
-        return new SendCreatedProductEventHandler(new EventPublisherService(redisClient));
+      useFactory: (publisherClient: NatsClientService) => {
+        return new SendCreatedProductEventHandler(new EventPublisherService(publisherClient));
       },
-      inject: [RedisClientService],
+      inject: [NatsClientService],
     },
     //#endregion
   ],
