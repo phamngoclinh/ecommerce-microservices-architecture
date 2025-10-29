@@ -33,8 +33,8 @@ module.exports = {
 			exec_mode: 'cluster',
 			env_production: {
         NODE_ENV: 'production',
-        CATALOG_DB_DATABASE: '/var/www/ecommerce/ecommerce-microservices-architecture/data/inventory_db.sqlite',
-        CATALOG_APP_PORT: 4003,
+        INVENTORY_DB_DATABASE: '/var/www/ecommerce/ecommerce-microservices-architecture/data/inventory_db.sqlite',
+        INVENTORY_APP_PORT: 4003,
         REDIS_HOST: 'localhost',
         REDIS_PORT: 6379
 			},
@@ -47,8 +47,8 @@ module.exports = {
 			exec_mode: 'cluster',
 			env_production: {
         NODE_ENV: 'production',
-        CATALOG_DB_DATABASE: '/var/www/ecommerce/ecommerce-microservices-architecture/data/notification_db.sqlite',
-        CATALOG_APP_PORT: 4006,
+        NOTIFICATION_DB_DATABASE: '/var/www/ecommerce/ecommerce-microservices-architecture/data/notification_db.sqlite',
+        NOTIFICATION_APP_PORT: 4006,
         REDIS_HOST: 'localhost',
         REDIS_PORT: 6379
 			},
@@ -61,8 +61,8 @@ module.exports = {
 			exec_mode: 'cluster',
 			env_production: {
         NODE_ENV: 'production',
-        CATALOG_DB_DATABASE: '/var/www/ecommerce/ecommerce-microservices-architecture/data/order_db.sqlite',
-        CATALOG_APP_PORT: 4004,
+        ORDER_DB_DATABASE: '/var/www/ecommerce/ecommerce-microservices-architecture/data/order_db.sqlite',
+        ORDER_APP_PORT: 4004,
         REDIS_HOST: 'localhost',
         REDIS_PORT: 6379
 			},
@@ -75,8 +75,8 @@ module.exports = {
 			exec_mode: 'cluster',
 			env_production: {
         NODE_ENV: 'production',
-        CATALOG_DB_DATABASE: '/var/www/ecommerce/ecommerce-microservices-architecture/data/payment_db.sqlite',
-        CATALOG_APP_PORT: 4005,
+        PAYMENT_DB_DATABASE: '/var/www/ecommerce/ecommerce-microservices-architecture/data/payment_db.sqlite',
+        PAYMENT_APP_PORT: 4005,
         REDIS_HOST: 'localhost',
         REDIS_PORT: 6379
 			},
