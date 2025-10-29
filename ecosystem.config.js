@@ -49,6 +49,7 @@ module.exports = {
         NODE_ENV: 'production',
         ORDER_DB_DATABASE: '/var/www/ecommerce/ecommerce-microservices-architecture/data/order_db.sqlite',
         ORDER_APP_PORT: 4004,
+        ORDER_PAYMENT_SERVICE_URL: 'http://localhost:4003',
         REDIS_HOST: 'localhost',
         REDIS_PORT: 6379
 			},
@@ -63,6 +64,7 @@ module.exports = {
         NODE_ENV: 'production',
         PAYMENT_DB_DATABASE: '/var/www/ecommerce/ecommerce-microservices-architecture/data/payment_db.sqlite',
         PAYMENT_APP_PORT: 4005,
+        PAYMENT_PROVIDER_URL: 'http://localhost:4005',
         REDIS_HOST: 'localhost',
         REDIS_PORT: 6379
 			},
