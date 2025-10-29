@@ -8,7 +8,12 @@ module.exports = {
 			exec_mode: 'cluster',
 			env_production: {
         NODE_ENV: 'production',
-        API_GATEWAY_APP_PORT: 4001
+        API_GATEWAY_APP_PORT: 4001,
+        API_GATEWAY_CATALOG_SERVICE_URL: 'http://localhost:4002',
+        API_GATEWAY_INVENTORY_SERVICE_URL: 'http://localhost:4003',
+        API_GATEWAY_ORDER_SERVICE_URL: 'http://localhost:4004',
+        API_GATEWAY_PAYMENT_SERVICE_URL: 'http://localhost:4005',
+        API_GATEWAY_NOTIFICATION_SERVICE_URL: 'http://localhost:4006',
 			},
 		},
 		{
