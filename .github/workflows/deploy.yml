@@ -1,0 +1,128 @@
+name: Build and Deploy to VPS via SSH
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [api-gateway, catalog-service, inventory-service, notification-service, order-service, payment-service]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies (root)
+        run: npm ci
+
+      - name: Build project ${{ matrix.app }}
+        run: |
+          npm run build -- ${{ matrix.app }}
+
+      - name: Prune dev dependencies (keep production only)
+        run: |
+          # Remove devDependencies to reduce artifact size; we already built the project
+          npm prune --production || true
+
+      - name: Prepare artifact for ${{ matrix.app }} (includes node_modules)
+        run: |
+          set -e
+          ART_DIR=/tmp/artifact/${{ matrix.app }}
+          rm -rf $ART_DIR
+          mkdir -p $ART_DIR
+          # Copy built output for the service. Adjust path if your build outputs elsewhere.
+          if [ -d "dist/apps/${{ matrix.app }}" ]; then
+            cp -R dist/apps/${{ matrix.app }} $ART_DIR/
+          elif [ -d "dist/${{ matrix.app }}" ]; then
+            cp -R dist/${{ matrix.app }} $ART_DIR/
+          else
+            echo "Cannot find build output for ${{ matrix.app }}; expected dist/apps/${{ matrix.app }} or dist/${{ matrix.app }}"
+            ls -la dist || true
+            exit 1
+          fi
+
+          # Copy production node_modules + package files so VPS không cần chạy npm
+          cp -R node_modules $ART_DIR/
+          if [ -f package-lock.json ]; then
+            cp package-lock.json $ART_DIR/
+          fi
+          if [ -f package.json ]; then
+            cp package.json $ART_DIR/
+          fi
+
+      - name: Rsync artifact to VPS
+        env:
+          REMOTE_DIR: "${{ secrets.VPS_REMOTE_PATH }}/${{ matrix.app }}"
+        run: |
+          sudo apt-get update -y && sudo apt-get install -y rsync
+          mkdir -p /tmp/ssh
+          echo "$VPS_SSH_PRIVATE_KEY" > /tmp/ssh/id_rsa
+          chmod 600 /tmp/ssh/id_rsa
+          export RSYNC_RSH="ssh -i /tmp/ssh/id_rsa -o StrictHostKeyChecking=no -p ${{ secrets.VPS_PORT }}"
+          rsync -avz --delete /tmp/artifact/${{ matrix.app }}/ ${VPS_USER}@${{ secrets.VPS_HOST }}:${REMOTE_DIR}/
+          # Also sync the repository ecosystem.config.js (if present) to the remote deploy base path
+          if [ -f ecosystem.config.js ]; then
+            rsync -avz ecosystem.config.js ${VPS_USER}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_REMOTE_PATH }}/ecosystem.config.js
+          fi
+        env:
+          VPS_SSH_PRIVATE_KEY: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+
+
+      - name: Deploy on VPS and restart with PM2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
+          port: ${{ secrets.VPS_PORT }}
+          script: |
+            set -e
+            APP_DIR="${{ secrets.VPS_REMOTE_PATH }}/${{ matrix.app }}"
+            mkdir -p "$APP_DIR"
+            cd "$APP_DIR"
+
+            # No npm install on VPS: we rely on node_modules shipped via rsync
+            # Determine app entrypoint
+            ENTRY=""
+            if [ -f dist/main.js ]; then
+              ENTRY="dist/main.js"
+            elif [ -f main.js ]; then
+              ENTRY="main.js"
+            elif [ -f dist/apps/${{ matrix.app }}/main.js ]; then
+              ENTRY="dist/apps/${{ matrix.app }}/main.js"
+            elif [ -f dist/${{ matrix.app }}/main.js ]; then
+              ENTRY="dist/${{ matrix.app }}/main.js"
+            else
+              echo "Could not locate entrypoint for ${{ matrix.app }}; looking for main.js in common locations"
+              ls -la . || true
+              exit 0
+            fi
+
+            APP_NAME="${{ matrix.app }}"
+            # Use the repository's ecosystem.config.js located at the remote base path
+            ECOSYSTEM_REMOTE_PATH="${{ secrets.VPS_REMOTE_PATH }}/ecosystem.config.js"
+
+            # Ensure pm2 is available
+            command -v pm2 >/dev/null 2>&1 || npm i -g pm2
+
+            # If the app is already managed by pm2, reload it for zero-downtime; otherwise start it using the ecosystem file
+            if pm2 list | grep -q "${APP_NAME}"; then
+              pm2 reload "$ECOSYSTEM_REMOTE_PATH" --only "${APP_NAME}" --env production || pm2 start "$ECOSYSTEM_REMOTE_PATH" --only "${APP_NAME}" --env production
+            else
+              pm2 start "$ECOSYSTEM_REMOTE_PATH" --only "${APP_NAME}" --env production
+            fi
