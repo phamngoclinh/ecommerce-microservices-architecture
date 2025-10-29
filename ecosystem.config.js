@@ -40,20 +40,6 @@ module.exports = {
 			},
 		},
 		{
-			name: 'notification-service',
-			script: 'notification-service/main.js',
-			cwd: '/var/www/ecommerce/ecommerce-microservices-architecture',
-			instances: 'max',
-			exec_mode: 'cluster',
-			env_production: {
-        NODE_ENV: 'production',
-        NOTIFICATION_DB_DATABASE: '/var/www/ecommerce/ecommerce-microservices-architecture/data/notification_db.sqlite',
-        NOTIFICATION_APP_PORT: 4006,
-        REDIS_HOST: 'localhost',
-        REDIS_PORT: 6379
-			},
-		},
-		{
 			name: 'order-service',
 			script: 'order-service/main.js',
 			cwd: '/var/www/ecommerce/ecommerce-microservices-architecture',
@@ -77,6 +63,20 @@ module.exports = {
         NODE_ENV: 'production',
         PAYMENT_DB_DATABASE: '/var/www/ecommerce/ecommerce-microservices-architecture/data/payment_db.sqlite',
         PAYMENT_APP_PORT: 4005,
+        REDIS_HOST: 'localhost',
+        REDIS_PORT: 6379
+			},
+    },
+    {
+			name: 'notification-service',
+			script: 'notification-service/main.js',
+			cwd: '/var/www/ecommerce/ecommerce-microservices-architecture',
+			instances: 'max',
+			exec_mode: 'cluster',
+			env_production: {
+        NODE_ENV: 'production',
+        NOTIFICATION_DB_DATABASE: '/var/www/ecommerce/ecommerce-microservices-architecture/data/notification_db.sqlite',
+        NOTIFICATION_APP_PORT: 4006,
         REDIS_HOST: 'localhost',
         REDIS_PORT: 6379
 			},
