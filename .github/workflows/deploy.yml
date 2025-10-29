@@ -22,6 +22,8 @@ jobs:
         run: npm ci
 
       - name: Build all apps and prepare artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           mkdir -p /tmp/artifacts
@@ -73,7 +75,17 @@ jobs:
       - name: Extract artifact
         run: |
           mkdir -p /tmp/deploy/${{ matrix.app }}
-          tar -xzf /tmp/*-artifact.tar.gz -C /tmp/deploy/${{ matrix.app }} || true
+          # Find the artifact tarball matching the current app
+          ARTFILE=$(ls /tmp/deploy/*${{ matrix.app }}*-artifact.tar.gz 2>/dev/null | head -n1 || true)
+          if [ -n "$ARTFILE" ] && [ -f "$ARTFILE" ]; then
+            echo "Found artifact: $ARTFILE"
+            tar -xzf "$ARTFILE" -C /tmp/deploy/${{ matrix.app }}
+          else
+            echo "Artifact for ${{ matrix.app }} not found in /tmp/deploy"
+            echo "Listing /tmp/deploy for debug:" 
+            ls -la /tmp/deploy || true
+            exit 1
+          fi
 
       - name: Rsync to VPS
         env:
