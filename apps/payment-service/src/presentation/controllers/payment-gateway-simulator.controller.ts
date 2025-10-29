@@ -1,5 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { Controller, Get, Param, Query } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { PaymentProvider } from '@payment/domain/entities/payment-method.entity';
 import { IPaymentRepository } from '@payment/domain/repositories/payment.repository.interface';
 
@@ -8,6 +9,7 @@ export class PaymentGatewaySimulatorController {
   constructor(
     private readonly paymentsRepository: IPaymentRepository,
     private readonly httpService: HttpService,
+    private readonly configService: ConfigService,
   ) {}
 
   @Get('/pay')
@@ -33,7 +35,7 @@ export class PaymentGatewaySimulatorController {
     if (payment === null) return { success: false };
 
     await this.httpService.axiosRef.post(
-      'http://localhost:3004/payments/webhook',
+      `http://localhost:${this.configService.get<string>('PAYMENT_APP_PORT')}/payments/webhook`,
       {
         vendor: 'VNPAY',
         vendorStatus: '00',
@@ -67,7 +69,7 @@ export class PaymentGatewaySimulatorController {
     if (payment === null) return { success: false };
 
     await this.httpService.axiosRef.post(
-      'http://localhost:3004/payments/webhook',
+      `http://localhost:${this.configService.get<string>('PAYMENT_APP_PORT')}/payments/webhook`,
       {
         vendor: 'VNPAY',
         vendorStatus: '11',

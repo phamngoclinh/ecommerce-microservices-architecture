@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ProductEntity } from '../entities/product.entity';
 
 @Module({
   imports: [
@@ -9,7 +10,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       useFactory: (configService: ConfigService) => ({
         type: 'sqlite',
         database: configService.get<string>('CATALOG_DB_DATABASE'),
-        entities: [__dirname + './entities/*.entity{.ts,.js}'],
+        entities: [ProductEntity],
         synchronize: process.env.NODE_ENV === 'development' ? true : false,
         autoLoadEntities: process.env.NODE_ENV === 'development' ? true : false,
         logging: process.env.NODE_ENV === 'development' ? ['error', 'warn', 'info'] : ['error'],
