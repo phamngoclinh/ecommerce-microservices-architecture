@@ -30,7 +30,7 @@ jobs:
           for APP in api-gateway catalog-service inventory-service notification-service order-service payment-service; do
             echo "Building $APP"
             npm run build -- $APP
-            ART_DIR=/tmp/artifacts
+            ART_DIR=/tmp/artifacts/$APP
             rm -rf $ART_DIR
             mkdir -p $ART_DIR
             if [ -d "dist/apps/$APP" ]; then
@@ -49,6 +49,17 @@ jobs:
             tar -C /tmp/artifacts -czf /tmp/$APP-artifact.tar.gz $APP
             echo "Prepared /tmp/$APP-artifact.tar.gz"
             # gh release create temp || true
+          done
+
+      - name: List prepared artifacts
+        run: |
+          echo "Listing artifact files in /tmp"
+          ls -lah /tmp/*-artifact.tar.gz || true
+          for f in /tmp/*-artifact.tar.gz; do
+            if [ -f "$f" ]; then
+              echo "== Contents of $f =="
+              tar -tzf "$f" | sed -n '1,20p'
+            fi
           done
 
       - name: Upload artifacts
