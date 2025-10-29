@@ -1,70 +1,81 @@
-name: Build and Deploy to VPS via SSH
+name: Build and Deploy to VPS
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   workflow_dispatch:
 
-env:
-  NODE_VERSION: '20'
-
 jobs:
-  build-and-deploy:
+  build-artifacts:
+    name: Build artifacts
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        app: [api-gateway, catalog-service, inventory-service, notification-service, order-service, payment-service]
-
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Use Node.js ${{ env.NODE_VERSION }}
+      - name: Use Node.js 20
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version: '20'
 
-      - name: Install dependencies (root)
+      - name: Install dependencies
         run: npm ci
 
-      - name: Build project ${{ matrix.app }}
+      - name: Build all apps and prepare artifacts
         run: |
-          npm run build -- ${{ matrix.app }}
+          set -euo pipefail
+          mkdir -p /tmp/artifacts
+          for APP in api-gateway catalog-service inventory-service notification-service order-service payment-service; do
+            echo "Building $APP"
+            npm run build -- $APP
+            ART_DIR=/tmp/artifacts/$APP
+            rm -rf $ART_DIR
+            mkdir -p $ART_DIR
+            if [ -d "dist/apps/$APP" ]; then
+              cp -R dist/apps/$APP $ART_DIR/
+            elif [ -d "dist/$APP" ]; then
+              cp -R dist/$APP $ART_DIR/
+            else
+              echo "Could not find build output for $APP"
+              exit 1
+            fi
+            cp -R node_modules $ART_DIR/ || true
+            [ -f package.json ] && cp package.json $ART_DIR/ || true
+            [ -f package-lock.json ] && cp package-lock.json $ART_DIR/ || true
+            tar -C /tmp/artifacts -czf /tmp/$APP-artifact.tar.gz $APP
+            echo "Prepared /tmp/$APP-artifact.tar.gz"
+            gh release create temp || true
+          done
 
-      - name: Prune dev dependencies (keep production only)
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifacts
+          path: /tmp/*-artifact.tar.gz
+
+  deploy:
+    name: Deploy apps to VPS
+    needs: build-artifacts
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        app: [api-gateway, catalog-service, inventory-service, notification-service, order-service, payment-service]
+    steps:
+      - name: Checkout (to get ecosystem.config.js)
+        uses: actions/checkout@v4
+
+      - name: Download artifact for ${{ matrix.app }}
+        uses: actions/download-artifact@v4
+        with:
+          name: artifacts
+          path: /tmp/deploy
+
+      - name: Extract artifact
         run: |
-          # Remove devDependencies to reduce artifact size; we already built the project
-          npm prune --production || true
+          mkdir -p /tmp/deploy/${{ matrix.app }}
+          tar -xzf /tmp/*-artifact.tar.gz -C /tmp/deploy/${{ matrix.app }} || true
 
-      - name: Prepare artifact for ${{ matrix.app }} (includes node_modules)
-        run: |
-          set -e
-          ART_DIR=/tmp/artifact/${{ matrix.app }}
-          rm -rf $ART_DIR
-          mkdir -p $ART_DIR
-          # Copy built output for the service. Adjust path if your build outputs elsewhere.
-          if [ -d "dist/apps/${{ matrix.app }}" ]; then
-            cp -R dist/apps/${{ matrix.app }} $ART_DIR/
-          elif [ -d "dist/${{ matrix.app }}" ]; then
-            cp -R dist/${{ matrix.app }} $ART_DIR/
-          else
-            echo "Cannot find build output for ${{ matrix.app }}; expected dist/apps/${{ matrix.app }} or dist/${{ matrix.app }}"
-            ls -la dist || true
-            exit 1
-          fi
-
-          # Copy production node_modules + package files so VPS không cần chạy npm
-          cp -R node_modules $ART_DIR/
-          if [ -f package-lock.json ]; then
-            cp package-lock.json $ART_DIR/
-          fi
-          if [ -f package.json ]; then
-            cp package.json $ART_DIR/
-          fi
-
-      - name: Rsync artifact to VPS
+      - name: Rsync to VPS
         env:
           REMOTE_DIR: "${{ secrets.VPS_REMOTE_PATH }}/${{ matrix.app }}"
         run: |
@@ -73,8 +84,8 @@ jobs:
           echo "$VPS_SSH_PRIVATE_KEY" > /tmp/ssh/id_rsa
           chmod 600 /tmp/ssh/id_rsa
           export RSYNC_RSH="ssh -i /tmp/ssh/id_rsa -o StrictHostKeyChecking=no -p ${{ secrets.VPS_PORT }}"
-          rsync -avz --delete /tmp/artifact/${{ matrix.app }}/ ${VPS_USER}@${{ secrets.VPS_HOST }}:${REMOTE_DIR}/
-          # Also sync the repository ecosystem.config.js (if present) to the remote deploy base path
+          rsync -avz --delete /tmp/deploy/${{ matrix.app }}/ ${VPS_USER}@${{ secrets.VPS_HOST }}:${REMOTE_DIR}/
+          # sync ecosystem.config.js from repo root to remote base path
           if [ -f ecosystem.config.js ]; then
             rsync -avz ecosystem.config.js ${VPS_USER}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_REMOTE_PATH }}/ecosystem.config.js
           fi
@@ -82,8 +93,7 @@ jobs:
           VPS_SSH_PRIVATE_KEY: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
           VPS_USER: ${{ secrets.VPS_USER }}
 
-
-      - name: Deploy on VPS and restart with PM2
+      - name: Reload with pm2 on VPS
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.VPS_HOST }}
@@ -92,35 +102,9 @@ jobs:
           port: ${{ secrets.VPS_PORT }}
           script: |
             set -e
-            APP_DIR="${{ secrets.VPS_REMOTE_PATH }}/${{ matrix.app }}"
-            mkdir -p "$APP_DIR"
-            cd "$APP_DIR"
-
-            # No npm install on VPS: we rely on node_modules shipped via rsync
-            # Determine app entrypoint
-            ENTRY=""
-            if [ -f dist/main.js ]; then
-              ENTRY="dist/main.js"
-            elif [ -f main.js ]; then
-              ENTRY="main.js"
-            elif [ -f dist/apps/${{ matrix.app }}/main.js ]; then
-              ENTRY="dist/apps/${{ matrix.app }}/main.js"
-            elif [ -f dist/${{ matrix.app }}/main.js ]; then
-              ENTRY="dist/${{ matrix.app }}/main.js"
-            else
-              echo "Could not locate entrypoint for ${{ matrix.app }}; looking for main.js in common locations"
-              ls -la . || true
-              exit 0
-            fi
-
             APP_NAME="${{ matrix.app }}"
-            # Use the repository's ecosystem.config.js located at the remote base path
             ECOSYSTEM_REMOTE_PATH="${{ secrets.VPS_REMOTE_PATH }}/ecosystem.config.js"
-
-            # Ensure pm2 is available
             command -v pm2 >/dev/null 2>&1 || npm i -g pm2
-
-            # If the app is already managed by pm2, reload it for zero-downtime; otherwise start it using the ecosystem file
             if pm2 list | grep -q "${APP_NAME}"; then
               pm2 reload "$ECOSYSTEM_REMOTE_PATH" --only "${APP_NAME}" --env production || pm2 start "$ECOSYSTEM_REMOTE_PATH" --only "${APP_NAME}" --env production
             else
