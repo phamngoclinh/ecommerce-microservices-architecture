@@ -19,7 +19,7 @@ export class ProductEntity extends BaseEntity {
 
   // Trạng thái
   @Column({
-    type: 'enum',
+    type: 'text',
     enum: ProductStatus,
     default: ProductStatus.ACTIVE,
   })

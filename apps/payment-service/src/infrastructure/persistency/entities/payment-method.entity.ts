@@ -6,7 +6,7 @@ import { PaymentEntity } from './payment.entity';
 @Entity('payment_methods')
 export class PaymentMethodEntity extends BaseEntity {
   @Column({
-    type: 'enum',
+    type: 'text',
     enum: PaymentProvider,
   })
   provider: PaymentProvider;

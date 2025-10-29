@@ -15,7 +15,7 @@ enum OrderStatus {
 export class OrderEntity extends BaseEntity {
   // Trạng thái
   @Column({
-    type: 'enum',
+    type: 'text',
     enum: OrderStatus,
     default: OrderStatus.PENDING,
   })

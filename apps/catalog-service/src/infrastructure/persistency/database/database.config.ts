@@ -1,19 +1,20 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ProductEntity } from '../entities/product.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'catalog_user',
-      password: 'catalog_password',
-      database: 'catalog_db',
-      entities: [ProductEntity],
-      synchronize: true,
-      autoLoadEntities: true,
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        type: 'sqlite',
+        database: configService.get<string>('CATALOG_DB_DATABASE'),
+        entities: [__dirname + './entities/*.entity{.ts,.js}'],
+        synchronize: process.env.NODE_ENV === 'development' ? true : false,
+        autoLoadEntities: process.env.NODE_ENV === 'development' ? true : false,
+        logging: process.env.NODE_ENV === 'development' ? ['error', 'warn', 'info'] : ['error'],
+      }),
+      inject: [ConfigService],
     }),
   ],
   controllers: [],

@@ -1,10 +1,18 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { PersistencyModule } from '../persistency/persistency.module';
 import { CartModule } from './cart.module';
 import { OrderModule } from './order.module';
-import { PersistencyModule } from '../persistency/persistency.module';
 
 @Module({
-  imports: [PersistencyModule, OrderModule, CartModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    PersistencyModule,
+    OrderModule,
+    CartModule,
+  ],
   controllers: [],
   providers: [],
 })

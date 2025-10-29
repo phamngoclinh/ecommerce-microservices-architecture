@@ -22,7 +22,7 @@ export class PaymentEntity extends BaseEntity {
   method: PaymentMethodEntity;
 
   @Column({
-    type: 'enum',
+    type: 'text',
     enum: PaymentStatus,
     default: PaymentStatus.PENDING,
   })

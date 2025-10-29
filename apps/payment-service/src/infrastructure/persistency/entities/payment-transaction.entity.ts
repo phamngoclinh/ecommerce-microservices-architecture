@@ -9,7 +9,7 @@ export class PaymentTransactionEntity extends BaseEntity {
   @JoinColumn({ name: 'payment_id' })
   payment: PaymentEntity;
 
-  @Column({ type: 'enum', enum: TransactionType })
+  @Column({ type: 'text', enum: TransactionType })
   type: TransactionType;
 
   @Column({ type: 'json', nullable: true })

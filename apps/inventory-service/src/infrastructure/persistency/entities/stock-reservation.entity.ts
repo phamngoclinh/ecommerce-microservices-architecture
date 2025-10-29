@@ -29,18 +29,18 @@ export class StockReservationEntity extends BaseEntity {
 
   @Column({
     name: 'status',
-    type: 'enum',
+    type: 'text',
     enum: StockReservationStatus,
     default: StockReservationStatus.PENDING,
   })
   status: StockReservationStatus;
 
-  @Column({ name: 'reserved_at', type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({ name: 'reserved_at', type: 'text', default: () => 'CURRENT_TIMESTAMP' })
   reservedAt: Date;
 
-  @Column({ name: 'expired_at', type: 'timestamp', nullable: true })
+  @Column({ name: 'expired_at', type: 'text', nullable: true })
   expiredAt?: Date;
 
-  @Column({ name: 'released_at', type: 'timestamp', nullable: true })
+  @Column({ name: 'released_at', type: 'text', nullable: true })
   releasedAt?: Date;
 }
