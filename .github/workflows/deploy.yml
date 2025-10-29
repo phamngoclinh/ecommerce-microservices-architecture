@@ -78,6 +78,8 @@ jobs:
       - name: Rsync to VPS
         env:
           REMOTE_DIR: "${{ secrets.VPS_REMOTE_PATH }}/${{ matrix.app }}"
+          VPS_SSH_PRIVATE_KEY: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
+          VPS_USER: ${{ secrets.VPS_USER }}
         run: |
           sudo apt-get update -y && sudo apt-get install -y rsync
           mkdir -p /tmp/ssh
@@ -89,9 +91,6 @@ jobs:
           if [ -f ecosystem.config.js ]; then
             rsync -avz ecosystem.config.js ${VPS_USER}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_REMOTE_PATH }}/ecosystem.config.js
           fi
-        env:
-          VPS_SSH_PRIVATE_KEY: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
-          VPS_USER: ${{ secrets.VPS_USER }}
 
       - name: Reload with pm2 on VPS
         uses: appleboy/ssh-action@master
