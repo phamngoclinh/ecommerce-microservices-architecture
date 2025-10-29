@@ -92,7 +92,7 @@ jobs:
           ARTFILE=$(ls /tmp/deploy/*${{ matrix.app }}*-artifact.tar.gz 2>/dev/null | head -n1 || true)
           if [ -n "$ARTFILE" ] && [ -f "$ARTFILE" ]; then
             echo "Found artifact: $ARTFILE"
-            tar -xzf "$ARTFILE" -C /tmp/deploy/${{ matrix.app }}
+            tar -xzf "$ARTFILE" -C /tmp/deploy
           else
             echo "Artifact for ${{ matrix.app }} not found in /tmp/deploy"
             echo "Listing /tmp/deploy for debug:" 
