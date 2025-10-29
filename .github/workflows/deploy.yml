@@ -30,7 +30,7 @@ jobs:
           for APP in api-gateway catalog-service inventory-service notification-service order-service payment-service; do
             echo "Building $APP"
             npm run build -- $APP
-            ART_DIR=/tmp/artifacts/$APP
+            ART_DIR=/tmp/artifacts
             rm -rf $ART_DIR
             mkdir -p $ART_DIR
             if [ -d "dist/apps/$APP" ]; then

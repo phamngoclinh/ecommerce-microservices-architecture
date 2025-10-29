@@ -2,8 +2,8 @@ module.exports = {
 	apps: [
 		{
 			name: 'api-gateway',
-			script: 'dist/apps/api-gateway/main.js',
-			cwd: '/var/www/ecommerce/ecommerce-microservices-architecture/apps/api-gateway',
+			script: 'api-gateway/main.js',
+			cwd: '/var/www/ecommerce/ecommerce-microservices-architecture',
 			instances: 'max',
 			exec_mode: 'cluster',
 			env_production: {
@@ -13,8 +13,8 @@ module.exports = {
 		},
 		{
 			name: 'catalog-service',
-			script: 'dist/apps/catalog-service/main.js',
-			cwd: '/var/www/ecommerce/ecommerce-microservices-architecture/apps/catalog-service',
+			script: 'catalog-service/main.js',
+			cwd: '/var/www/ecommerce/ecommerce-microservices-architecture',
 			instances: 'max',
 			exec_mode: 'cluster',
 			env_production: {
@@ -27,8 +27,8 @@ module.exports = {
 		},
 		{
 			name: 'inventory-service',
-			script: 'dist/apps/inventory-service/main.js',
-			cwd: '/var/www/ecommerce/ecommerce-microservices-architecture/apps/inventory-service',
+			script: 'inventory-service/main.js',
+			cwd: '/var/www/ecommerce/ecommerce-microservices-architecture',
 			instances: 'max',
 			exec_mode: 'cluster',
 			env_production: {
@@ -41,8 +41,8 @@ module.exports = {
 		},
 		{
 			name: 'notification-service',
-			script: 'dist/apps/notification-service/main.js',
-			cwd: '/var/www/ecommerce/ecommerce-microservices-architecture/apps/notification-service',
+			script: 'notification-service/main.js',
+			cwd: '/var/www/ecommerce/ecommerce-microservices-architecture',
 			instances: 'max',
 			exec_mode: 'cluster',
 			env_production: {
@@ -55,8 +55,8 @@ module.exports = {
 		},
 		{
 			name: 'order-service',
-			script: 'dist/apps/order-service/main.js',
-			cwd: '/var/www/ecommerce/ecommerce-microservices-architecture/apps/order-service',
+			script: 'order-service/main.js',
+			cwd: '/var/www/ecommerce/ecommerce-microservices-architecture',
 			instances: 'max',
 			exec_mode: 'cluster',
 			env_production: {
@@ -69,8 +69,8 @@ module.exports = {
 		},
 		{
 			name: 'payment-service',
-			script: 'dist/apps/payment-service/main.js',
-			cwd: '/var/www/ecommerce/ecommerce-microservices-architecture/apps/payment-service',
+			script: 'payment-service/main.js',
+			cwd: '/var/www/ecommerce/ecommerce-microservices-architecture',
 			instances: 'max',
 			exec_mode: 'cluster',
 			env_production: {
