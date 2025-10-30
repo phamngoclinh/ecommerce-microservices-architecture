@@ -41,6 +41,7 @@ jobs:
             echo "Copy contents of dist/apps/$APP into artifact dir"
             cp -R dist/apps/$APP/. $ART_DIR/
             echo "Compress /tmp/artifacts/dist/apps/$APP into /tmp/dist/apps/$APP-artifact.tar.gz"
+            mkdir -p /tmp/dist/apps
             tar -C /tmp/artifacts/dist/apps $APP -czf /tmp/dist/apps/$APP-artifact.tar.gz
             echo "Prepared /tmp/dist/apps/$APP-artifact.tar.gz"
           done
