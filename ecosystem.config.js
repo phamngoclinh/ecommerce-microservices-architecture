@@ -24,7 +24,7 @@ module.exports = {
 			exec_mode: 'cluster',
 			env_production: {
         NODE_ENV: 'production',
-        CATALOG_DB_DATABASE: '/var/www/ecommerce/ecommerce-microservices-architecture/data/catalog_db.sqlite',
+        CATALOG_DB_DATABASE: '/var/www/ecommerce/data/catalog_db.sqlite',
         CATALOG_APP_PORT: 4002,
         NATS_HOST: 'nats://localhost:4222'
 			},
@@ -37,7 +37,7 @@ module.exports = {
 			exec_mode: 'cluster',
 			env_production: {
         NODE_ENV: 'production',
-        INVENTORY_DB_DATABASE: '/var/www/ecommerce/ecommerce-microservices-architecture/data/inventory_db.sqlite',
+        INVENTORY_DB_DATABASE: '/var/www/ecommerce/data/inventory_db.sqlite',
         INVENTORY_APP_PORT: 4003,
         NATS_HOST: 'nats://localhost:4222'
 			},
@@ -50,7 +50,7 @@ module.exports = {
 			exec_mode: 'cluster',
 			env_production: {
         NODE_ENV: 'production',
-        ORDER_DB_DATABASE: '/var/www/ecommerce/ecommerce-microservices-architecture/data/order_db.sqlite',
+        ORDER_DB_DATABASE: '/var/www/ecommerce/data/order_db.sqlite',
         ORDER_APP_PORT: 4004,
         ORDER_PAYMENT_SERVICE_URL: 'http://localhost:4003',
         NATS_HOST: 'nats://localhost:4222'
@@ -64,7 +64,7 @@ module.exports = {
 			exec_mode: 'cluster',
 			env_production: {
         NODE_ENV: 'production',
-        PAYMENT_DB_DATABASE: '/var/www/ecommerce/ecommerce-microservices-architecture/data/payment_db.sqlite',
+        PAYMENT_DB_DATABASE: '/var/www/ecommerce/data/payment_db.sqlite',
         PAYMENT_APP_PORT: 4005,
         PAYMENT_PROVIDER_URL: 'http://localhost:4005',
         NATS_HOST: 'nats://localhost:4222'
@@ -78,7 +78,7 @@ module.exports = {
 			exec_mode: 'cluster',
 			env_production: {
         NODE_ENV: 'production',
-        NOTIFICATION_DB_DATABASE: '/var/www/ecommerce/ecommerce-microservices-architecture/data/notification_db.sqlite',
+        NOTIFICATION_DB_DATABASE: '/var/www/ecommerce/data/notification_db.sqlite',
         NOTIFICATION_APP_PORT: 4006,
         NATS_HOST: 'nats://localhost:4222'
 			},
