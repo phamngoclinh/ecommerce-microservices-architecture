@@ -80,6 +80,9 @@ jobs:
     needs: build-artifacts
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout (to get ecosystem.config.js)
+        uses: actions/checkout@v4
+
       - name: Download artifact for common
         uses: actions/download-artifact@v4
         with:
