@@ -2,7 +2,7 @@ module.exports = {
 	apps: [
 		{
 			name: 'api-gateway',
-			script: 'dist/apps/api-gateway/apps/api-gateway/src/main.js',
+			script: 'dist/apps/api-gateway/main.js',
 			cwd: '/var/www/ecommerce/ecommerce-microservices-architecture',
 			instances: 'max',
 			exec_mode: 'cluster',
@@ -72,7 +72,7 @@ module.exports = {
     },
     {
 			name: 'notification-service',
-			script: 'dist/apps/notification-service/apps/notification-service/src/main.js',
+			script: 'dist/apps/notification-service/main.js',
 			cwd: '/var/www/ecommerce/ecommerce-microservices-architecture',
 			instances: 'max',
 			exec_mode: 'cluster',
