@@ -83,8 +83,8 @@ jobs:
       - name: List prepared artifacts
         run: |
           echo "Listing artifact files in /tmp"
-          ls -lah /tmp/*-artifact.tar.gz || true
-          for f in /tmp/*-artifact.tar.gz; do
+          ls -lah /tmp/**/*-artifact.tar.gz || true
+          for f in /tmp/**/*-artifact.tar.gz; do
             if [ -f "$f" ]; then
               echo "== Contents of $f =="
               tar -tzf "$f" | sed -n '1,20p'
@@ -95,7 +95,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: artifacts
-          path: /tmp/**/*-artifact.tar.gz
+          path: |
+            /tmp/dist/apps/*-artifact.tar.gz
+            /tmp/common/*-artifact.tar.gz
 
   deploy:
     name: Deploy apps to VPS
