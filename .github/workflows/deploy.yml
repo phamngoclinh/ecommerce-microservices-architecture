@@ -51,6 +51,8 @@ jobs:
           cp -R node_modules /tmp/artifacts/common/common-artifacts || true
           [ -f package.json ] && cp package.json /tmp/artifacts/common/common-artifacts || true
           [ -f package-lock.json ] && cp package-lock.json /tmp/artifacts/common/common-artifacts || true
+          echo "Compress /tmp/artifacts/common/common-artifacts into /tmp/common/common-artifact.tar.gz"
+          mkdir -p /tmp/common
           tar -C /tmp/artifacts/common -czf /tmp/common/common-artifact.tar.gz common-artifacts
           echo "Prepared /tmp/common/common-artifact.tar.gz"
 
