@@ -28,29 +28,41 @@ jobs:
           set -euo pipefail
           mkdir -p /tmp/artifacts
 
-          npm run build
-          ART_DIR=/tmp/artifacts
-          ART_DIST_DIR=/tmp/artifacts/dist
-          cp -R dist/. $ART_DIST_DIR/
-          cp -R node_modules $ART_DIR/ || true
-          [ -f package.json ] && cp package.json $ART_DIR/ || true
-          [ -f package-lock.json ] && cp package-lock.json $ART_DIR/ || true
-          tar -czf /tmp/build-artifact.tar.gz -C /tmp artifacts
-          echo "Prepared /tmp/build-artifact.tar.gz"
+          for APP in api-gateway catalog-service inventory-service notification-service order-service payment-service; do
+            echo "Building $APP"
+            npm run build -- $APP
+            echo "Done Building $APP"
+
+            echo "Preparing /tmp/dist/apps/$APP-artifact.tar.gz"
+            ART_DIR=/tmp/artifacts/dist/apps/$APP
+            rm -rf $ART_DIR
+            mkdir -p $ART_DIR
+            # copy contents of dist/apps/$APP into artifact dir to avoid nested folder
+            cp -R dist/apps/$APP/. $ART_DIR/
+            tar -C /tmp/artifacts/dist/apps -czf /tmp/dist/apps/$APP-artifact.tar.gz $APP
+            echo "Prepared /tmp/dist/apps/$APP-artifact.tar.gz"
+          done
+
+          echo "Preparing /tmp/common/common-artifact.tar.gz"
+          mkdir -p /tmp/artifacts/common/common-artifacts
+          cp -R node_modules /tmp/artifacts/common/common-artifacts || true
+          [ -f package.json ] && cp package.json /tmp/artifacts/common/common-artifacts || true
+          [ -f package-lock.json ] && cp package-lock.json /tmp/artifacts/common/common-artifacts || true
+          tar -C /tmp/artifacts/common -czf /tmp/common/common-artifact.tar.gz common-artifacts
+          echo "Prepared /tmp/common/common-artifact.tar.gz"
 
           # for APP in api-gateway catalog-service inventory-service notification-service order-service payment-service; do
           #   echo "Building $APP"
           #   npm run build -- $APP
-          #   ART_DIR=/tmp/artifacts
-          #   ART_DIST_DIR=/tmp/artifacts/dist/apps/$APP
+          #   ART_DIR=/tmp/artifacts/$APP
           #   rm -rf $ART_DIR
           #   mkdir -p $ART_DIR
           #   if [ -d "dist/apps/$APP" ]; then
           #     # copy contents of dist/apps/$APP into artifact dir to avoid nested folder
-          #     cp -R dist/apps/$APP/. $ART_DIST_DIR/
+          #     cp -R dist/apps/$APP/. $ART_DIR/
           #   elif [ -d "dist/$APP" ]; then
           #     # copy contents of dist/$APP into artifact dir
-          #     cp -R dist/$APP/. $ART_DIST_DIR/
+          #     cp -R dist/$APP/. $ART_DIR/
           #   else
           #     echo "Could not find build output for $APP"
           #     exit 1
@@ -78,7 +90,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: artifacts
-          path: /tmp/*-artifact.tar.gz
+          path: /tmp/**/*-artifact.tar.gz
 
   deploy:
     name: Deploy apps to VPS
@@ -99,22 +111,35 @@ jobs:
 
       - name: Extract artifact
         run: |
-          mkdir -p /tmp/deploy/${{ matrix.app }}
+          mkdir -p /tmp/deploy
+
           # Find the artifact tarball matching the current app
-          ARTFILE=$(ls /tmp/deploy/*${{ matrix.app }}*-artifact.tar.gz 2>/dev/null | head -n1 || true)
+          ARTFILE=$(ls /tmp/deploy/dist/apps/${{ matrix.app }}-artifact.tar.gz 2>/dev/null | head -n1 || true)
           if [ -n "$ARTFILE" ] && [ -f "$ARTFILE" ]; then
             echo "Found artifact: $ARTFILE"
-            tar -xzf "$ARTFILE" -C /tmp/deploy
+            tar -xzf "$ARTFILE" -C /tmp/deploy/dist/apps
           else
-            echo "Artifact for ${{ matrix.app }} not found in /tmp/deploy"
-            echo "Listing /tmp/deploy for debug:" 
-            ls -la /tmp/deploy || true
+            echo "Artifact for $ {{ matrix.app }} not found in /tmp/deploy"
+            echo "Listing /tmp/deploy/dist/apps for debug:" 
+            ls -la /tmp/deploy/dist/apps || true
+            exit 1
+          fi
+
+          # Find the common artifact
+          COMMON_ARTFILE=$(ls /tmp/deploy/common/common-artifact.tar.gz 2>/dev/null | head -n1 || true)
+          if [ -n "$COMMON_ARTFILE" ] && [ -f "$COMMON_ARTFILE" ]; then
+            echo "Found artifact: $COMMON_ARTFILE"
+            tar -xzf "$COMMON_ARTFILE" -C /tmp/deploy/common
+          else
+            echo "Artifact for common not found in /tmp/deploy"
+            echo "Listing /tmp/deploy/common for debug:" 
+            ls -la /tmp/deploy/common || true
             exit 1
           fi
 
       - name: Rsync to VPS
         env:
-          REMOTE_DIR: "${{ secrets.VPS_REMOTE_PATH }}/${{ matrix.app }}"
+          REMOTE_DIR: "${{ secrets.VPS_REMOTE_PATH }}"
           VPS_SSH_PRIVATE_KEY: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
           VPS_USER: ${{ secrets.VPS_USER }}
         run: |
@@ -123,7 +148,8 @@ jobs:
           echo "$VPS_SSH_PRIVATE_KEY" > /tmp/ssh/id_rsa
           chmod 600 /tmp/ssh/id_rsa
           export RSYNC_RSH="ssh -i /tmp/ssh/id_rsa -o StrictHostKeyChecking=no -p ${{ secrets.VPS_PORT }}"
-          rsync -avz --delete /tmp/deploy/ ${VPS_USER}@${{ secrets.VPS_HOST }}:${REMOTE_DIR}/
+          rsync -avz --delete /tmp/deploy/dist/apps/${{ matrix.app }} ${VPS_USER}@${{ secrets.VPS_HOST }}:${REMOTE_DIR}/dist/apps/${{ matrix.app }}
+          rsync -avz /tmp/deploy/common ${VPS_USER}@${{ secrets.VPS_HOST }}:${REMOTE_DIR}
           # sync ecosystem.config.js from repo root to remote base path
           if [ -f ecosystem.config.js ]; then
             rsync -avz ecosystem.config.js ${VPS_USER}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_REMOTE_PATH }}/ecosystem.config.js
