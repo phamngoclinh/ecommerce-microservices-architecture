@@ -2,7 +2,7 @@ module.exports = {
 	apps: [
 		{
 			name: 'api-gateway',
-			script: 'api-gateway/main.js',
+			script: 'api-gateway/apps/api-gateway/src/main.js',
 			cwd: '/var/www/ecommerce/ecommerce-microservices-architecture',
 			instances: 'max',
 			exec_mode: 'cluster',
@@ -18,7 +18,7 @@ module.exports = {
 		},
 		{
 			name: 'catalog-service',
-			script: 'catalog-service/main.js',
+			script: 'catalog-service/apps/catalog-service/src/main.js',
 			cwd: '/var/www/ecommerce/ecommerce-microservices-architecture',
 			instances: 'max',
 			exec_mode: 'cluster',
@@ -26,14 +26,12 @@ module.exports = {
         NODE_ENV: 'production',
         CATALOG_DB_DATABASE: '/var/www/ecommerce/ecommerce-microservices-architecture/data/catalog_db.sqlite',
         CATALOG_APP_PORT: 4002,
-        REDIS_HOST: 'localhost',
-        REDIS_PORT: 6379,
         NATS_HOST: 'nats://localhost:4222'
 			},
 		},
 		{
 			name: 'inventory-service',
-			script: 'inventory-service/main.js',
+			script: 'inventory-service/apps/inventory-service/src/main.js',
 			cwd: '/var/www/ecommerce/ecommerce-microservices-architecture',
 			instances: 'max',
 			exec_mode: 'cluster',
@@ -41,14 +39,12 @@ module.exports = {
         NODE_ENV: 'production',
         INVENTORY_DB_DATABASE: '/var/www/ecommerce/ecommerce-microservices-architecture/data/inventory_db.sqlite',
         INVENTORY_APP_PORT: 4003,
-        REDIS_HOST: 'localhost',
-        REDIS_PORT: 6379,
         NATS_HOST: 'nats://localhost:4222'
 			},
 		},
 		{
 			name: 'order-service',
-			script: 'order-service/main.js',
+			script: 'order-service/apps/order-service/src/main.js',
 			cwd: '/var/www/ecommerce/ecommerce-microservices-architecture',
 			instances: 'max',
 			exec_mode: 'cluster',
@@ -57,14 +53,12 @@ module.exports = {
         ORDER_DB_DATABASE: '/var/www/ecommerce/ecommerce-microservices-architecture/data/order_db.sqlite',
         ORDER_APP_PORT: 4004,
         ORDER_PAYMENT_SERVICE_URL: 'http://localhost:4003',
-        REDIS_HOST: 'localhost',
-        REDIS_PORT: 6379,
         NATS_HOST: 'nats://localhost:4222'
 			},
 		},
 		{
 			name: 'payment-service',
-			script: 'payment-service/main.js',
+			script: 'payment-service/apps/payment-service/src/main.js',
 			cwd: '/var/www/ecommerce/ecommerce-microservices-architecture',
 			instances: 'max',
 			exec_mode: 'cluster',
@@ -73,14 +67,12 @@ module.exports = {
         PAYMENT_DB_DATABASE: '/var/www/ecommerce/ecommerce-microservices-architecture/data/payment_db.sqlite',
         PAYMENT_APP_PORT: 4005,
         PAYMENT_PROVIDER_URL: 'http://localhost:4005',
-        REDIS_HOST: 'localhost',
-        REDIS_PORT: 6379,
         NATS_HOST: 'nats://localhost:4222'
 			},
     },
     {
 			name: 'notification-service',
-			script: 'notification-service/main.js',
+			script: 'notification-service/apps/notification-service/src/main.js',
 			cwd: '/var/www/ecommerce/ecommerce-microservices-architecture',
 			instances: 'max',
 			exec_mode: 'cluster',
@@ -88,8 +80,6 @@ module.exports = {
         NODE_ENV: 'production',
         NOTIFICATION_DB_DATABASE: '/var/www/ecommerce/ecommerce-microservices-architecture/data/notification_db.sqlite',
         NOTIFICATION_APP_PORT: 4006,
-        REDIS_HOST: 'localhost',
-        REDIS_PORT: 6379,
         NATS_HOST: 'nats://localhost:4222'
 			},
 		},

@@ -1,9 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CartEntity } from '../entities/cart.entity';
-import { OrderItemEntity } from '../entities/order-item.entity';
-import { OrderEntity } from '../entities/order.entity';
+import path from 'path';
 
 @Module({
   imports: [
@@ -12,7 +10,7 @@ import { OrderEntity } from '../entities/order.entity';
       useFactory: (configService: ConfigService) => ({
         type: 'sqlite',
         database: configService.get<string>('ORDER_DB_DATABASE'),
-        entities: [CartEntity, OrderItemEntity, OrderEntity],
+        entities: [path.join(__dirname, '..', 'entities', '*.entity.{ts,js}')],
         synchronize: process.env.NODE_ENV === 'development' ? true : false,
         autoLoadEntities: process.env.NODE_ENV === 'development' ? true : false,
         logging: process.env.NODE_ENV === 'development' ? ['error', 'warn', 'info'] : ['error'],
