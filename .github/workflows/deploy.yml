@@ -27,29 +27,41 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p /tmp/artifacts
-          for APP in api-gateway catalog-service inventory-service notification-service order-service payment-service; do
-            echo "Building $APP"
-            npm run build -- $APP
-            ART_DIR=/tmp/artifacts/$APP
-            rm -rf $ART_DIR
-            mkdir -p $ART_DIR
-            if [ -d "dist/apps/$APP" ]; then
-              # copy contents of dist/apps/$APP into artifact dir to avoid nested folder
-              cp -R dist/apps/$APP/. $ART_DIR/
-            elif [ -d "dist/$APP" ]; then
-              # copy contents of dist/$APP into artifact dir
-              cp -R dist/$APP/. $ART_DIR/
-            else
-              echo "Could not find build output for $APP"
-              exit 1
-            fi
-            cp -R node_modules $ART_DIR/ || true
-            [ -f package.json ] && cp package.json $ART_DIR/ || true
-            [ -f package-lock.json ] && cp package-lock.json $ART_DIR/ || true
-            tar -C /tmp/artifacts -czf /tmp/$APP-artifact.tar.gz $APP
-            echo "Prepared /tmp/$APP-artifact.tar.gz"
-            # gh release create temp || true
-          done
+
+          npm run build
+          ART_DIR=/tmp/artifacts
+          ART_DIST_DIR=/tmp/artifacts/dist
+          cp -R dist/. $ART_DIST_DIR/
+          cp -R node_modules $ART_DIR/ || true
+          [ -f package.json ] && cp package.json $ART_DIR/ || true
+          [ -f package-lock.json ] && cp package-lock.json $ART_DIR/ || true
+          tar -czf /tmp/build-artifact.tar.gz -C /tmp artifacts
+          echo "Prepared /tmp/build-artifact.tar.gz"
+
+          # for APP in api-gateway catalog-service inventory-service notification-service order-service payment-service; do
+          #   echo "Building $APP"
+          #   npm run build -- $APP
+          #   ART_DIR=/tmp/artifacts
+          #   ART_DIST_DIR=/tmp/artifacts/dist/apps/$APP
+          #   rm -rf $ART_DIR
+          #   mkdir -p $ART_DIR
+          #   if [ -d "dist/apps/$APP" ]; then
+          #     # copy contents of dist/apps/$APP into artifact dir to avoid nested folder
+          #     cp -R dist/apps/$APP/. $ART_DIST_DIR/
+          #   elif [ -d "dist/$APP" ]; then
+          #     # copy contents of dist/$APP into artifact dir
+          #     cp -R dist/$APP/. $ART_DIST_DIR/
+          #   else
+          #     echo "Could not find build output for $APP"
+          #     exit 1
+          #   fi
+          #   cp -R node_modules $ART_DIR/ || true
+          #   [ -f package.json ] && cp package.json $ART_DIR/ || true
+          #   [ -f package-lock.json ] && cp package-lock.json $ART_DIR/ || true
+          #   tar -C /tmp/artifacts -czf /tmp/$APP-artifact.tar.gz $APP
+          #   echo "Prepared /tmp/$APP-artifact.tar.gz"
+          #   # gh release create temp || true
+          # done
 
       - name: List prepared artifacts
         run: |
@@ -111,7 +123,7 @@ jobs:
           echo "$VPS_SSH_PRIVATE_KEY" > /tmp/ssh/id_rsa
           chmod 600 /tmp/ssh/id_rsa
           export RSYNC_RSH="ssh -i /tmp/ssh/id_rsa -o StrictHostKeyChecking=no -p ${{ secrets.VPS_PORT }}"
-          rsync -avz --delete /tmp/deploy/${{ matrix.app }}/ ${VPS_USER}@${{ secrets.VPS_HOST }}:${REMOTE_DIR}/
+          rsync -avz --delete /tmp/deploy/ ${VPS_USER}@${{ secrets.VPS_HOST }}:${REMOTE_DIR}/
           # sync ecosystem.config.js from repo root to remote base path
           if [ -f ecosystem.config.js ]; then
             rsync -avz ecosystem.config.js ${VPS_USER}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_REMOTE_PATH }}/ecosystem.config.js
