@@ -5,7 +5,8 @@ module.exports = {
 			script: 'dist/apps/api-gateway/main.js',
 			cwd: '/var/www/ecommerce/ecommerce-microservices-architecture',
 			instances: 'max',
-			exec_mode: 'cluster',
+      exec_mode: 'cluster',
+      namespace: "ecommerce-microservices",
 			env_production: {
         NODE_ENV: 'production',
         API_GATEWAY_APP_PORT: 4001,
@@ -21,7 +22,8 @@ module.exports = {
 			script: 'dist/apps/catalog-service/apps/catalog-service/src/main.js',
 			cwd: '/var/www/ecommerce/ecommerce-microservices-architecture',
 			instances: 'max',
-			exec_mode: 'cluster',
+      exec_mode: 'cluster',
+      namespace: "ecommerce-microservices",
 			env_production: {
         NODE_ENV: 'production',
         CATALOG_DB_DATABASE: '/var/www/ecommerce/data/catalog_db.sqlite',
@@ -35,6 +37,7 @@ module.exports = {
 			cwd: '/var/www/ecommerce/ecommerce-microservices-architecture',
 			instances: 'max',
 			exec_mode: 'cluster',
+      namespace: "ecommerce-microservices",
 			env_production: {
         NODE_ENV: 'production',
         INVENTORY_DB_DATABASE: '/var/www/ecommerce/data/inventory_db.sqlite',
@@ -48,6 +51,7 @@ module.exports = {
 			cwd: '/var/www/ecommerce/ecommerce-microservices-architecture',
 			instances: 'max',
 			exec_mode: 'cluster',
+      namespace: "ecommerce-microservices",
 			env_production: {
         NODE_ENV: 'production',
         ORDER_DB_DATABASE: '/var/www/ecommerce/data/order_db.sqlite',
@@ -62,6 +66,7 @@ module.exports = {
 			cwd: '/var/www/ecommerce/ecommerce-microservices-architecture',
 			instances: 'max',
 			exec_mode: 'cluster',
+      namespace: "ecommerce-microservices",
 			env_production: {
         NODE_ENV: 'production',
         PAYMENT_DB_DATABASE: '/var/www/ecommerce/data/payment_db.sqlite',
@@ -76,6 +81,7 @@ module.exports = {
 			cwd: '/var/www/ecommerce/ecommerce-microservices-architecture',
 			instances: 'max',
 			exec_mode: 'cluster',
+      namespace: "ecommerce-microservices",
 			env_production: {
         NODE_ENV: 'production',
         NOTIFICATION_DB_DATABASE: '/var/www/ecommerce/data/notification_db.sqlite',
