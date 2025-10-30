@@ -40,7 +40,8 @@ jobs:
             # copy contents of dist/apps/$APP into artifact dir to avoid nested folder
             echo "Copy contents of dist/apps/$APP into artifact dir"
             cp -R dist/apps/$APP/. $ART_DIR/
-            tar -C /tmp/artifacts/dist/apps -czf /tmp/dist/apps/$APP-artifact.tar.gz $APP
+            echo "Compress /tmp/artifacts/dist/apps/$APP into /tmp/dist/apps/$APP-artifact.tar.gz"
+            tar -C /tmp/artifacts/dist/apps $APP -czf /tmp/dist/apps/$APP-artifact.tar.gz
             echo "Prepared /tmp/dist/apps/$APP-artifact.tar.gz"
           done
 
