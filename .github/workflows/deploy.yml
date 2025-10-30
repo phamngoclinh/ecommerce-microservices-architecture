@@ -56,30 +56,6 @@ jobs:
           tar -C /tmp/artifacts/common -czf /tmp/common/common-artifact.tar.gz common-artifacts
           echo "Prepared /tmp/common/common-artifact.tar.gz"
 
-          # for APP in api-gateway catalog-service inventory-service notification-service order-service payment-service; do
-          #   echo "Building $APP"
-          #   npm run build -- $APP
-          #   ART_DIR=/tmp/artifacts/$APP
-          #   rm -rf $ART_DIR
-          #   mkdir -p $ART_DIR
-          #   if [ -d "dist/apps/$APP" ]; then
-          #     # copy contents of dist/apps/$APP into artifact dir to avoid nested folder
-          #     cp -R dist/apps/$APP/. $ART_DIR/
-          #   elif [ -d "dist/$APP" ]; then
-          #     # copy contents of dist/$APP into artifact dir
-          #     cp -R dist/$APP/. $ART_DIR/
-          #   else
-          #     echo "Could not find build output for $APP"
-          #     exit 1
-          #   fi
-          #   cp -R node_modules $ART_DIR/ || true
-          #   [ -f package.json ] && cp package.json $ART_DIR/ || true
-          #   [ -f package-lock.json ] && cp package-lock.json $ART_DIR/ || true
-          #   tar -C /tmp/artifacts -czf /tmp/$APP-artifact.tar.gz $APP
-          #   echo "Prepared /tmp/$APP-artifact.tar.gz"
-          #   # gh release create temp || true
-          # done
-
       - name: List prepared artifacts
         run: |
           echo "Listing artifact files in /tmp"
