@@ -2,7 +2,7 @@ module.exports = {
 	apps: [
 		{
 			name: 'api-gateway',
-			script: 'api-gateway/apps/api-gateway/src/main.js',
+			script: 'dist/apps/api-gateway/apps/api-gateway/src/main.js',
 			cwd: '/var/www/ecommerce/ecommerce-microservices-architecture',
 			instances: 'max',
 			exec_mode: 'cluster',
@@ -18,7 +18,7 @@ module.exports = {
 		},
 		{
 			name: 'catalog-service',
-			script: 'catalog-service/apps/catalog-service/src/main.js',
+			script: 'dist/apps/catalog-service/apps/catalog-service/src/main.js',
 			cwd: '/var/www/ecommerce/ecommerce-microservices-architecture',
 			instances: 'max',
 			exec_mode: 'cluster',
@@ -31,7 +31,7 @@ module.exports = {
 		},
 		{
 			name: 'inventory-service',
-			script: 'inventory-service/apps/inventory-service/src/main.js',
+			script: 'dist/apps/inventory-service/apps/inventory-service/src/main.js',
 			cwd: '/var/www/ecommerce/ecommerce-microservices-architecture',
 			instances: 'max',
 			exec_mode: 'cluster',
@@ -44,7 +44,7 @@ module.exports = {
 		},
 		{
 			name: 'order-service',
-			script: 'order-service/apps/order-service/src/main.js',
+			script: 'dist/apps/order-service/apps/order-service/src/main.js',
 			cwd: '/var/www/ecommerce/ecommerce-microservices-architecture',
 			instances: 'max',
 			exec_mode: 'cluster',
@@ -58,7 +58,7 @@ module.exports = {
 		},
 		{
 			name: 'payment-service',
-			script: 'payment-service/apps/payment-service/src/main.js',
+			script: 'dist/apps/payment-service/apps/payment-service/src/main.js',
 			cwd: '/var/www/ecommerce/ecommerce-microservices-architecture',
 			instances: 'max',
 			exec_mode: 'cluster',
@@ -72,7 +72,7 @@ module.exports = {
     },
     {
 			name: 'notification-service',
-			script: 'notification-service/apps/notification-service/src/main.js',
+			script: 'dist/apps/notification-service/apps/notification-service/src/main.js',
 			cwd: '/var/www/ecommerce/ecommerce-microservices-architecture',
 			instances: 'max',
 			exec_mode: 'cluster',
