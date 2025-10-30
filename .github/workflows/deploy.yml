@@ -74,6 +74,51 @@ jobs:
           path: |
             /tmp/dist/apps/*-artifact.tar.gz
             /tmp/common/*-artifact.tar.gz
+  
+  sync_node_modules:
+    name: Sync node_modules
+    needs: build-artifacts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact for ${{ matrix.app }}
+        uses: actions/download-artifact@v4
+        with:
+          name: artifacts
+          path: /tmp/deploy
+
+      - name: Extract artifact
+        run: |
+          mkdir -p /tmp/deploy
+
+          # Find the common artifact
+          COMMON_ARTFILE=$(ls /tmp/deploy/common/common-artifact.tar.gz 2>/dev/null | head -n1 || true)
+          if [ -n "$COMMON_ARTFILE" ] && [ -f "$COMMON_ARTFILE" ]; then
+            echo "Found artifact: $COMMON_ARTFILE"
+            tar -xzf "$COMMON_ARTFILE" -C /tmp/deploy/common
+          else
+            echo "Artifact for common not found in /tmp/deploy"
+            echo "Listing /tmp/deploy/common for debug:" 
+            ls -la /tmp/deploy/common || true
+            exit 1
+          fi
+
+      - name: Rsync to VPS
+        env:
+          REMOTE_DIR: "${{ secrets.VPS_REMOTE_PATH }}"
+          VPS_SSH_PRIVATE_KEY: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          sudo apt-get update -y && sudo apt-get install -y rsync
+          mkdir -p /tmp/ssh
+          echo "$VPS_SSH_PRIVATE_KEY" > /tmp/ssh/id_rsa
+          chmod 600 /tmp/ssh/id_rsa
+          export RSYNC_RSH="ssh -i /tmp/ssh/id_rsa -o StrictHostKeyChecking=no -p ${{ secrets.VPS_PORT }}"
+          echo "rsync common ${{ matrix.app }}"
+          rsync -avz --delete /tmp/deploy/common/common-artifacts/ ${VPS_USER}@${{ secrets.VPS_HOST }}:${REMOTE_DIR}
+          # sync ecosystem.config.js from repo root to remote base path
+          if [ -f ecosystem.config.js ]; then
+            rsync -avz ecosystem.config.js ${VPS_USER}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_REMOTE_PATH }}/ecosystem.config.js
+          fi
 
   deploy:
     name: Deploy apps to VPS
@@ -108,17 +153,17 @@ jobs:
             exit 1
           fi
 
-          # Find the common artifact
-          COMMON_ARTFILE=$(ls /tmp/deploy/common/common-artifact.tar.gz 2>/dev/null | head -n1 || true)
-          if [ -n "$COMMON_ARTFILE" ] && [ -f "$COMMON_ARTFILE" ]; then
-            echo "Found artifact: $COMMON_ARTFILE"
-            tar -xzf "$COMMON_ARTFILE" -C /tmp/deploy/common
-          else
-            echo "Artifact for common not found in /tmp/deploy"
-            echo "Listing /tmp/deploy/common for debug:" 
-            ls -la /tmp/deploy/common || true
-            exit 1
-          fi
+          # # Find the common artifact
+          # COMMON_ARTFILE=$(ls /tmp/deploy/common/common-artifact.tar.gz 2>/dev/null | head -n1 || true)
+          # if [ -n "$COMMON_ARTFILE" ] && [ -f "$COMMON_ARTFILE" ]; then
+          #   echo "Found artifact: $COMMON_ARTFILE"
+          #   tar -xzf "$COMMON_ARTFILE" -C /tmp/deploy/common
+          # else
+          #   echo "Artifact for common not found in /tmp/deploy"
+          #   echo "Listing /tmp/deploy/common for debug:" 
+          #   ls -la /tmp/deploy/common || true
+          #   exit 1
+          # fi
 
       - name: Rsync to VPS
         env:
@@ -133,12 +178,12 @@ jobs:
           export RSYNC_RSH="ssh -i /tmp/ssh/id_rsa -o StrictHostKeyChecking=no -p ${{ secrets.VPS_PORT }}"
           echo "rsync app ${{ matrix.app }}"
           rsync -avz --ignore-errors --mkpath --delete /tmp/deploy/dist/apps/${{ matrix.app }}/ ${VPS_USER}@${{ secrets.VPS_HOST }}:${REMOTE_DIR}/dist/apps/${{ matrix.app }}
-          echo "rsync common ${{ matrix.app }}"
-          rsync -avz --ignore-errors --delete /tmp/deploy/common/common-artifacts/ ${VPS_USER}@${{ secrets.VPS_HOST }}:${REMOTE_DIR}
-          # sync ecosystem.config.js from repo root to remote base path
-          if [ -f ecosystem.config.js ]; then
-            rsync -avz ecosystem.config.js ${VPS_USER}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_REMOTE_PATH }}/ecosystem.config.js
-          fi
+          # echo "rsync common ${{ matrix.app }}"
+          # rsync -avz --ignore-errors --delete /tmp/deploy/common/common-artifacts/ ${VPS_USER}@${{ secrets.VPS_HOST }}:${REMOTE_DIR}
+          # # sync ecosystem.config.js from repo root to remote base path
+          # if [ -f ecosystem.config.js ]; then
+          #   rsync -avz ecosystem.config.js ${VPS_USER}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_REMOTE_PATH }}/ecosystem.config.js
+          # fi
 
       - name: Reload with pm2 on VPS
         uses: appleboy/ssh-action@master
