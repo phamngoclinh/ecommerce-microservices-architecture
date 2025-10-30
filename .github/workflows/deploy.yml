@@ -80,7 +80,7 @@ jobs:
     needs: build-artifacts
     runs-on: ubuntu-latest
     steps:
-      - name: Download artifact for ${{ matrix.app }}
+      - name: Download artifact for common
         uses: actions/download-artifact@v4
         with:
           name: artifacts
@@ -122,7 +122,7 @@ jobs:
 
   deploy:
     name: Deploy apps to VPS
-    needs: build-artifacts
+    needs: sync_node_modules
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -178,6 +178,7 @@ jobs:
           export RSYNC_RSH="ssh -i /tmp/ssh/id_rsa -o StrictHostKeyChecking=no -p ${{ secrets.VPS_PORT }}"
           echo "rsync app ${{ matrix.app }}"
           rsync -avz --ignore-errors --mkpath --delete /tmp/deploy/dist/apps/${{ matrix.app }}/ ${VPS_USER}@${{ secrets.VPS_HOST }}:${REMOTE_DIR}/dist/apps/${{ matrix.app }}
+          
           # echo "rsync common ${{ matrix.app }}"
           # rsync -avz --ignore-errors --delete /tmp/deploy/common/common-artifacts/ ${VPS_USER}@${{ secrets.VPS_HOST }}:${REMOTE_DIR}
           # # sync ecosystem.config.js from repo root to remote base path
