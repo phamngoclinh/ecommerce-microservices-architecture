@@ -156,7 +156,7 @@ jobs:
           chmod 600 /tmp/ssh/id_rsa
           export RSYNC_RSH="ssh -i /tmp/ssh/id_rsa -o StrictHostKeyChecking=no -p ${{ secrets.VPS_PORT }}"
           echo "rsync app ${{ matrix.app }}"
-          rsync -avz --delete /tmp/deploy/dist/apps/${{ matrix.app }}/ ${VPS_USER}@${{ secrets.VPS_HOST }}:${REMOTE_DIR}/dist/apps/${{ matrix.app }}
+          rsync -avz --mkpath --delete /tmp/deploy/dist/apps/${{ matrix.app }}/ ${VPS_USER}@${{ secrets.VPS_HOST }}:${REMOTE_DIR}/dist/apps/${{ matrix.app }}
           echo "rsync common ${{ matrix.app }}"
           rsync -avz /tmp/deploy/common/ ${VPS_USER}@${{ secrets.VPS_HOST }}:${REMOTE_DIR}
           # sync ecosystem.config.js from repo root to remote base path
