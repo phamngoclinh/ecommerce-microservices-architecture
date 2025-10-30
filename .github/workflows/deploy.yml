@@ -38,6 +38,7 @@ jobs:
             rm -rf $ART_DIR
             mkdir -p $ART_DIR
             # copy contents of dist/apps/$APP into artifact dir to avoid nested folder
+            echo "Copy contents of dist/apps/$APP into artifact dir"
             cp -R dist/apps/$APP/. $ART_DIR/
             tar -C /tmp/artifacts/dist/apps -czf /tmp/dist/apps/$APP-artifact.tar.gz $APP
             echo "Prepared /tmp/dist/apps/$APP-artifact.tar.gz"
