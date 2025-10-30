@@ -146,8 +146,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: extracted-deployment-files
-        path: /tmp/deploy_staging
-        retention-days: 1 # Có thể giới hạn thời gian lưu trữ
+        path: /tmp/deploy_production
   
   deploy:
     name: Deploy apps to VPS
