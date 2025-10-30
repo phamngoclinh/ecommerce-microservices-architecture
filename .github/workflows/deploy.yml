@@ -141,12 +141,12 @@ jobs:
           exit 1
         fi
     
-    - name: Upload Extracted Files for Deployment
-      # Upload TẤT CẢ các tệp đã giải nén vào một artifact mới
-      uses: actions/upload-artifact@v4
-      with:
-        name: extracted-deployment-files
-        path: /tmp/deploy_production
+    # - name: Upload Extracted Files for Deployment
+    #   # Upload TẤT CẢ các tệp đã giải nén vào một artifact mới
+    #   uses: actions/upload-artifact@v4
+    #   with:
+    #     name: extracted-deployment-files
+    #     path: /tmp/deploy_production
   
   deploy:
     name: Deploy apps to VPS
@@ -159,11 +159,11 @@ jobs:
       - name: Checkout (to get ecosystem.config.js)
         uses: actions/checkout@v4
 
-      - name: Download extracted deployment files
-        uses: actions/download-artifact@v4
-        with:
-          name: extracted-deployment-files # 👈 Download artifact đã giải nén
-          path: /tmp/deploy # Thư mục chứa các tệp đã giải nén
+      # - name: Download extracted deployment files
+      #   uses: actions/download-artifact@v4
+      #   with:
+      #     name: extracted-deployment-files # 👈 Download artifact đã giải nén
+      #     path: /tmp/deploy # Thư mục chứa các tệp đã giải nén
 
       - name: Rsync to VPS
         env:
