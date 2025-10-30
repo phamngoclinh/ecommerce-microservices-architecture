@@ -158,7 +158,7 @@ jobs:
           echo "rsync app ${{ matrix.app }}"
           rsync -avz --mkpath --delete /tmp/deploy/dist/apps/${{ matrix.app }}/ ${VPS_USER}@${{ secrets.VPS_HOST }}:${REMOTE_DIR}/dist/apps/${{ matrix.app }}
           echo "rsync common ${{ matrix.app }}"
-          rsync -avz /tmp/deploy/common/ ${VPS_USER}@${{ secrets.VPS_HOST }}:${REMOTE_DIR}
+          rsync -avz --delete /tmp/deploy/common/common-artifacts/ ${VPS_USER}@${{ secrets.VPS_HOST }}:${REMOTE_DIR}
           # sync ecosystem.config.js from repo root to remote base path
           if [ -f ecosystem.config.js ]; then
             rsync -avz ecosystem.config.js ${VPS_USER}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_REMOTE_PATH }}/ecosystem.config.js
