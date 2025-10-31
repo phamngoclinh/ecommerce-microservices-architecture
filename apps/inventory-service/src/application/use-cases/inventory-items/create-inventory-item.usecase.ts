@@ -22,14 +22,13 @@ export class CreateInventoryItemUseCase extends IUsecase<
   async execute({ items }: CreateInventoryItemInput): Promise<InventoryItem[]> {
     const result: InventoryItem[] = [];
     for (const item of items) {
-      const { productId, quantity } = item;
+      const { productId } = item;
       const inventoryItem = new InventoryItem(null, productId, true, [], []);
-      await this.inventoryItemsRepository.saveInventoryItem(inventoryItem);
-      if (quantity) {
-        await this.stocksRepository.saveStock(
-          new Stock(null, inventoryItem, quantity, 0, quantity),
-        );
-      }
+      const savedInventoryItem =
+        await this.inventoryItemsRepository.saveInventoryItem(inventoryItem);
+      await this.stocksRepository.saveStock(
+        new Stock(null, { id: savedInventoryItem.id as number } as InventoryItem, 0, 0, 0),
+      );
       result.push(inventoryItem);
     }
     return result;

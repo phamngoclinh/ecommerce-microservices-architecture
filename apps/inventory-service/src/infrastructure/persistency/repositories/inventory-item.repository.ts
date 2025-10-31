@@ -20,6 +20,11 @@ export class InventoryItemRepository extends IInventoryItemRepository {
     return InventoryItemPersistencyMapper.toDomain(saved as InventoryItemEntity);
   }
 
+  async getInventoryItems(): Promise<InventoryItem[]> {
+    const entities = await this.inventoryItemsRepository.find();
+    return entities.map(entity => InventoryItemPersistencyMapper.toDomain(entity));
+  }
+
   async getInventoryItem(id: number): Promise<InventoryItem | null> {
     const entity = await this.inventoryItemsRepository.findOneBy({ id });
     if (entity === null) return null;

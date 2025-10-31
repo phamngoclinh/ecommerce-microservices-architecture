@@ -1,4 +1,5 @@
 import { AllocateInventoryItemUseCase } from '@inventory/application/use-cases/inventory-items/allocate-inventory.usecase';
+import { GetInventoryItemsUseCase } from '@inventory/application/use-cases/inventory-items/get-inventory-items.usecase';
 import { CheckStockUseCase } from '@inventory/application/use-cases/stocks/check-stock.usecase';
 import { StockInUseCase } from '@inventory/application/use-cases/stocks/stock-in.usecase';
 import { Body, Controller, Post } from '@nestjs/common';
@@ -12,6 +13,7 @@ export class InventoryController {
     private readonly checkStockUseCase: CheckStockUseCase,
     private readonly stockInUseCase: StockInUseCase,
     private readonly allocateInventoryItemUseCase: AllocateInventoryItemUseCase,
+    private readonly getInventoryItemsUseCase: GetInventoryItemsUseCase,
   ) {}
 
   @Post('allocate-item')
@@ -36,6 +38,11 @@ export class InventoryController {
       };
     });
     return this.checkStockUseCase.execute({ items: check });
+  }
+
+  @Post('get-items')
+  getItems() {
+    return this.getInventoryItemsUseCase.execute();
   }
 
   @Post('check-stock')
