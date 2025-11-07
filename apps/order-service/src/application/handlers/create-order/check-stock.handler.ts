@@ -15,8 +15,6 @@ export class CheckStockHandler extends CreateOrderHandler {
       })),
     });
 
-    console.log('stocs', stocks);
-
     if (!stocks.isEnough) throw Error('Order items was exceed the stock quantity');
     console.log('✅ Checking stock is done !!!');
 

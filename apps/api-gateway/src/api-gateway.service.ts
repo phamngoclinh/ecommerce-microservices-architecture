@@ -24,6 +24,7 @@ export class ApiGatewayService {
         url: targetUrl,
         headers: {
           'Content-Type': req.headers['content-type'],
+          authorization: req.headers['authorization'],
           host: undefined, // tránh lỗi "invalid header host"
         },
         data: req.body as unknown, // giữ nguyên body (phải bật body parser)

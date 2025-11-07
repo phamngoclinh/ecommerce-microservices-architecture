@@ -22,7 +22,6 @@ export class GetInventoryItemsUseCase extends IUsecase<undefined, GetInventoryIt
   async execute(): Promise<GetInventoryItemOutput[]> {
     const items = await this.inventoryItemsRepository.getInventoryItems();
     const stocks = await this.stocksRepository.getStocks(items.map(it => it.id as number));
-    console.log('stocks', stocks, items);
     return stocks.map(stock => ({
       id: stock.inventoryItem.id as number,
       inventoryItemId: stock.inventoryItem.id as number,

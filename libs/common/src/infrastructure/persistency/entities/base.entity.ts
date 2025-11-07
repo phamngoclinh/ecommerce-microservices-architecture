@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity()
 export abstract class BaseEntity {
@@ -10,4 +16,10 @@ export abstract class BaseEntity {
 
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
+
+  @Column({ name: 'created_by', nullable: true })
+  createdBy: string;
+
+  @Column({ name: 'updated_by', nullable: true })
+  updatedBy: string;
 }

@@ -2,9 +2,12 @@ import { CreateProductUseCase } from '@catalog/application/usecases/products/cre
 import { GetProductUseCase } from '@catalog/application/usecases/products/get-product.usecase';
 import { GetProductsUseCase } from '@catalog/application/usecases/products/get-products.usecase';
 import { Product } from '@catalog/domain/entities/product.entity';
-import { Body, Controller, Post } from '@nestjs/common';
+import { AuthInterceptor } from '@libs/common/modules/auth/auth.interceptor';
+import { ApplicationContextInterceptor } from '@libs/common/modules/context/application-context.interceptor';
+import { Body, Controller, Post, UseInterceptors } from '@nestjs/common';
 
 @Controller('product')
+@UseInterceptors(AuthInterceptor, ApplicationContextInterceptor)
 export class CatalogController {
   constructor(
     private readonly createProductUseCase: CreateProductUseCase,
