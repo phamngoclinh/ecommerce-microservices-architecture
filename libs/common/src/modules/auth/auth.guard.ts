@@ -1,5 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable, SetMetadata } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import type { Request } from 'express';
 import { Observable } from 'rxjs';
 
 @Injectable()
@@ -20,7 +21,9 @@ export class AuthGuard implements CanActivate {
 
     if (type === 'http') {
       const request = context.switchToHttp().getRequest<Request>();
-      if (!request['user']) return false;
+      const userId = request.headers['x-internal-user-id'];
+      if (!userId) return false;
+      // if (!request['user']) return false;
     }
 
     return true;

@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable, SetMetadata } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { Request } from 'express';
+import type { Request } from 'express';
 import { Role } from './auth.interface';
 
 @Injectable()
@@ -15,9 +15,10 @@ export class RolesGuard implements CanActivate {
 
     if (context.getType() === 'http') {
       const request = context.switchToHttp().getRequest<Request>();
-      if (!request['user']) return false;
-      const user = request['user'];
-      return user && requiredRoles.some(role => user.role.includes(role));
+      const userRole = request.headers['x-internal-user-role'] as string;
+      if (!userRole) return false;
+      // if (!request['user']) return false;
+      return requiredRoles.some(role => userRole.includes(role));
     }
 
     return true;

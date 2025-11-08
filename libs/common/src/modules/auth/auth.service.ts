@@ -31,7 +31,6 @@ export class AuthService {
 
       return {
         id: payload.id,
-        displayName: payload.displayName,
         role: payload.role,
         scope: payload.scope,
       };
