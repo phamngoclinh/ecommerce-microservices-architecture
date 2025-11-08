@@ -1,3 +1,4 @@
+import { ApplicationContextModule } from '@libs/common/modules/context/application-context.module';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DatabaseModule } from './database/database.config';
@@ -5,7 +6,7 @@ import { PaymentMethodEntity } from './entities/payment-method.entity';
 import { PaymentTransactionEntity } from './entities/payment-transaction.entity';
 import { PaymentEntity } from './entities/payment.entity';
 import { RefundEntity } from './entities/refund.entity';
-import { PersistencyProviders } from './persistency.provider';
+import { PaymentPersistencyProviders } from './persistency.provider';
 
 @Module({
   imports: [
@@ -16,8 +17,9 @@ import { PersistencyProviders } from './persistency.provider';
       PaymentMethodEntity,
       RefundEntity,
     ]),
+    ApplicationContextModule,
   ],
-  providers: [...PersistencyProviders],
-  exports: [...PersistencyProviders],
+  providers: [...PaymentPersistencyProviders],
+  exports: [...PaymentPersistencyProviders],
 })
 export class PersistencyModule {}

@@ -1,4 +1,6 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { AuthInterceptor } from '@libs/common/modules/auth/auth.interceptor';
+import { ApplicationContextInterceptor } from '@libs/common/modules/context/application-context.interceptor';
+import { Body, Controller, Post, UseInterceptors } from '@nestjs/common';
 import { AddCartItemUseCase } from '@order/application/use-cases/carts/add-item.usecase';
 import { ClearCartUseCase } from '@order/application/use-cases/carts/clear-cart.usecase';
 import { GetCartItemsUseCase } from '@order/application/use-cases/carts/get-items.usecase';
@@ -10,7 +12,8 @@ import type { UpdateCartItemDto } from '../dtos/update-cart-item.dto';
 import { CartPresenterMapper } from '../mappers/cart-presenter.mapper';
 import { CartUseCaseMapper } from '../mappers/cart-usecase.mapper';
 
-@Controller()
+@Controller('cart')
+@UseInterceptors(AuthInterceptor, ApplicationContextInterceptor)
 export class CartController {
   constructor(
     private readonly getCartItemUseCase: GetCartItemsUseCase,
@@ -20,32 +23,32 @@ export class CartController {
     private readonly clearCartUseCase: ClearCartUseCase,
   ) {}
 
-  @Post('cart/get-items')
+  @Post('get-items')
   async getCarts() {
     const carts = await this.getCartItemUseCase.execute();
     return CartPresenterMapper.fromCarts(carts);
   }
 
-  @Post('cart/add-item')
+  @Post('add-item')
   async addCartItem(@Body() addCartItemDto: AddCartItemDto) {
     const cart = CartUseCaseMapper.fromAddCartItemDto(addCartItemDto);
     const createdCart = await this.addCartItemUseCase.execute(cart);
     return CartPresenterMapper.fromCart(createdCart);
   }
 
-  @Post('cart/update-item')
+  @Post('update-item')
   async updateCartItem(@Body() updateCartItemDto: UpdateCartItemDto) {
     const cart = CartUseCaseMapper.fromUpdateCartItemDto(updateCartItemDto);
     const updatedCart = await this.updateCartItemUseCase.execute(cart);
     return CartPresenterMapper.fromCart(updatedCart);
   }
 
-  @Post('cart/remove-item')
+  @Post('remove-item')
   removeCartItem(@Body() removeCartItemDto: RemoveCartItemDto) {
     return this.removeCartItemUseCase.execute(removeCartItemDto.productId);
   }
 
-  @Post('cart/clear')
+  @Post('clear')
   clearCart() {
     return this.clearCartUseCase.execute();
   }

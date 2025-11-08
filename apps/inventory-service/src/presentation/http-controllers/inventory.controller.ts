@@ -2,12 +2,15 @@ import { AllocateInventoryItemUseCase } from '@inventory/application/use-cases/i
 import { GetInventoryItemsUseCase } from '@inventory/application/use-cases/inventory-items/get-inventory-items.usecase';
 import { CheckStockUseCase } from '@inventory/application/use-cases/stocks/check-stock.usecase';
 import { StockInUseCase } from '@inventory/application/use-cases/stocks/stock-in.usecase';
-import { Body, Controller, Post } from '@nestjs/common';
+import { AuthInterceptor } from '@libs/common/modules/auth/auth.interceptor';
+import { ApplicationContextInterceptor } from '@libs/common/modules/context/application-context.interceptor';
+import { Body, Controller, Post, UseInterceptors } from '@nestjs/common';
 import type { AllocateItemDto } from './dtos/allocate-item.dto';
 import type { CheckStockDto } from './dtos/check-stock.dto';
 import type { StockInDto } from './dtos/stock-in.dto';
 
 @Controller('inventory')
+@UseInterceptors(AuthInterceptor, ApplicationContextInterceptor)
 export class InventoryController {
   constructor(
     private readonly checkStockUseCase: CheckStockUseCase,

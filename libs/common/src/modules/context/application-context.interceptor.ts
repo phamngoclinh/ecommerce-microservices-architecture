@@ -1,27 +1,35 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
-import { ClsService } from 'nestjs-cls';
+import {
+  CallHandler,
+  ContextType,
+  ExecutionContext,
+  Inject,
+  Injectable,
+  NestInterceptor,
+} from '@nestjs/common';
 import { Observable } from 'rxjs';
-import { ApplicationContextStore } from './application-context.interface';
+import * as applicationContextInterface from './application-context.interface';
 
 @Injectable()
 export class ApplicationContextInterceptor implements NestInterceptor {
-  constructor(private readonly cls: ClsService<ApplicationContextStore>) {}
+  constructor(
+    @Inject(applicationContextInterface.APPLICATION_CONTEXT)
+    private readonly applicationContext: applicationContextInterface.IApplicationContext,
+  ) {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    return this.cls.run(() => {
-      const req = context.switchToHttp().getRequest<Request>();
+    const reqType: ContextType = context.getType();
 
-      if (req['user']) {
-        this.cls.set('source', 'HTTP_API');
-        this.cls.set('userId', req['user'].id);
-        this.cls.set('userRole', req['user'].role);
-        this.cls.set('scope', req['user'].scope);
-        // this.cls.set('tenantId', req['user'].tenantId);
-      }
+    let type: applicationContextInterface.SourceType = 'SYSTEM_JOB';
+    switch (reqType) {
+      case 'http':
+        type = 'HTTP_API';
+        break;
+      case 'rpc':
+        type = 'QUEUE_JOB';
+        break;
+    }
 
+    return this.applicationContext.execute({ type, context }, () => {
       return next.handle();
     });
   }

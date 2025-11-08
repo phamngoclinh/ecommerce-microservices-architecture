@@ -1,4 +1,6 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { AuthInterceptor } from '@libs/common/modules/auth/auth.interceptor';
+import { ApplicationContextInterceptor } from '@libs/common/modules/context/application-context.interceptor';
+import { Body, Controller, Post, UseInterceptors } from '@nestjs/common';
 import { CompleteOrderUseCase } from '@order/application/use-cases/orders/complete-order.usecase';
 import { ConfirmOrderUseCase } from '@order/application/use-cases/orders/confirm-order.usecase';
 import { CreateOrderUseCase } from '@order/application/use-cases/orders/create-order.usecase';
@@ -10,6 +12,7 @@ import type { GetOrderDto } from '../dtos/get-order.dto';
 import { OrderUseCaseMapper } from '../mappers/order-usecase.mapper';
 
 @Controller('order')
+@UseInterceptors(AuthInterceptor, ApplicationContextInterceptor)
 export class OrderController {
   constructor(
     private readonly createOrderUseCase: CreateOrderUseCase,

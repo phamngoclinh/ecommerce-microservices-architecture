@@ -11,8 +11,6 @@ import path from 'path';
         type: 'sqlite',
         database: configService.get<string>('INVENTORY_DB_DATABASE'),
         entities: [path.join(__dirname, '..', 'entities', '*.entity.{ts,js}')],
-        synchronize: process.env.NODE_ENV === 'development' ? true : false,
-        autoLoadEntities: process.env.NODE_ENV === 'development' ? true : false,
         logging: process.env.NODE_ENV === 'development' ? ['error', 'warn', 'info'] : ['error'],
       }),
       inject: [ConfigService],

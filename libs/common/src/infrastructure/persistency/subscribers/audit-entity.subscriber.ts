@@ -13,7 +13,7 @@ import { BaseEntity } from '../entities/base.entity';
 
 @Injectable()
 @EventSubscriber()
-export class AuditSubscriber implements EntitySubscriberInterface<BaseEntity> {
+export class AuditEntitySubscriber implements EntitySubscriberInterface<BaseEntity> {
   constructor(
     dataSource: DataSource,
     @Inject(APPLICATION_CONTEXT)
@@ -42,9 +42,9 @@ export class AuditSubscriber implements EntitySubscriberInterface<BaseEntity> {
     const userId = this.appContext.getUserId();
 
     if (userId) {
-      event.databaseEntity.updatedBy = userId;
-    } else if (event.databaseEntity.updatedBy === undefined) {
-      event.databaseEntity.updatedBy = SYSTEM_USER_ID;
+      (event.entity as BaseEntity).updatedBy = userId;
+    } else if ((event.entity as BaseEntity).updatedBy === undefined) {
+      (event.entity as BaseEntity).updatedBy = SYSTEM_USER_ID;
     }
   }
 }

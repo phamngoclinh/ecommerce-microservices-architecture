@@ -1,10 +1,11 @@
+import { PersistencyProviders } from '@libs/common/infrastructure/persistency/providers/persistency.provider';
 import { Provider } from '@nestjs/common';
 import { ICartRepository } from '@order/domain/repositories/cart.repository';
 import { IOrderRepository } from '@order/domain/repositories/order.repository';
 import { CartRepository } from './repositories/cart.repository';
 import { OrderRepository } from './repositories/order.repository';
 
-export const PersistencyProviders: Provider[] = [
+export const OrderPersistencyProviders: Provider[] = [
   {
     provide: ICartRepository,
     useClass: CartRepository,
@@ -13,4 +14,5 @@ export const PersistencyProviders: Provider[] = [
     provide: IOrderRepository,
     useClass: OrderRepository,
   },
+  ...PersistencyProviders,
 ];

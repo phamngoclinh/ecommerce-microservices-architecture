@@ -3,7 +3,8 @@ import { CancelReservationUseCase } from '@inventory/application/use-cases/stock
 import { ConfirmReservationUseCase } from '@inventory/application/use-cases/stocks/confirm-reservation.usecase';
 import { ReleaseReservationUseCase } from '@inventory/application/use-cases/stocks/release-reservation.usecase';
 import { ReserveStockUseCase } from '@inventory/application/use-cases/stocks/reserve-stock.usercase';
-import { Controller } from '@nestjs/common';
+import { ApplicationContextInterceptor } from '@libs/common/modules/context/application-context.interceptor';
+import { Controller, UseInterceptors } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import type { CancelOrderEvent } from './events/cancel-order.event';
 import type { CompleteOrderEvent } from './events/complete-order.event';
@@ -12,6 +13,7 @@ import type { CreateOrderEvent } from './events/create-order.event';
 import type { CreateProductEvent } from './events/create-product.event';
 
 @Controller()
+@UseInterceptors(ApplicationContextInterceptor)
 export class InventorySubscriber {
   constructor(
     private readonly createInventoryItemUseCase: CreateInventoryItemUseCase,

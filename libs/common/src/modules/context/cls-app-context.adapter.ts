@@ -1,29 +1,42 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-// infrastructure/context/cls-app-context.service.ts
+// infrastructure/context/cls-app-context.adapter.ts
 
 import { Injectable } from '@nestjs/common';
 import { ClsService } from 'nestjs-cls';
-import { ApplicationContextStore, IApplicationContext } from './application-context.interface';
+import { Observable } from 'rxjs';
+import {
+  IApplicationContext,
+  IApplicationContextInterface,
+  RunCallbackType,
+  RunOptionType,
+} from './application-context.interface';
 
 @Injectable()
-export class ClsApplicationContextAdapter implements IApplicationContext {
-  constructor(private readonly cls: ClsService<ApplicationContextStore>) {}
-
-  getUserId(): string | undefined {
-    return this.cls.get('userId');
+export class ClsApplicationContextAdapter
+  extends IApplicationContext
+  implements IApplicationContextInterface
+{
+  constructor(private readonly cls: ClsService) {
+    super();
   }
 
-  getUserRole(): string | undefined {
-    return this.cls.get('userRole');
+  run<T>(callback: RunCallbackType<T>): Observable<T>;
+  run<T>(options: RunOptionType, callback: RunCallbackType<T>): Observable<T>;
+  run<T>(...args: any[]) {
+    let callback: RunCallbackType<T>;
+    if (typeof args[0] === 'function') {
+      callback = args[0] as RunCallbackType<T>;
+      return this.cls.run<T>(callback);
+    }
+    const options = args[0] as RunOptionType;
+    callback = args[1] as RunCallbackType<T>;
+    return this.cls.run<T>(options, callback);
   }
 
-  getUser(): { id: string; roles: string[]; permissions: string[] } | undefined {
-    throw new Error('Method not implemented.');
+  get(key: string): any {
+    return this.cls.get(key);
   }
 
-  // getTenantId(): string | undefined {
-  //   return this.cls.get('tenantId');
-  // }
+  set(key: string, value: any): void {
+    this.cls.set(key, value);
+  }
 }

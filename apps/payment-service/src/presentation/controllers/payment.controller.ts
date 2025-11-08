@@ -1,8 +1,11 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { AuthInterceptor } from '@libs/common/modules/auth/auth.interceptor';
+import { ApplicationContextInterceptor } from '@libs/common/modules/context/application-context.interceptor';
+import { Body, Controller, Post, UseInterceptors } from '@nestjs/common';
 import { PaymentService } from '@payment/application/services/payment.service';
 import { PaymentMethod, PaymentProvider } from '@payment/domain/entities/payment-method.entity';
 
 @Controller('payments')
+@UseInterceptors(AuthInterceptor, ApplicationContextInterceptor)
 export class PaymentController {
   constructor(private readonly service: PaymentService) {}
 
