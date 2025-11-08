@@ -1,4 +1,3 @@
-import { ApplicationContextModule } from '@libs/common/modules/context/application-context.module';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DatabaseConfigModule } from './database/database.config';
@@ -11,7 +10,6 @@ import { InventoryPersistencyProviders } from './persistency.providers';
   imports: [
     DatabaseConfigModule,
     TypeOrmModule.forFeature([StockEntity, StockReservationEntity, InventoryItemEntity]),
-    ApplicationContextModule,
   ],
   providers: [...InventoryPersistencyProviders],
   exports: [...InventoryPersistencyProviders],

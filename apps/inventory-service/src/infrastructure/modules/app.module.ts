@@ -1,4 +1,8 @@
-import { Module } from '@nestjs/common';
+import { AuthMiddleware } from '@libs/common/modules/auth/auth.middleware';
+import { AuthModule } from '@libs/common/modules/auth/auth.module';
+import { ApplicationContextMiddleware } from '@libs/common/modules/context/application-context.middleware';
+import { ApplicationContextModule } from '@libs/common/modules/context/application-context.module';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { InventoryModule } from './inventory.module';
 
@@ -8,8 +12,15 @@ import { InventoryModule } from './inventory.module';
       isGlobal: true,
     }),
     InventoryModule,
+    // global modules
+    AuthModule,
+    ApplicationContextModule,
   ],
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(AuthMiddleware, ApplicationContextMiddleware).forRoutes('*');
+  }
+}

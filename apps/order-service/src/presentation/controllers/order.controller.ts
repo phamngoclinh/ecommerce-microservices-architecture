@@ -1,6 +1,6 @@
-import { AuthInterceptor } from '@libs/common/modules/auth/auth.interceptor';
-import { ApplicationContextInterceptor } from '@libs/common/modules/context/application-context.interceptor';
-import { Body, Controller, Post, UseInterceptors } from '@nestjs/common';
+import { AuthGuard } from '@libs/common/modules/auth/auth.guard';
+import { Roles, RolesGuard } from '@libs/common/modules/auth/roles.guard';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { CompleteOrderUseCase } from '@order/application/use-cases/orders/complete-order.usecase';
 import { ConfirmOrderUseCase } from '@order/application/use-cases/orders/confirm-order.usecase';
 import { CreateOrderUseCase } from '@order/application/use-cases/orders/create-order.usecase';
@@ -11,8 +11,8 @@ import type { CreateOrderDto } from '../dtos/create-order.dto';
 import type { GetOrderDto } from '../dtos/get-order.dto';
 import { OrderUseCaseMapper } from '../mappers/order-usecase.mapper';
 
+@UseGuards(AuthGuard, RolesGuard)
 @Controller('order')
-@UseInterceptors(AuthInterceptor, ApplicationContextInterceptor)
 export class OrderController {
   constructor(
     private readonly createOrderUseCase: CreateOrderUseCase,
@@ -42,16 +42,19 @@ export class OrderController {
     return this.getOrderUseCase.execute(getOrderDto.id);
   }
 
+  @Roles('admin')
   @Post('confirm-order')
   confirmOrder(@Body() data: { id: number }) {
     return this.confirmOrderUseCase.execute(data.id);
   }
 
+  @Roles('admin')
   @Post('ship-order')
   shipOrder(@Body() data: { id: number }) {
     return this.shipOrderUseCase.execute(data.id);
   }
 
+  @Roles('admin')
   @Post('complete-order')
   completeOrder(@Body() data: { id: number }) {
     return this.completeOrderUseCase.execute(data.id);

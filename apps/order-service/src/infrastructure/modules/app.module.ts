@@ -4,20 +4,22 @@ import { ApplicationContextMiddleware } from '@libs/common/modules/context/appli
 import { ApplicationContextModule } from '@libs/common/modules/context/application-context.module';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { ScheduleModule } from '@nestjs/schedule';
-import { PaymentModule } from './payment.module';
+import { CartModule } from './cart.module';
+import { OrderModule } from './order.module';
 
 @Module({
   imports: [
-    ScheduleModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    PaymentModule,
+    OrderModule,
+    CartModule,
     // global modules
     AuthModule,
     ApplicationContextModule,
   ],
+  controllers: [],
+  providers: [],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

@@ -1,5 +1,3 @@
-import { AuthModule } from '@libs/common/modules/auth/auth.module';
-import { ApplicationContextModule } from '@libs/common/modules/context/application-context.module';
 import { Module } from '@nestjs/common';
 import { AddCartItemUseCase } from '@order/application/use-cases/carts/add-item.usecase';
 import { ClearCartUseCase } from '@order/application/use-cases/carts/clear-cart.usecase';
@@ -11,7 +9,7 @@ import { CartController } from '../../presentation/controllers/cart.controller';
 import { PersistencyModule } from '../persistency/persistency.module';
 
 @Module({
-  imports: [AuthModule, ApplicationContextModule, PersistencyModule],
+  imports: [PersistencyModule],
   controllers: [CartController],
   providers: [
     // usecases

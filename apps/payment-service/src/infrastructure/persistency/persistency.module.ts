@@ -1,4 +1,3 @@
-import { ApplicationContextModule } from '@libs/common/modules/context/application-context.module';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DatabaseModule } from './database/database.config';
@@ -17,7 +16,6 @@ import { PaymentPersistencyProviders } from './persistency.provider';
       PaymentMethodEntity,
       RefundEntity,
     ]),
-    ApplicationContextModule,
   ],
   providers: [...PaymentPersistencyProviders],
   exports: [...PaymentPersistencyProviders],

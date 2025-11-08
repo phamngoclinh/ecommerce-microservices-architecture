@@ -40,7 +40,6 @@ export class AuditEntitySubscriber implements EntitySubscriberInterface<BaseEnti
 
   beforeUpdate(event: UpdateEvent<BaseEntity>) {
     const userId = this.appContext.getUserId();
-
     if (userId) {
       (event.entity as BaseEntity).updatedBy = userId;
     } else if ((event.entity as BaseEntity).updatedBy === undefined) {

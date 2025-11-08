@@ -1,4 +1,3 @@
-import { ApplicationContextModule } from '@libs/common/modules/context/application-context.module';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DatabaseConfigModule } from './database/database.config';
@@ -6,11 +5,7 @@ import { ProductEntity } from './entities/product.entity';
 import { CatalogPersistencyProviders } from './persistency.providers';
 
 @Module({
-  imports: [
-    DatabaseConfigModule,
-    TypeOrmModule.forFeature([ProductEntity]),
-    ApplicationContextModule,
-  ],
+  imports: [DatabaseConfigModule, TypeOrmModule.forFeature([ProductEntity])],
   controllers: [],
   providers: [...CatalogPersistencyProviders],
   exports: [...CatalogPersistencyProviders],

@@ -12,7 +12,7 @@ export class TasksController {
 
   @Cron(CronExpression.EVERY_5_SECONDS)
   handleCron() {
-    this.applicationContext.execute({ type: 'SYSTEM_JOB' }, () => {
+    this.applicationContext.execute({ type: 'CRON_JOB' }, () => {
       console.log('Called when the current second is not 5');
 
       const source = this.applicationContext.getSource();

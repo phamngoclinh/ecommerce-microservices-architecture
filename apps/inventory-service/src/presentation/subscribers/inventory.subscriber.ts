@@ -12,8 +12,8 @@ import type { ConfirmOrderEvent } from './events/confirm-order.event';
 import type { CreateOrderEvent } from './events/create-order.event';
 import type { CreateProductEvent } from './events/create-product.event';
 
-@Controller()
 @UseInterceptors(ApplicationContextInterceptor)
+@Controller()
 export class InventorySubscriber {
   constructor(
     private readonly createInventoryItemUseCase: CreateInventoryItemUseCase,

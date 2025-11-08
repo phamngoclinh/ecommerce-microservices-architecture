@@ -1,6 +1,5 @@
-import { AuthInterceptor } from '@libs/common/modules/auth/auth.interceptor';
-import { ApplicationContextInterceptor } from '@libs/common/modules/context/application-context.interceptor';
-import { Body, Controller, Post, UseInterceptors } from '@nestjs/common';
+import { AuthGuard } from '@libs/common/modules/auth/auth.guard';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { AddCartItemUseCase } from '@order/application/use-cases/carts/add-item.usecase';
 import { ClearCartUseCase } from '@order/application/use-cases/carts/clear-cart.usecase';
 import { GetCartItemsUseCase } from '@order/application/use-cases/carts/get-items.usecase';
@@ -12,8 +11,8 @@ import type { UpdateCartItemDto } from '../dtos/update-cart-item.dto';
 import { CartPresenterMapper } from '../mappers/cart-presenter.mapper';
 import { CartUseCaseMapper } from '../mappers/cart-usecase.mapper';
 
+@UseGuards(AuthGuard)
 @Controller('cart')
-@UseInterceptors(AuthInterceptor, ApplicationContextInterceptor)
 export class CartController {
   constructor(
     private readonly getCartItemUseCase: GetCartItemsUseCase,

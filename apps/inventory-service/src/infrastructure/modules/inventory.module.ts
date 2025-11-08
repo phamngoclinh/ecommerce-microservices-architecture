@@ -12,13 +12,11 @@ import { IStockReservationRepository } from '@inventory/domain/repositories/stoc
 import { IStockRepository } from '@inventory/domain/repositories/stock.repository';
 import { InventoryController } from '@inventory/presentation/http-controllers/inventory.controller';
 import { InventorySubscriber } from '@inventory/presentation/subscribers/inventory.subscriber';
-import { AuthModule } from '@libs/common/modules/auth/auth.module';
-import { ApplicationContextModule } from '@libs/common/modules/context/application-context.module';
 import { Module } from '@nestjs/common';
 import { PersistencyModule } from '../persistency/persistency.module';
 
 @Module({
-  imports: [AuthModule, ApplicationContextModule, PersistencyModule],
+  imports: [PersistencyModule],
   controllers: [InventoryController, InventorySubscriber],
   providers: [
     {

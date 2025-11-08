@@ -1,8 +1,9 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { ClsModule } from 'nestjs-cls';
 import { APPLICATION_CONTEXT } from './application-context.interface';
 import { ClsApplicationContextAdapter } from './cls-app-context.adapter';
 
+@Global()
 @Module({
   imports: [
     ClsModule.forRoot({

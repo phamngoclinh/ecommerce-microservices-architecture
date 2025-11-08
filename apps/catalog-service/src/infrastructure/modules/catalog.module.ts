@@ -8,13 +8,11 @@ import { CatalogController } from '@catalog/presentation/controllers/catalog.con
 import { EventPublisherService } from '@libs/common/application/ports/event-publisher';
 import { NatsClientModule } from '@libs/common/infrastructure/event-bus/nats/nats-client.module';
 import { NatsClientService } from '@libs/common/infrastructure/event-bus/nats/nats-client.service';
-import { AuthModule } from '@libs/common/modules/auth/auth.module';
-import { ApplicationContextModule } from '@libs/common/modules/context/application-context.module';
 import { Module } from '@nestjs/common';
 import { PersistencyModule } from '../persistency/persistency.module';
 
 @Module({
-  imports: [AuthModule, ApplicationContextModule, PersistencyModule, NatsClientModule],
+  imports: [PersistencyModule, NatsClientModule],
   controllers: [CatalogController],
   providers: [
     //#region usecases

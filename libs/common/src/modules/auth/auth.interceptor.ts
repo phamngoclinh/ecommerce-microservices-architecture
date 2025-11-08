@@ -16,6 +16,8 @@ export class AuthInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const request = context.switchToHttp().getRequest<Request>();
 
+    if (request['user']) return next.handle();
+
     const token = this.authService.fromHeaderAsBearerToken(request);
     if (token) {
       const validate = this.authService.verifyToken(token);

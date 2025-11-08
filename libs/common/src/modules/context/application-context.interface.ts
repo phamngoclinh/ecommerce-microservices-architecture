@@ -4,8 +4,6 @@ import {
   MESSAGE_QUEUE_LISTENER_ID,
   SYSTEM_USER_ID,
 } from '@libs/common/application/constants/system-ids';
-import { ExecutionContext } from '@nestjs/common';
-import type { Request } from 'express';
 import { Observable } from 'rxjs';
 
 export type SourceType = 'HTTP_API' | 'CRON_JOB' | 'SYSTEM_JOB' | 'QUEUE_JOB';
@@ -48,7 +46,11 @@ export abstract class IApplicationContext implements IApplicationContextInterfac
   execute(
     options: {
       type: SourceType;
-      context?: ExecutionContext;
+      user?: {
+        id: string;
+        role: string;
+        scope: string;
+      };
     },
     callback: () => Observable<any>,
   ) {
@@ -56,10 +58,8 @@ export abstract class IApplicationContext implements IApplicationContextInterfac
       switch (options.type) {
         case 'HTTP_API':
           {
-            if (!options.context) throw new Error('ApplocationContext is missing ExecutionContext');
-            const req = options.context.switchToHttp().getRequest<Request>();
-            if (req['user']) {
-              const { id, role, scope } = req['user'];
+            if (options.user) {
+              const { id, role, scope } = options.user;
               this.setContext('HTTP_API', id, role, scope);
             } else {
               this.setContext('HTTP_API', GUEST_USER_ID);

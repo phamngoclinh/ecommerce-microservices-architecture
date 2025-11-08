@@ -1,9 +1,11 @@
-import { Controller } from '@nestjs/common';
+import { ApplicationContextInterceptor } from '@libs/common/modules/context/application-context.interceptor';
+import { Controller, UseInterceptors } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import { PaymentService } from '@payment/application/services/payment.service';
 import { PaymentProvider } from '@payment/domain/entities/payment-method.entity';
 import type { CreatePaymentDto } from './dtos/create-payment.dto';
 
+@UseInterceptors(ApplicationContextInterceptor)
 @Controller('payment/subcriber')
 export class PaymentSubscriber {
   constructor(private readonly service: PaymentService) {}

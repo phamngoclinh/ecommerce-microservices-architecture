@@ -1,8 +1,10 @@
-import { Controller } from '@nestjs/common';
+import { ApplicationContextInterceptor } from '@libs/common/modules/context/application-context.interceptor';
+import { Controller, UseInterceptors } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import { OrderStatus } from '@order/domain/models/order.model';
 import { IOrderRepository } from '@order/domain/repositories/order.repository';
 
+@UseInterceptors(ApplicationContextInterceptor)
 @Controller('order/subcriber')
 export class OrderSubcriber {
   constructor(private readonly ordersRepository: IOrderRepository) {}

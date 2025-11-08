@@ -1,8 +1,6 @@
 import { EventPublisherService } from '@libs/common/application/ports/event-publisher';
 import { NatsClientModule } from '@libs/common/infrastructure/event-bus/nats/nats-client.module';
 import { NatsClientService } from '@libs/common/infrastructure/event-bus/nats/nats-client.service';
-import { AuthModule } from '@libs/common/modules/auth/auth.module';
-import { ApplicationContextModule } from '@libs/common/modules/context/application-context.module';
 import { IValidator } from '@libs/common/validators/validator';
 import { Module } from '@nestjs/common';
 import { IInventoryGateway } from '@order/application/ports/inventory.gateway';
@@ -23,13 +21,7 @@ import { InventoryHttpModule } from '../adatpers/inventory-http.module';
 import { PersistencyModule } from '../persistency/persistency.module';
 
 @Module({
-  imports: [
-    AuthModule,
-    ApplicationContextModule,
-    PersistencyModule,
-    InventoryHttpModule,
-    NatsClientModule,
-  ],
+  imports: [PersistencyModule, InventoryHttpModule, NatsClientModule],
   controllers: [OrderController, OrderSubcriber],
   providers: [
     {

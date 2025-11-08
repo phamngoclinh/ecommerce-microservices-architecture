@@ -2,11 +2,11 @@ import { NatsBootstrapService } from '@libs/common/infrastructure/event-bus/nats
 import { DatabaseMigrations } from '@libs/common/infrastructure/persistency/database/database-migrations';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
-import { RootModule } from './infrastructure/modules/root.module';
+import { AppModule } from './infrastructure/modules/app.module';
 import OrderDataSource from './infrastructure/persistency/database/data-source';
 
 async function bootstrap() {
-  const app = await NestFactory.create(RootModule, { cors: true });
+  const app = await NestFactory.create(AppModule, { cors: true });
 
   const configService = app.get(ConfigService);
 

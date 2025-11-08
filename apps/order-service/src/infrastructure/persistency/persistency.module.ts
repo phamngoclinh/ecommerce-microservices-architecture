@@ -1,4 +1,3 @@
-import { ApplicationContextModule } from '@libs/common/modules/context/application-context.module';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DatabaseModule } from './database/database.config';
@@ -8,11 +7,7 @@ import { OrderEntity } from './entities/order.entity';
 import { OrderPersistencyProviders } from './persistency.provider';
 
 @Module({
-  imports: [
-    DatabaseModule,
-    TypeOrmModule.forFeature([CartEntity, OrderEntity, OrderItemEntity]),
-    ApplicationContextModule,
-  ],
+  imports: [DatabaseModule, TypeOrmModule.forFeature([CartEntity, OrderEntity, OrderItemEntity])],
   providers: [...OrderPersistencyProviders],
   exports: [...OrderPersistencyProviders],
 })
