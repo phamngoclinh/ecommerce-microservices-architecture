@@ -1,0 +1,31 @@
+POST http://localhost:4006/send-notification HTTP/1.1
+content-type: application/json
+
+{
+  "title": "Có đơn hàng mới #12345",
+  "body": "Đơn hàng từ Nguyễn Văn A vừa được đặt thành công. Vui lòng kiểm tra ngay.",
+  "icon": "/images/app-icon-72x72.png",
+  "image": "/images/promotion-banner.jpg",
+  "badge": "/images/badge-icon.png",
+  "dir": "auto",
+  "vibrate": [300, 100, 400],
+  "timestamp": 1678886400000,
+  "actions": [
+    {
+      "action": "view_order",
+      "title": "Xem đơn hàng",
+      "icon": "/images/view-icon.jpg"
+    },
+    {
+      "action": "dismiss",
+      "title": "Đóng",
+      "icon": "/images/dismiss-icon.png"
+    }
+  ],
+  "data": {
+    "orderId": "12345",
+    "urlToOpen": "/orders/12345"
+  },
+  "renotify": true,
+  "tag": "order-notification-12345"
+}
