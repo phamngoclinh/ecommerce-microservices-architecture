@@ -5,6 +5,8 @@ export abstract class IProductRepository {
 
   abstract getProducts(): Promise<Product[]>;
 
+  abstract searchProducts(searchText: string): Promise<Product[]>;
+
   abstract getProduct(id: number): Promise<Product | null>;
 
   abstract deleteProduct(id: number): Promise<void>;

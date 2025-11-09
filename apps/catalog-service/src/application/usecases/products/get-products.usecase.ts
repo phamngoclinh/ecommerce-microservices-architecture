@@ -7,7 +7,7 @@ export class GetProductsUseCase extends IUsecase<unknown, Product[]> {
     super();
   }
 
-  async execute(): Promise<Product[]> {
-    return this.productsRepository.getProducts();
+  async execute({ searchText }: { searchText: string }): Promise<Product[]> {
+    return this.productsRepository.searchProducts(searchText);
   }
 }

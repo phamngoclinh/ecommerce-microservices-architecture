@@ -4,22 +4,20 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug Order Service",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "start:debug", "order-service"],
-      "port": 3002,
+      "name": "Debug Api Gateway",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["run", "start:debug", "api-gateway"],
       "console": "integratedTerminal",
       "restart": true,
       "autoAttachChildProcesses": true,
-      "skipFiles": ["<node_internals>/**"]
+      "skipFiles": ["<node_internals>/**"],
     },
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug Payment Service",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "start:debug", "payment-service"],
-      "port": 3004,
+      "name": "Debug Catalog Service",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["run", "start:debug", "catalog-service"],
       "console": "integratedTerminal",
       "restart": true,
       "autoAttachChildProcesses": true,
@@ -29,13 +27,179 @@
       "type": "node",
       "request": "launch",
       "name": "Debug Inventory Service",
-      "runtimeExecutable": "npm",
+      "runtimeExecutable": "pnpm",
       "runtimeArgs": ["run", "start:debug", "inventory-service"],
-      "port": 3003,
       "console": "integratedTerminal",
       "restart": true,
       "autoAttachChildProcesses": true,
       "skipFiles": ["<node_internals>/**"]
-    }
-  ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Order Service",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["run", "start:debug", "order-service"],
+      "console": "integratedTerminal",
+      "restart": true,
+      "autoAttachChildProcesses": true,
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Payment Service",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["run", "start:debug", "payment-service"],
+      "console": "integratedTerminal",
+      "restart": true,
+      "autoAttachChildProcesses": true,
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch Api Gateway",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["run", "start", "api-gateway"],
+      "console": "integratedTerminal",
+      "restart": true,
+      "autoAttachChildProcesses": true,
+      "skipFiles": ["<node_internals>/**"],
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch Catalog Service",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["run", "start", "catalog-service"],
+      "console": "integratedTerminal",
+      "restart": true,
+      "autoAttachChildProcesses": true,
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch Inventory Service",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["run", "start", "inventory-service"],
+      "console": "integratedTerminal",
+      "restart": true,
+      "autoAttachChildProcesses": true,
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch Order Service",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["run", "start", "order-service"],
+      "console": "integratedTerminal",
+      "restart": true,
+      "autoAttachChildProcesses": true,
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch Payment Service",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["run", "start", "payment-service"],
+      "console": "integratedTerminal",
+      "restart": true,
+      "autoAttachChildProcesses": true,
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Dev Api Gateway",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["run", "start", "api-gateway"],
+      "console": "integratedTerminal",
+      "restart": true,
+      "autoAttachChildProcesses": true,
+      "skipFiles": ["<node_internals>/**"],
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Dev Catalog Service",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["run", "start:dev", "catalog-service"],
+      "console": "integratedTerminal",
+      "restart": true,
+      "autoAttachChildProcesses": true,
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Dev Inventory Service",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["run", "start:dev", "inventory-service"],
+      "console": "integratedTerminal",
+      "restart": true,
+      "autoAttachChildProcesses": true,
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Dev Order Service",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["run", "start:dev", "order-service"],
+      "console": "integratedTerminal",
+      "restart": true,
+      "autoAttachChildProcesses": true,
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Dev Payment Service",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["run", "start:dev", "payment-service"],
+      "console": "integratedTerminal",
+      "restart": true,
+      "autoAttachChildProcesses": true,
+      "skipFiles": ["<node_internals>/**"]
+    },
+  ],
+  "compounds": [
+        {
+            "name": "Debug All",
+            "configurations": [
+                "Debug Api Gateway",
+                "Debug Catalog Service",
+                "Debug Inventory Service",
+                "Debug Order Service",
+                "Debug Payment Service",
+            ],
+            "stopAll": true
+        },
+        {
+            "name": "Launch All",
+            "configurations": [
+                "Launch Api Gateway",
+                "Launch Catalog Service",
+                "Launch Inventory Service",
+                "Launch Order Service",
+                "Launch Payment Service",
+            ],
+            "stopAll": true
+        },
+        {
+            "name": "Dev All",
+            "configurations": [
+                "Dev Api Gateway",
+                "Dev Catalog Service",
+                "Dev Inventory Service",
+                "Dev Order Service",
+                "Dev Payment Service",
+            ],
+            "stopAll": true
+        }
+    ]
 }

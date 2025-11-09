@@ -1,7 +1,7 @@
 import { Product } from '@catalog/domain/entities/product.entity';
 import { IProductRepository } from '@catalog/domain/repositories/product.repository';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { ILike, In, Repository } from 'typeorm';
 import { ProductEntity } from '../entities/product.entity';
 import { ProductPersistencyMapper } from '../mappers/product-persistency.mapper';
 
@@ -26,6 +26,18 @@ export class ProductRepository extends IProductRepository {
 
   async getProducts(): Promise<Product[]> {
     const entities = await this.productRepository.find();
+    return ProductPersistencyMapper.toDomains(entities);
+  }
+
+  async searchProducts(searchText: string): Promise<Product[]> {
+    let entities: ProductEntity[] = [];
+    if (searchText) {
+      entities = await this.productRepository.find({
+        where: { name: ILike(`%${searchText}%`) },
+      });
+    } else {
+      entities = await this.productRepository.find();
+    }
     return ProductPersistencyMapper.toDomains(entities);
   }
 

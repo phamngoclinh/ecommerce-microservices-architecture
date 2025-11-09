@@ -4,7 +4,7 @@ import { GetProductsUseCase } from '@catalog/application/usecases/products/get-p
 import { Product } from '@catalog/domain/entities/product.entity';
 import { AuthGuard, IgnoreAuth } from '@libs/common/modules/auth/auth.guard';
 import { Roles, RolesGuard } from '@libs/common/modules/auth/roles.guard';
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Query, UseGuards } from '@nestjs/common';
 
 @UseGuards(AuthGuard, RolesGuard)
 @Controller('product')
@@ -23,8 +23,8 @@ export class CatalogController {
 
   @IgnoreAuth()
   @Post('get-products')
-  getProducts() {
-    return this.getroductsUseCase.execute();
+  getProducts(@Query('search') searchText: string) {
+    return this.getroductsUseCase.execute({ searchText });
   }
 
   @IgnoreAuth()
