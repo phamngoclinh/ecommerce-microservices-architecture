@@ -1,0 +1,378 @@
+{
+  "name": "Order Delivery Expiry Summary",
+  "description": "Daily workflow to summarize orders that have expired delivery time and send notifications",
+  "active": true,
+  "nodes": [
+    {
+      "parameters": {
+        "interval": [
+          "days",
+          1
+        ],
+        "triggerTZ": "Asia/Ho_Chi_Minh"
+      },
+      "id": "schedule-trigger",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        0
+      ],
+      "alwaysOutputData": false,
+      "notes": "Runs daily at 8 AM Vietnam time to check for expired deliveries"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"deliveryWindowDays\": 7,\n  \"currentDate\": \"{{ $now.toFormat('yyyy-MM-dd HH:mm:ss') }}\",\n  \"reportDate\": \"{{ $now.toFormat('yyyy-MM-dd') }}\"\n}",
+        "options": {}
+      },
+      "id": "set-parameters",
+      "name": "Set Parameters",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -180,
+        0
+      ],
+      "alwaysOutputData": false,
+      "notes": "Set default parameters: delivery window in days, current date for calculations"
+    },
+    {
+      "parameters": {
+        "query": "SELECT \n  o.id,\n  o.status,\n  o.created_at,\n  o.total_amount,\n  DATETIME(o.created_at, '+7 days') as expected_delivery_date,\n  CASE \n    WHEN o.status = 'SHIPPED' AND DATETIME(o.created_at, '+7 days') < DATETIME('now') THEN 'EXPIRED'\n    WHEN o.status = 'SHIPPED' AND DATETIME(o.created_at, '+7 days') BETWEEN DATETIME('now', '-1 day') AND DATETIME('now') THEN 'EXPIRING_SOON'\n    ELSE 'ON_TIME'\n  END as delivery_status\nFROM orders o\nWHERE o.status IN ('SHIPPED', 'PENDING', 'CONFIRMED')\nORDER BY o.created_at DESC",
+        "options": {}
+      },
+      "id": "query-orders",
+      "name": "Query Expired Orders",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [
+        80,
+        0
+      ],
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "functionCode": "// Filter for expired and expiring-soon orders\nconst orders = items[0].json.records || [];\n\nconst expired = orders.filter(o => o.delivery_status === 'EXPIRED');\nconst expiringSoon = orders.filter(o => o.delivery_status === 'EXPIRING_SOON');\nconst shipped = orders.filter(o => o.status === 'SHIPPED');\n\nconst summary = {\n  reportDate: items[0].json.reportDate,\n  generatedAt: new Date().toISOString(),\n  totalShipped: shipped.length,\n  totalExpired: expired.length,\n  totalExpiringSoon: expiringSoon.length,\n  expiredOrderIds: expired.map(o => o.id),\n  expiringSoonOrderIds: expiringSoon.map(o => o.id),\n  totalExpiredAmount: expired.reduce((sum, o) => sum + parseFloat(o.total_amount || 0), 0),\n  totalExpiringSoonAmount: expiringSoon.reduce((sum, o) => sum + parseFloat(o.total_amount || 0), 0),\n  expiredOrders: expired,\n  expiringSoonOrders: expiringSoon\n};\n\nreturn [{ json: summary }];",
+        "options": {}
+      },
+      "id": "summarize-data",
+      "name": "Summarize Expired Orders",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        350,
+        0
+      ],
+      "alwaysOutputData": false,
+      "notes": "Process query results and create summary statistics"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.totalExpired }}",
+                    "rightValue": "0",
+                    "operator": {
+                      "type": "number",
+                      "operation": "gt"
+                    },
+                    "id": "condition-expired"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Has Expired"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.totalExpiringSoon }}",
+                    "rightValue": "0",
+                    "operator": {
+                      "type": "number",
+                      "operation": "gt"
+                    },
+                    "id": "condition-expiring"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Has Expiring Soon"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.totalExpired }}",
+                    "rightValue": "0",
+                    "operator": {
+                      "type": "number",
+                      "operation": "lte"
+                    },
+                    "id": "condition-no-expired"
+                  },
+                  {
+                    "leftValue": "={{ $json.totalExpiringSoon }}",
+                    "rightValue": "0",
+                    "operator": {
+                      "type": "number",
+                      "operation": "lte"
+                    },
+                    "id": "condition-no-expiring"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "All Clear"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "check-status",
+      "name": "Check Report Status",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        620,
+        0
+      ],
+      "alwaysOutputData": false,
+      "notes": "Determine if there are expired orders or warnings to report"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"subject\": \"[ALERT] Expired Order Deliveries - {{ $json.reportDate }}\",\n  \"htmlContent\": \"<div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;'>\n  <div style='background: #dc2626; color: white; padding: 20px; border-radius: 8px 8px 0 0;'>\n    <h2 style='margin: 0;'>⚠️ Expired Order Deliveries Alert</h2>\n  </div>\n  <div style='background: #f9fafb; padding: 20px; border: 1px solid #e5e7eb;'>\n    <p><strong>Report Date:</strong> {{ $json.reportDate }}</p>\n    <p><strong>Generated:</strong> {{ $json.generatedAt }}</p>\n    \n    <div style='background: #fee2e2; border-left: 4px solid #dc2626; padding: 12px; margin: 16px 0; border-radius: 4px;'>\n      <h3 style='margin: 0 0 8px 0; color: #991b1b;'>Expired Orders (Past Delivery Date)</h3>\n      <p style='margin: 0; font-size: 18px; font-weight: bold;'>{{ $json.totalExpired }} orders</p>\n      <p style='margin: 8px 0 0 0; color: #7f1d1d;'>Total Amount: {{ ($json.totalExpiredAmount).format('vi-VN') }} VND</p>\n      <p style='margin: 8px 0 0 0; font-size: 12px;'>Order IDs: {{ $json.expiredOrderIds.join(', ') }}</p>\n    </div>\n    \n    <div style='background: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px; margin: 16px 0; border-radius: 4px;'>\n      <h3 style='margin: 0 0 8px 0; color: #92400e;'>Expiring Soon (Within 24 hours)</h3>\n      <p style='margin: 0; font-size: 18px; font-weight: bold;'>{{ $json.totalExpiringSoon }} orders</p>\n      <p style='margin: 8px 0 0 0; color: #b45309;'>Total Amount: {{ ($json.totalExpiringSoonAmount).format('vi-VN') }} VND</p>\n      <p style='margin: 8px 0 0 0; font-size: 12px;'>Order IDs: {{ $json.expiringSoonOrderIds.join(', ') }}</p>\n    </div>\n    \n    <div style='background: #f0fdf4; border-left: 4px solid #16a34a; padding: 12px; margin: 16px 0; border-radius: 4px;'>\n      <h3 style='margin: 0 0 8px 0; color: #15803d;'>Shipped Orders Summary</h3>\n      <p style='margin: 0; font-size: 18px; font-weight: bold;'>{{ $json.totalShipped }} orders shipped</p>\n    </div>\n    \n    <div style='margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb;'>\n      <p style='margin: 0; font-size: 12px; color: #6b7280;'>\n        <strong>Action Required:</strong> Review expired orders and contact customers for delivery confirmation or re-shipment.\n      </p>\n    </div>\n  </div>\n  <div style='background: #f3f4f6; padding: 12px; border-radius: 0 0 8px 8px; font-size: 12px; color: #6b7280;'>\n    <p style='margin: 0;'>eShop Order Management System</p>\n  </div>\n</div>\",\n  \"toEmail\": \"admin@eshop.local,ops@eshop.local\"\n}",
+        "options": {}
+      },
+      "id": "prepare-alert-email",
+      "name": "Prepare Alert Email",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        800,
+        -160
+      ],
+      "alwaysOutputData": false,
+      "notes": "Prepare email alert with expired orders details"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"subject\": \"Daily Order Status Report - {{ $json.reportDate }}\",\n  \"htmlContent\": \"<div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;'>\n  <div style='background: #10b981; color: white; padding: 20px; border-radius: 8px 8px 0 0;'>\n    <h2 style='margin: 0;'>✓ Daily Order Status Report</h2>\n  </div>\n  <div style='background: #f9fafb; padding: 20px; border: 1px solid #e5e7eb;'>\n    <p><strong>Report Date:</strong> {{ $json.reportDate }}</p>\n    <p><strong>Generated:</strong> {{ $json.generatedAt }}</p>\n    \n    <div style='background: #d1fae5; border-left: 4px solid #10b981; padding: 12px; margin: 16px 0; border-radius: 4px;'>\n      <h3 style='margin: 0 0 8px 0; color: #065f46;'>All Clear ✓</h3>\n      <p style='margin: 0;'>No expired or expiring-soon orders detected.</p>\n      <p style='margin: 8px 0 0 0; font-size: 12px;'>\n        Total Shipped: {{ $json.totalShipped }} orders\n      </p>\n    </div>\n    \n    <div style='margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb;'>\n      <p style='margin: 0; font-size: 12px; color: #6b7280;'>\n        Keep monitoring order statuses to ensure timely deliveries.\n      </p>\n    </div>\n  </div>\n  <div style='background: #f3f4f6; padding: 12px; border-radius: 0 0 8px 8px; font-size: 12px; color: #6b7280;'>\n    <p style='margin: 0;'>eShop Order Management System</p>\n  </div>\n</div>\",\n  \"toEmail\": \"ops@eshop.local\"\n}",
+        "options": {}
+      },
+      "id": "prepare-clear-email",
+      "name": "Prepare Clear Email",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        800,
+        160
+      ],
+      "alwaysOutputData": false,
+      "notes": "Prepare routine status email when all is clear"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=http://host.docker.internal:4001/notifications/send-email",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "{\n  \"Content-Type\": \"application/json\"\n}",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "subject",
+              "value": "={{ $json.subject }}"
+            },
+            {
+              "name": "message",
+              "value": "={{ $json.htmlContent }}"
+            },
+            {
+              "name": "to",
+              "value": "={{ $json.toEmail }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "send-email",
+      "name": "Send Email Notification",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1000,
+        0
+      ],
+      "alwaysOutputData": false,
+      "notes": "Send email notification with report"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=http://host.docker.internal:4001/notifications/send-email",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "{\n  \"Content-Type\": \"application/json\"\n}",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "subject",
+              "value": "={{ $json.subject }}"
+            },
+            {
+              "name": "message",
+              "value": "={{ $json.htmlContent }}"
+            },
+            {
+              "name": "to",
+              "value": "={{ $json.toEmail }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "send-clear-email",
+      "name": "Send Clear Email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1000,
+        160
+      ],
+      "alwaysOutputData": false,
+      "notes": "Send clear status email"
+    }
+  ],
+  "connections": {
+    "schedule-trigger": {
+      "main": [
+        [
+          {
+            "node": "set-parameters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set-parameters": {
+      "main": [
+        [
+          {
+            "node": "query-orders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "query-orders": {
+      "main": [
+        [
+          {
+            "node": "summarize-data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "summarize-data": {
+      "main": [
+        [
+          {
+            "node": "check-status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check-status": {
+      "main": [
+        [
+          {
+            "node": "prepare-alert-email",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "prepare-alert-email",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "prepare-clear-email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "prepare-alert-email": {
+      "main": [
+        [
+          {
+            "node": "send-email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "prepare-clear-email": {
+      "main": [
+        [
+          {
+            "node": "send-clear-email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

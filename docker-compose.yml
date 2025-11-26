@@ -1,4 +1,4 @@
-version: '3.8'
+# version: '3.8'
 
 services:
   # api-gateway:
@@ -105,13 +105,13 @@ services:
   #   networks:
   #     - backend
 
-  redis:
-    image: redis:7-alpine
-    container_name: redis
-    ports:
-      - '6379:6379'
-    networks:
-      - backend
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: redis
+  #   ports:
+  #     - '6379:6379'
+  #   networks:
+  #     - backend
   
   nats:
     image: nats:latest
@@ -121,6 +121,20 @@ services:
       - "8222:8222" # Monitoring port
       - "6222:6222" # Cluster port (if used later)
 
+  ecommerce_db:
+    image: postgres:15
+    container_name: ecommerce_db
+    environment:
+      POSTGRES_USER: ecommerce_user
+      POSTGRES_PASSWORD: ecommerce_password
+      POSTGRES_DB: ecommerce_db
+    ports:
+      - '5432:5432'
+    volumes:
+      - ecommerce_data:/var/lib/postgresql/data
+    networks:
+      - backend
+  
   # catalog_db:
   #   image: postgres:15
   #   container_name: catalog_db
@@ -191,12 +205,13 @@ services:
   #   networks:
   #     - backend
 
-# volumes:
-#   catalog_data:
-#   order_data:
-#   inventory_data:
-#   payment_data:
-#   notification_data:
+volumes:
+  ecommerce_data:
+  # catalog_data:
+  # order_data:
+  # inventory_data:
+  # payment_data:
+  # notification_data:
 
 networks:
   backend:

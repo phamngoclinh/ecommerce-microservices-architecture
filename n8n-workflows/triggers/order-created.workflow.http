@@ -1,0 +1,7 @@
+curl -X POST http://localhost:5678/webhook-test/order-created \
+  -H "Content-Type: application/json" \
+  -d '{
+    "orderId": "1",
+    "orderTotal": 1500000,
+    "country": "USA"
+  }'

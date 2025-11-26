@@ -1,0 +1,150 @@
+<!doctype html>
+
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Thông báo đơn hàng giá trị cao</title>
+  <style>
+    /* Tổng quát - để an toàn, nhiều client email sẽ hỗ trợ một phần CSS này.
+       Các style chủ chốt cũng được lặp lại inline bên trong thẻ để đảm bảo hiển thị. */
+    body {
+      background-color: #f4f6f8;
+      margin: 0;
+      padding: 24px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      color: #1f2d3d;
+    }
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 6px 24px rgba(15, 23, 42, 0.08);
+      overflow: hidden;
+    }
+    .header {
+      background: linear-gradient(90deg,#0ea5a4 0%,#2563eb 100%);
+      color: #fff;
+      padding: 20px 28px;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+    }
+    .content {
+      padding: 22px 28px;
+      line-height: 1.55;
+      font-size: 14px;
+    }
+    .summary {
+      background: #fbfdff;
+      border: 1px solid #e6eefb;
+      padding: 14px;
+      border-radius: 8px;
+      margin: 12px 0 18px 0;
+      font-size: 13.5px;
+    }
+    .kv {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 6px 0;
+    }
+    .kv .k { color: #536173; }
+    .kv .v { font-weight: 600; color: #0f1724; }
+    .items {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #233243;
+    }
+    .btn {
+      display: inline-block;
+      background: #2563eb;
+      color: #fff;
+      text-decoration: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      margin-top: 12px;
+    }
+    .notice {
+      margin-top: 18px;
+      font-size: 12.5px;
+      color: #6b7280;
+      background: #fbfbfb;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #f0f0f0;
+    }
+    .footer {
+      padding: 14px 28px;
+      font-size: 12px;
+      color: #8793a3;
+      background: #fbfdff;
+    }
+    @media (max-width:480px){
+      .container { margin: 0 12px; }
+      .header h1 { font-size: 16px; }
+      .content { padding: 16px; }
+    }
+  </style>
+</head>
+<body style="background-color:#f4f6f8;margin:0;padding:24px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial;color:#1f2d3d;">
+  <div class="container" style="max-width:680px;margin:0 auto;background:#fff;border-radius:12px;box-shadow:0 6px 24px rgba(15,23,42,0.08);overflow:hidden;">
+    <div class="header" style="background:linear-gradient(90deg,#0ea5a4 0%,#2563eb 100%);color:#fff;padding:20px 28px;">
+      <h1 style="margin:0;font-size:18px;font-weight:600;letter-spacing:-0.2px;">Thông báo: Đơn hàng giá trị cao vừa được tạo</h1>
+    </div>
+
+    <div class="content" style="padding:22px 28px;line-height:1.55;font-size:14px;">
+      <p style="margin:0 0 8px 0;">Chào anh/chị,</p>
+      <p style="margin:0 0 12px 0;">Hệ thống vừa ghi nhận một <strong>đơn hàng giá trị cao</strong>. Vui lòng kiểm tra thông tin dưới đây và xử lý theo quy trình nội bộ nếu cần.</p>
+
+      <div class="summary" style="background:#fbfdff;border:1px solid #e6eefb;padding:14px;border-radius:8px;margin:12px 0 18px 0;font-size:13.5px;">
+        <div class="kv" style="display:flex;justify-content:space-between;gap:12px;padding:6px 0;">
+          <div class="k" style="color:#536173;">Mã đơn hàng</div>
+          <div class="v" style="font-weight:600;color:#0f1724;">{{ $json.body.orderId }}</div>
+        </div>
+
+        <div class="kv" style="display:flex;justify-content:space-between;gap:12px;padding:6px 0;">
+          <div class="k" style="color:#536173;">Khách hàng</div>
+          <div class="v" style="font-weight:600;color:#0f1724;">Client Test</div>
+        </div>
+
+        <div class="kv" style="display:flex;justify-content:space-between;gap:12px;padding:6px 0;">
+          <div class="k" style="color:#536173;">Giá trị</div>
+          <div class="v" style="font-weight:600;color:#0f1724;">{{ $json.body.orderTotal.format('vi-VN') }}</div>
+        </div>
+
+        <div class="kv" style="display:flex;justify-content:space-between;gap:12px;padding:6px 0;">
+          <div class="k" style="color:#536173;">Thời gian tạo</div>
+          <div class="v" style="font-weight:600;color:#0f1724;">{{ $now.format('yyyy/MM/dd HH:mm:ss') }}</div>
+        </div>
+
+        <div class="items" style="margin-top:8px;font-size:13px;color:#233243;">
+          <strong>Chi tiết sản phẩm:</strong>
+          <div style="margin-top:6px;">[ORDER_ITEMS]</div>
+        </div>
+      </div>
+
+      <a href="[ADMIN_LINK]" class="btn" style="display:inline-block;background:#2563eb;color:#fff;text-decoration:none;padding:10px 16px;border-radius:8px;font-weight:600;margin-top:12px;">
+        Xem đơn hàng trên hệ thống
+      </a>
+
+      <div class="notice" style="margin-top:18px;font-size:12.5px;color:#6b7280;background:#fbfbfb;padding:10px 12px;border-radius:8px;border:1px solid #f0f0f0;">
+        Lưu ý: Đơn hàng có thể cần phê duyệt thủ công tuỳ theo chính sách. Nếu đây là hành vi bất thường, vui lòng kiểm tra lịch sử giao dịch & xác thực khách hàng.
+      </div>
+
+      <p style="margin:18px 0 0 0;">Trân trọng,<br><strong>Ngọc Linh Phạm</strong></p>
+    </div>
+
+    <div class="footer" style="padding:14px 28px;font-size:12px;color:#8793a3;background:#fbfdff;">
+      <div>Hệ thống quản lý đơn hàng • eShop</div>
+      <div style="margin-top:6px;">Nếu bạn không phải người nhận thông báo này, vui lòng liên hệ <a href="mailto:support@example.com" style="color:#2563eb;text-decoration:none;">support@example.com</a>.</div>
+    </div>
+
+  </div>
+</body>
+</html>

@@ -7,7 +7,7 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
 
-  const appPort = configService.get<number>('API_GATEWAY_APP_PORT') || 4006;
+  const appPort = configService.get<number>('NOTIFICATION_APP_PORT') || 4006;
 
   await app.listen(appPort);
 }

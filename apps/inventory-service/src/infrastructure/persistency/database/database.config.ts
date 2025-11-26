@@ -8,8 +8,13 @@ import path from 'path';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
-        type: 'sqlite',
+        type: 'postgres',
+        host: configService.get<string>('INVENTORY_DB_HOST'),
+        port: Number(configService.get<string>('INVENTORY_DB_PORT')),
+        username: configService.get<string>('INVENTORY_DB_USER'),
+        password: configService.get<string>('INVENTORY_DB_PASSWORD'),
         database: configService.get<string>('INVENTORY_DB_DATABASE'),
+        schema: configService.get<string>('INVENTORY_DB_SCHEMA') || 'public',
         entities: [path.join(__dirname, '..', 'entities', '*.entity.{ts,js}')],
         logging: process.env.NODE_ENV === 'development' ? ['error', 'warn', 'info'] : ['error'],
       }),
