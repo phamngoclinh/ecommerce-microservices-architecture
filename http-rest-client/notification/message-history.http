@@ -1,0 +1,2 @@
+GET http://localhost:4006/message-history
+  ?recipient=pnlinh93@gmail.com

@@ -33,7 +33,10 @@
     "migration:revert:order": "npm run migration:revert --service=order-service",
     "migration:generate:payment": "npm run migration:generate --service=payment-service",
     "migration:run:payment": "npm run migration:run --service=payment-service",
-    "migration:revert:payment": "npm run migration:revert --service=payment-service"
+    "migration:revert:payment": "npm run migration:revert --service=payment-service",
+    "migration:generate:notification": "npm run migration:generate --service=notification-service",
+    "migration:run:notification": "npm run migration:run --service=notification-service",
+    "migration:revert:notification": "npm run migration:revert --service=notification-service"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^2.0.2",

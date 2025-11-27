@@ -1,9 +1,9 @@
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
-import { NotificationServiceModule } from './notification-service.module';
+import { AppModule } from './infrastructure/modules/app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(NotificationServiceModule);
+  const app = await NestFactory.create(AppModule, { cors: true });
 
   const configService = app.get(ConfigService);
 

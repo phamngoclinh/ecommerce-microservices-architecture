@@ -1,0 +1,8 @@
+POST http://localhost:4006/send-email HTTP/1.1
+content-type: application/json
+
+{
+  "to": "pnlinh93@gmail.com",
+  "subject": "test",
+  "message": "Test"
+}

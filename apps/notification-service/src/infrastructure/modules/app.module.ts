@@ -1,8 +1,7 @@
 import { MailerModule } from '@nestjs-modules/mailer';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { NotificationServiceController } from './notification-service.controller';
-import { NotificationServiceService } from './notification-service.service';
+import { NotificationMessageModule } from './notification-message.module';
 
 @Module({
   imports: [
@@ -22,8 +21,7 @@ import { NotificationServiceService } from './notification-service.service';
         from: process.env.EMAIL_FROM,
       },
     }),
+    NotificationMessageModule,
   ],
-  controllers: [NotificationServiceController],
-  providers: [NotificationServiceService],
 })
-export class NotificationServiceModule {}
+export class AppModule {}
